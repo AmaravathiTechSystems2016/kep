@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_shift_planning_dashboard_form" model="ir.ui.view">
+        <field name="name">hr.shift.planning.dashboard.form</field>
+        <field name="model">hr.shift.planning.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Shift Planning Dashboard">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Shift Planning Dashboard</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                        </group>
+                        <group>
+                            <field name="attendance_category"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_rosters" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="roster_count" widget="statinfo" string="Rosters"/>
+                        </button>
+                        <button name="action_open_assignments" type="object" class="oe_stat_button" icon="fa-briefcase">
+                            <field name="assignment_count" widget="statinfo" string="Assignments"/>
+                        </button>
+                        <button name="action_open_conflicting_assignments" type="object" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="not conflicting_assignment_count">
+                            <field name="conflicting_assignment_count" widget="statinfo" string="Conflicts"/>
+                        </button>
+                        <button name="action_open_exception_lines" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="exception_line_count" widget="statinfo" string="Exceptions"/>
+                        </button>
+                        <button name="action_refresh" type="object" class="oe_stat_button" icon="fa-refresh">
+                            <span class="o_stat_text">Refresh</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Roster States">
+                            <field name="draft_roster_count" readonly="1"/>
+                            <field name="generated_roster_count" readonly="1"/>
+                            <field name="confirmed_roster_count" readonly="1"/>
+                            <field name="done_roster_count" readonly="1"/>
+                        </group>
+                        <group string="Coverage">
+                            <field name="active_employee_count" readonly="1"/>
+                            <field name="template_count" readonly="1"/>
+                            <field name="rotation_assignment_count" readonly="1"/>
+                            <field name="roster_line_count" readonly="1"/>
+                            <field name="conflicting_assignment_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Exceptions">
+                            <field name="weekly_off_line_count" readonly="1"/>
+                            <field name="public_holiday_line_count" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_shift_planning_dashboard" model="ir.actions.act_window">
+        <field name="name">Shift Planning Dashboard</field>
+        <field name="res_model">hr.shift.planning.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

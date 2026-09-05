@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Employee View -->
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.view.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(action_hr_payslip)d"
+                        class="oe_stat_button"
+                        icon="fa-credit-card"
+                        type="action"
+                        groups="hr_payroll_community.group_hr_payroll_community_user">
+                    <field name="payslip_count" widget="statinfo"
+                           string="Payslips"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='payroll_information']/group/group[@name='contract']" position="after">
+                <group string="Payroll Policy" name="payroll_policy">
+                    <field name="payroll_profile"/>
+                    <field name="basic_percentage"/>
+                    <field name="hra_percentage"/>
+                    <field name="allowance_amount"/>
+                    <field name="washing_allowance"/>
+                    <field name="conveyance_allowance"/>
+                    <field name="overtime_multiplier"/>
+                </group>
+                <group string="Statutory Contributions" name="statutory_contributions">
+                    <field name="esi_applicable"/>
+                    <field name="esi_employee_rate"/>
+                    <field name="esi_employer_rate"/>
+                    <field name="esi_wage_ceiling"/>
+                    <field name="professional_tax"/>
+                    <field name="pf_rate"/>
+                    <field name="pf_wage_ceiling"/>
+                    <field name="uan_number"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

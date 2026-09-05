@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_applicant_form_inherit_sourcing_tracking" model="ir.ui.view">
+        <field name="name">hr.applicant.form.inherit.sourcing.tracking</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='source_id']" position="after">
+                <field name="source_type"/>
+                <field name="referred_by_employee_id" invisible="source_type != 'employee_referral'"/>
+                <field name="source_notes"/>
+            </xpath>
+            <xpath expr="//page[@name='application_details']" position="after">
+                <page string="Screening" name="screening_details">
+                    <group>
+                        <group>
+                            <field name="screening_status"/>
+                            <field name="education_fit"/>
+                            <field name="experience_fit"/>
+                        </group>
+                        <group>
+                            <field name="skill_fit"/>
+                            <field name="location_fit"/>
+                            <field name="shift_fit"/>
+                        </group>
+                    </group>
+                    <field name="screening_notes" placeholder="Add screening notes, shortlisting remarks, test result, and interview prep comments..."/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_applicant_search_inherit_sourcing_tracking" model="ir.ui.view">
+        <field name="name">hr.applicant.search.inherit.sourcing.tracking</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_search_bis"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="source_type"/>
+                <field name="referred_by_employee_id"/>
+            </xpath>
+            <xpath expr="//field[@name='application_status']" position="after">
+                <field name="screening_status"/>
+                <field name="education_fit"/>
+                <field name="experience_fit"/>
+                <field name="skill_fit"/>
+                <field name="location_fit"/>
+                <field name="shift_fit"/>
+            </xpath>
+            <xpath expr="//filter[@name='stage']" position="after">
+                <filter string="Employee Referrals" name="source_employee_referral" domain="[('source_type', '=', 'employee_referral')]"/>
+                <filter string="Internal Recruitment" name="source_internal_recruitment" domain="[('source_type', '=', 'internal_recruitment')]"/>
+                <filter string="Geographical Focus" name="source_geographical_focus" domain="[('source_type', '=', 'geographical_focus')]"/>
+                <filter string="Screened" name="screened" domain="[('screening_status', '=', 'screened')]"/>
+                <filter string="Shortlisted" name="shortlisted" domain="[('screening_status', '=', 'shortlisted')]"/>
+                <filter string="Screening Rejected" name="screening_rejected" domain="[('screening_status', '=', 'rejected')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

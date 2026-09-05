@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Add late check-in fields in hr.attendance list view-->
+    <record id="view_attendance_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.view.list.inherit.hr.zk.attendance</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <field name="check_out" position="after">
+                <!-- Actual late time (without tolerance) -->
+                <field name="late_check_in" string="Actual Late (min)" optional="hide"/>
+
+                <!-- Counted late time (after tolerance) -->
+                <field name="tolerance_late_time" string="Counted Late (min)" optional="show"/>
+
+                <!-- Early leave / overtime from roster -->
+                <field name="early_leave_minutes" string="Early Leave (min)" optional="show"/>
+                <field name="overtime_minutes" string="Overtime (min)" optional="show"/>
+                <field name="comp_off_eligible" string="Comp-Off Eligible" optional="show"/>
+                <field name="comp_off_hours" string="Comp-Off Hours" optional="show"/>
+
+                <!-- Within tolerance indicator -->
+                <field name="is_within_tolerance" string="Within Tolerance" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hr_shift_roster_root"
+              name="Shift Management"
+              parent="hr_attendance.menu_hr_attendance_root"
+              sequence="40"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_roster_config"
+              name="Configuration"
+              parent="menu_hr_shift_roster_root"
+              sequence="10"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_template"
+              name="Shift Templates"
+              parent="menu_hr_shift_roster_config"
+              action="action_hr_shift_template"
+              sequence="10"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_assignment"
+              name="Shift Assignments"
+              parent="menu_hr_shift_roster_config"
+              action="action_hr_shift_assignment"
+              sequence="20"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_holiday"
+              name="Shift Holidays"
+              parent="menu_hr_shift_roster_config"
+              action="action_hr_shift_holiday"
+              sequence="30"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_roster_ops"
+              name="Operations"
+              parent="menu_hr_shift_roster_root"
+              sequence="20"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_planning_dashboard"
+              name="Planning Dashboard"
+              parent="menu_hr_shift_roster_ops"
+              action="action_hr_shift_planning_dashboard"
+              sequence="5"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+
+    <menuitem id="menu_hr_shift_roster"
+              name="Shift Rosters"
+              parent="menu_hr_shift_roster_ops"
+              action="action_hr_shift_roster"
+              sequence="10"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+</odoo>

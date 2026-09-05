@@ -1,0 +1,858 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ==================== ENHANCED DEVICE FORM VIEW ==================== -->
+    <record id="biometric_device_details_view_form" model="ir.ui.view">
+        <field name="name">biometric.device.details.view.form.enhanced</field>
+        <field name="model">biometric.device.details</field>
+        <field name="arch" type="xml">
+            <form string="Biometric Device">
+                <header>
+                    <!-- Primary Actions -->
+                    <button name="action_test_connection"
+                            string="Test Connection"
+                            type="object"
+                            class="oe_highlight"
+                            icon="fa-plug"
+                            invisible="connection_mode == 'adms'"/>
+                    
+                    <button name="action_refresh_device_info"
+                            string="Refresh Device Info"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-refresh"
+                            invisible="connection_mode == 'adms'"
+                            help="Refresh firmware, capacity, and network information"/>
+                    
+                    <button name="action_download_attendance_background"
+                            string="Download Attendance"
+                            type="object"
+                            class="oe_highlight"
+                            icon="fa-download"
+                            invisible="connection_mode == 'adms'"/>
+                    
+                    <!-- Live Capture Actions -->
+                    <button name="action_start_live_capture"
+                            string="Start Live Capture"
+                            type="object"
+                            class="btn-success"
+                            icon="fa-play"
+                            invisible="live_capture_active == True"
+                            confirm="Start real-time attendance monitoring?"/>
+                    
+                    <button name="action_stop_live_capture"
+                            string="Stop Live Capture"
+                            type="object"
+                            class="btn-danger"
+                            icon="fa-stop"
+                            invisible="live_capture_active == False"/>
+                    
+                    <!-- Device Actions -->
+                    <button name="action_set_timezone"
+                            string="Sync Time"
+                            type="object"
+                            icon="fa-clock-o"
+                            invisible="connection_mode == 'adms'"/>
+                    
+                    <button name="action_restart_device"
+                            string="Restart Device"
+                            type="object"
+                            icon="fa-refresh"
+                            invisible="connection_mode == 'adms'"
+                            confirm="Are you sure you want to restart this device?"/>
+
+                    <!-- ADMS-Specific Actions (only for adms/hybrid modes) -->
+                    <button name="action_adms_enroll_fingerprint"
+                            string="Enroll Fingerprint"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-fingerprint"
+                            invisible="connection_mode == 'direct'"/>
+
+                    <button name="action_adms_sync_users"
+                            string="Sync Users (ADMS)"
+                            type="object"
+                            icon="fa-users"
+                            invisible="connection_mode == 'direct'"
+                            confirm="Queue user sync for all mapped employees?"/>
+
+                    <button name="action_adms_reboot"
+                            string="Reboot (ADMS)"
+                            type="object"
+                            icon="fa-power-off"
+                            invisible="connection_mode == 'direct'"
+                            confirm="Queue reboot command for this device?"/>
+                </header>
+                
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Device Status Button -->
+                        <button name="action_refresh_device_info"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-heartbeat">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Status</span>
+                                <span class="o_stat_value">
+                                    <field name="device_status" widget="badge"
+                                           decoration-success="device_status == 'online'"
+                                           decoration-danger="device_status == 'offline'"
+                                           decoration-warning="device_status == 'unknown'"/>
+                                </span>
+                            </div>
+                        </button>
+
+                        <!-- Download Logs Button (NEW) -->
+                        <button name="action_view_device_logs"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list-alt">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Download</span>
+                                <span class="o_stat_text">Logs</span>
+                                <span class="o_stat_value">
+                                    <field name="device_log_count"/>
+                                </span>
+                            </div>
+                        </button>
+
+                        <!-- Device Attendance Records Button (FIXED) -->
+                        <button name="action_view_attendance_records"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-database">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Attendance</span>
+                                <span class="o_stat_text">Records</span>
+                                <span class="o_stat_value">
+                                    <field name="device_attendance_count"/>
+                                </span>
+                            </div>
+                        </button>
+
+                        <!-- User Count Button -->
+                        <button name="action_view_enrolled_users"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-users">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Users</span>
+                                <span class="o_stat_text">Enrolled</span>
+                                <span class="o_stat_value">
+                                    <field name="user_count"/>
+                                </span>
+                            </div>
+                        </button>
+
+                        <!-- Live Events Button -->
+                        <button name="action_start_live_capture"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-bolt"
+                                invisible="live_capture_enabled == False">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Events Today</span>
+                                <span class="o_stat_value">
+                                    <field name="live_events_today"/>
+                                </span>
+                            </div>
+                        </button>
+
+                        <!-- Biometric Templates Button -->
+                        <button name="action_backup_templates"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-fingerprint">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Backup</span>
+                                <span class="o_stat_text">Templates</span>
+                            </div>
+                        </button>
+
+                        <!-- Verify Biometric Button -->
+                        <button name="action_verify_employee_biometric"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-check-circle">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Verify</span>
+                                <span class="o_stat_text">Biometric</span>
+                            </div>
+                        </button>
+
+                        <!-- ADMS Commands Smart Button -->
+                        <button name="action_view_adms_commands"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-terminal"
+                                invisible="connection_mode == 'direct'">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">ADMS</span>
+                                <span class="o_stat_text">Commands</span>
+                                <span class="o_stat_value">
+                                    <field name="adms_command_count"/>
+                                </span>
+                            </div>
+                        </button>
+
+                        <!-- Fingerprint Templates Smart Button -->
+                        <button name="action_view_fp_templates"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-fingerprint"
+                                invisible="connection_mode == 'direct'">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Fingerprint</span>
+                                <span class="o_stat_text">Templates</span>
+                            </div>
+                        </button>
+
+                        <!-- Employees Smart Button -->
+                        <button name="action_view_biometric_employees"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-id-card">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Employees</span>
+                                <span class="o_stat_value">
+                                    <field name="employee_biometric_count"/>
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Device Title -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g., Main Entrance Device"/>
+                        </h1>
+                        <div class="text-muted" invisible="firmware_version == False">
+                            <i class="fa fa-microchip" title="Firmware"/> <field name="firmware_version" readonly="1"/>
+                            <span invisible="serial_number == False"> | S/N: <field name="serial_number" readonly="1"/></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Storage Warning Alert -->
+                    <div class="alert alert-danger" role="alert" invisible="storage_warning == False">
+                        <i class="fa fa-exclamation-triangle" title="Warning"/>
+                        <strong>Storage Warning!</strong> Device storage is &gt;80% full. 
+                        <span invisible="record_count == 0">
+                            Records: <field name="record_count"/> / <field name="record_capacity"/> 
+                            (<field name="record_usage_percent"/>%)
+                        </span>
+                        Please clear old records to prevent data loss.
+                    </div>
+                    
+                    <!-- Live Capture Status Banner -->
+                    <div class="alert alert-success" role="alert" invisible="live_capture_active == False">
+                        <i class="fa fa-circle" title="Active" style="color: #00ff00; animation: blink 1s infinite;"/>
+                        <strong>Live Capture Active</strong> - Real-time attendance monitoring is running.
+                        Last event: <field name="last_live_event_time" readonly="1"/>
+                    </div>
+                    
+                    <notebook>
+                        <!-- Tab 1: Basic Configuration (Existing - Enhanced) -->
+                        <page string="Configuration" name="device_config">
+                            <group>
+                                <group string="Connection Mode" colspan="2">
+                                    <field name="connection_mode" widget="radio"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Connection Details" invisible="connection_mode == 'adms'">
+                                    <field name="device_ip" placeholder="192.168.1.100" required="connection_mode != 'adms'"/>
+                                    <field name="port_number" placeholder="4370" required="connection_mode != 'adms'"/>
+                                    <field name="device_password" password="True" placeholder="Leave empty for default (0)"/>
+                                </group>
+                                <group string="ADMS Cloud Settings" invisible="connection_mode == 'direct'">
+                                    <field name="device_serial" placeholder="Auto-filled on first heartbeat"/>
+                                    <field name="adms_last_heartbeat" readonly="1"/>
+                                    <field name="adms_status" widget="badge"
+                                           decoration-success="adms_status == 'online'"
+                                           decoration-danger="adms_status == 'offline'"/>
+                                    <field name="adms_push_count" readonly="1"/>
+                                    <field name="adms_command_count"/>
+                                    <div class="alert alert-info" role="alert" invisible="connection_mode != 'adms'">
+                                        <strong>ADMS Setup:</strong> On your ZKTeco device, go to
+                                        <em>Menu → Comm → Cloud Server Setting</em> and enter your
+                                        Odoo server address and port (8069).
+                                    </div>
+                                </group>
+                                <group string="Location">
+                                    <field name="address_id"/>
+                                    <field name="company_id" options="{'no_create': True}"/>
+                                    <field name="last_download_time" readonly="1"/>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="Attendance Mode Settings">
+                                    <field name="attendance_mode" widget="radio"/>
+                                    <field name="duplicate_threshold"/>
+                                </group>
+                                <group string="Time Synchronization" invisible="connection_mode == 'adms'">
+                                    <field name="time_sync_method" widget="radio"/>
+                                    <field name="custom_timezone" invisible="time_sync_method != 'custom'" required="time_sync_method == 'custom'"/>
+                                    <field name="manual_datetime" invisible="time_sync_method != 'manual'" required="time_sync_method == 'manual'"/>
+                                    <field name="effective_timezone" readonly="1" string="Current Device TZ"/>
+                                </group>
+                                <group string="Device Timezone (ADMS)" invisible="connection_mode != 'adms'">
+                                    <field name="custom_timezone" string="Device Timezone" required="connection_mode == 'adms'"/>
+                                    <field name="effective_timezone" readonly="1" string="Active TZ"/>
+                                </group>
+                                <group string="Advanced Settings">
+                                    <field name="live_capture_enabled"/>
+                                    <field name="live_capture_timeout" invisible="live_capture_enabled == False"/>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-info" role="alert" style="margin: 20px;">
+                                <h5><i class="fa fa-info-circle" title="Information"/> Attendance Mode Explanation</h5>
+                                <ul>
+                                    <li><strong>Traditional Mode:</strong> Uses punch type from device (0=Check-in, 1=Check-out). Standard mode.</li>
+                                    <li><strong>Auto Mode (NEW):</strong> Automatically determines check-in/check-out based on last attendance. Ignores device punch type. Prevents HR configuration mistakes!</li>
+                                </ul>
+
+                                <h5 style="margin-top: 20px;"><i class="fa fa-clock-o" title="Timeout"/> Live Capture Timeout Settings</h5>
+                                <p>The timeout controls how long the system waits for attendance events during live monitoring:</p>
+                                <ul style="margin-bottom: 0;">
+                                    <li><strong>For LOCAL network (192.168.x.x):</strong> 60 seconds ✓ (Default - Balanced)</li>
+                                    <li><strong>For PUBLIC IP (Internet):</strong> 90-120 seconds ✓ (Recommended for remote connections)</li>
+                                    <li><strong>For Slow/Unstable connections:</strong> 120-180 seconds (Higher tolerance)</li>
+                                </ul>
+                                <div style="margin-top: 10px; padding: 8px; background-color: #e7f3ff; border-radius: 4px;">
+                                    <p style="margin: 0; font-size: 13px; color: #004085;">
+                                        <i class="fa fa-info-circle" title="Note"/> <strong>Note:</strong> Higher timeout values give more patience for network delays,
+                                        which is essential when connecting to devices over the internet. This prevents missing attendance
+                                        events due to network latency!
+                                    </p>
+                                </div>
+                            </div>
+                        </page>
+                        
+                        <!-- Tab 2: Device Information (NEW) -->
+                        <page string="Device Information" name="device_info">
+                            <group>
+                                <group string="Hardware Information">
+                                    <field name="firmware_version" readonly="1"/>
+                                    <field name="serial_number" readonly="1"/>
+                                    <field name="platform" readonly="1"/>
+                                    <field name="mac_address" readonly="1"/>
+                                    <field name="device_name_from_device" readonly="1"/>
+                                    <field name="pin_width" readonly="1"/>
+                                </group>
+                                <group string="Biometric Capabilities">
+                                    <field name="face_version" readonly="1"/>
+                                    <field name="fp_version" readonly="1"/>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="Network Configuration">
+                                    <field name="network_ip" readonly="1"/>
+                                    <field name="network_mask" readonly="1"/>
+                                    <field name="network_gateway" readonly="1"/>
+                                </group>
+                                <group string="Status">
+                                    <field name="device_status" readonly="1" widget="badge"
+                                           decoration-success="device_status == 'online'"
+                                           decoration-danger="device_status == 'offline'"
+                                           decoration-warning="device_status == 'unknown'"/>
+                                    <field name="last_online_time" readonly="1"/>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-info" role="alert" style="margin: 20px;">
+                                <i class="fa fa-lightbulb-o" title="Tip"/>
+                                <strong>Tip:</strong> Click "Refresh Device Info" button to update all information from the device.
+                            </div>
+                        </page>
+                        
+                        <!-- Tab 3: Capacity & Health (NEW) -->
+                        <page string="Capacity &amp; Health" name="capacity_health">
+                            <group>
+                                <group string="User Capacity">
+                                    <label for="user_count"/>
+                                    <div>
+                                        <field name="user_count" readonly="1" class="oe_inline"/> / 
+                                        <field name="user_capacity" readonly="1" class="oe_inline"/>
+                                        <field name="user_usage_percent" readonly="1" widget="progressbar" class="oe_inline"/>
+                                    </div>
+                                </group>
+                                <group string="Fingerprint Capacity">
+                                    <label for="finger_count"/>
+                                    <div>
+                                        <field name="finger_count" readonly="1" class="oe_inline"/> / 
+                                        <field name="finger_capacity" readonly="1" class="oe_inline"/>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="Attendance Record Capacity">
+                                    <label for="record_count"/>
+                                    <div>
+                                        <field name="record_count" readonly="1" class="oe_inline"/> / 
+                                        <field name="record_capacity" readonly="1" class="oe_inline"/>
+                                        <field name="record_usage_percent" readonly="1" widget="progressbar" class="oe_inline"/>
+                                    </div>
+                                    <field name="storage_warning" readonly="1" invisible="1"/>
+                                </group>
+                                <group string="Face Template Capacity">
+                                    <label for="face_count"/>
+                                    <div>
+                                        <field name="face_count" readonly="1" class="oe_inline"/> / 
+                                        <field name="face_capacity" readonly="1" class="oe_inline"/>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-warning" role="alert" style="margin: 20px;" invisible="storage_warning == False">
+                                <h5><i class="fa fa-exclamation-triangle" title="Warning"/> Storage Alert</h5>
+                                <p>
+                                    One or more capacity metrics exceed 80% threshold. 
+                                    Consider clearing old records or adding more devices.
+                                </p>
+                            </div>
+                        </page>
+                        
+                        <!-- Tab 4: Live Monitoring (NEW) -->
+                        <page string="Live Monitoring" name="live_monitoring">
+                            <group>
+                                <group string="Live Capture Settings">
+                                    <field name="live_capture_enabled"/>
+                                    <field name="live_capture_timeout" invisible="live_capture_enabled == False"/>
+                                    <field name="live_capture_active" readonly="1"/>
+                                </group>
+                                <group string="Statistics">
+                                    <field name="last_live_event_time" readonly="1"/>
+                                    <field name="live_events_today" readonly="1"/>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-success" role="alert" style="margin: 20px;" invisible="live_capture_enabled == False">
+                                <h5><i class="fa fa-bolt" title="Live Capture"/> Live Capture Enabled</h5>
+                                <p><strong>Real-time Mode:</strong> Attendance events are captured INSTANTLY as they happen!</p>
+                                <ul>
+                                    <li>No more 5-minute polling delay</li>
+                                    <li>Instant notifications via Odoo bus</li>
+                                    <li>Automatic LCD messages and audio feedback</li>
+                                    <li>Real-time dashboard updates</li>
+                                </ul>
+                                <p class="text-muted">
+                                    <i class="fa fa-info-circle" title="Information"/>
+                                    Click "Start Live Capture" in the header to begin monitoring.
+                                </p>
+                                <div style="margin-top: 15px; padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
+                                    <p style="margin: 0;"><strong><i class="fa fa-clock-o" title="Timeout"/> Timeout Configuration Recommendations:</strong></p>
+                                    <ul style="margin-bottom: 0;">
+                                        <li><strong>For LOCAL network (192.168.x.x):</strong> 60 seconds ✓ (Default - Fast &amp; Efficient)</li>
+                                        <li><strong>For PUBLIC IP (Internet):</strong> 90-120 seconds ✓ (Recommended - Accounts for latency)</li>
+                                        <li><strong>For Poor Connection:</strong> 120-180 seconds (Higher tolerance for delays)</li>
+                                    </ul>
+                                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #856404;">
+                                        <i class="fa fa-lightbulb-o" title="Tip"/> <strong>Tip:</strong> Higher timeout = More patience before checking status.
+                                        This is especially important when connecting via internet/public IP!
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info" role="alert" style="margin: 20px;" invisible="live_capture_enabled == True">
+                                <h5><i class="fa fa-question-circle" title="Help"/> What is Live Capture?</h5>
+                                <p>
+                                    Live Capture enables real-time attendance monitoring. When enabled:
+                                </p>
+                                <ul>
+                                    <li>Attendance events are captured as they happen (instead of polling every X minutes)</li>
+                                    <li>Instant notifications sent to relevant users</li>
+                                    <li>LCD messages and audio feedback triggered automatically</li>
+                                    <li>Better user experience and faster data sync</li>
+                                </ul>
+                                <p>
+                                    <strong>To enable:</strong> Check "Enable Live Capture" checkbox and click "Start Live Capture" button.
+                                </p>
+                            </div>
+                        </page>
+                        
+                        <!-- Tab 5: Messages & Audio (NEW) -->
+                        <page string="Messages &amp; Audio" name="messages_audio">
+                            <group>
+                                <group string="LCD Message Settings">
+                                    <field name="lcd_enabled"/>
+                                    <field name="lcd_welcome_message" placeholder="Welcome!" invisible="lcd_enabled == False"/>
+                                    <field name="lcd_goodbye_message" placeholder="Goodbye!" invisible="lcd_enabled == False"/>
+                                </group>
+                                <group string="LCD Test">
+                                    <button name="action_test_lcd"
+                                            string="Test LCD Message"
+                                            type="object"
+                                            class="btn-primary"
+                                            icon="fa-television"
+                                            invisible="lcd_enabled == False"/>
+                                    <button name="action_clear_lcd"
+                                            string="Clear LCD"
+                                            type="object"
+                                            icon="fa-eraser"
+                                            invisible="lcd_enabled == False"/>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="Audio Feedback Settings">
+                                    <field name="audio_enabled"/>
+                                    <field name="checkin_voice_index" invisible="audio_enabled == False"/>
+                                    <field name="checkout_voice_index" invisible="audio_enabled == False"/>
+                                    <field name="error_voice_index" invisible="audio_enabled == False"/>
+                                </group>
+                                <group string="Audio Test">
+                                    <button name="action_test_voice"
+                                            string="Test Voice/Audio"
+                                            type="object"
+                                            class="btn-primary"
+                                            icon="fa-volume-up"
+                                            invisible="audio_enabled == False"/>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-info" role="alert" style="margin: 20px;">
+                                <h5><i class="fa fa-info-circle" title="Tips"/> Usage Tips</h5>
+                                <ul>
+                                    <li><strong>LCD Messages:</strong> Max 20 characters per line. Use {name} placeholder for employee name (if supported by device).</li>
+                                    <li><strong>Audio Alerts:</strong> Voice index 0-55. Different sounds available. 0=default beep, 1=error beep.</li>
+                                    <li><strong>Testing:</strong> Use test buttons to preview LCD messages and audio sounds before enabling.</li>
+                                </ul>
+                            </div>
+                        </page>
+                        
+                        <!-- Tab 6: Door Control (NEW - Optional) -->
+                        <page string="Door Control" name="door_control">
+                            <group>
+                                <group string="Door Control Settings">
+                                    <field name="door_control_enabled"/>
+                                    <field name="default_unlock_duration" invisible="door_control_enabled == False"/>
+                                    <field name="current_lock_state" readonly="1" invisible="door_control_enabled == False"/>
+                                </group>
+                                <group string="Door Actions">
+                                    <button name="action_unlock_door"
+                                            string="Unlock Door"
+                                            type="object"
+                                            class="btn-danger"
+                                            icon="fa-unlock"
+                                            invisible="door_control_enabled == False"
+                                            confirm="Unlock door for configured duration?"/>
+                                    <button name="action_get_lock_state"
+                                            string="Check Lock Status"
+                                            type="object"
+                                            class="btn-info"
+                                            icon="fa-lock"
+                                            invisible="door_control_enabled == False"/>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-warning" role="alert" style="margin: 20px;" invisible="door_control_enabled == False">
+                                <h5><i class="fa fa-exclamation-triangle" title="Warning"/> Security Warning</h5>
+                                <p>
+                                    Door control features are enabled. Use with caution!
+                                </p>
+                                <ul>
+                                    <li>Only authorized personnel should have access to door unlock</li>
+                                    <li>All door unlock actions are logged in the chatter</li>
+                                    <li>Default unlock duration: <field name="default_unlock_duration" readonly="1" class="oe_inline"/> seconds</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="alert alert-info" role="alert" style="margin: 20px;" invisible="door_control_enabled == True">
+                                <h5><i class="fa fa-info-circle" title="Information"/> About Door Control</h5>
+                                <p>
+                                    If your biometric device is connected to an access control system, you can enable door control features.
+                                </p>
+                                <p>
+                                    <strong>Features:</strong>
+                                </p>
+                                <ul>
+                                    <li>Manual door unlock button</li>
+                                    <li>Check lock status</li>
+                                    <li>Configurable unlock duration</li>
+                                    <li>Activity logging for security audit</li>
+                                </ul>
+                                <p>
+                                    <strong>Note:</strong> This feature requires compatible ZKTeco device with door control capability.
+                                </p>
+                            </div>
+                        </page>
+                        
+                        <!-- Tab 7: Users & Enrollment (NEW) -->
+                        <page string="Users" name="users">
+                            <group>
+                                <group string="User Management">
+                                    <button name="action_sync_users_to_device"
+                                            string="Sync All Employees to Device"
+                                            type="object"
+                                            class="btn-primary oe_highlight"
+                                            icon="fa-refresh"
+                                            confirm="This will sync all employees with Device ID Number to this device. Continue?"/>
+                                    <button name="action_view_enrolled_users"
+                                            string="View Enrolled Users"
+                                            type="object"
+                                            class="btn-secondary"
+                                            icon="fa-users"/>
+                                </group>
+                                <group string="Statistics">
+                                    <label for="user_count"/>
+                                    <div>
+                                        <field name="user_count" readonly="1" class="oe_inline"/> users enrolled
+                                    </div>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Biometric Template Management">
+                                    <button name="action_backup_templates"
+                                            string="Backup All Templates"
+                                            type="object"
+                                            class="btn-warning"
+                                            icon="fa-fingerprint"
+                                            help="Backup fingerprints and face templates from device"/>
+                                    <button name="action_verify_employee_biometric"
+                                            string="Verify Employee Biometric"
+                                            type="object"
+                                            class="btn-info"
+                                            icon="fa-check-circle"
+                                            help="Test biometric verification for employees"/>
+                                </group>
+                                <group string="Template Info">
+                                    <label for="finger_count"/>
+                                    <div>
+                                        <field name="finger_count" readonly="1" class="oe_inline"/> /
+                                        <field name="finger_capacity" readonly="1" class="oe_inline"/> fingerprints
+                                    </div>
+                                    <label for="face_count"/>
+                                    <div>
+                                        <field name="face_count" readonly="1" class="oe_inline"/> /
+                                        <field name="face_capacity" readonly="1" class="oe_inline"/> faces
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-success" role="alert" style="margin: 20px;">
+                                <h5><i class="fa fa-users" title="Users"/> Automatic User Enrollment</h5>
+                                <p>
+                                    <strong>How it works:</strong>
+                                </p>
+                                <ol>
+                                    <li>Ensure all employees have "Device ID Number" filled in HR → Employees</li>
+                                    <li>Click "Sync All Employees to Device" button above</li>
+                                    <li>System will create/update users on the biometric device automatically</li>
+                                    <li>No manual enrollment needed on the device!</li>
+                                </ol>
+                                <p class="text-muted">
+                                    <i class="fa fa-info-circle" title="Information"/>
+                                    You can also enable auto-enrollment in Settings → Biometric Settings.
+                                </p>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+    
+    <!-- ==================== ENHANCED LIST VIEW ==================== -->
+    <record id="biometric_device_details_view_list" model="ir.ui.view">
+        <field name="name">biometric.device.details.view.list.enhanced</field>
+        <field name="model">biometric.device.details</field>
+        <field name="arch" type="xml">
+            <list string="Biometric Devices">
+                <field name="name"/>
+                <field name="device_ip"/>
+                <field name="port_number"/>
+                <field name="device_status" widget="badge"
+                       decoration-success="device_status == 'online'"
+                       decoration-danger="device_status == 'offline'"
+                       decoration-warning="device_status == 'unknown'"/>
+                <field name="attendance_mode" 
+                       decoration-success="attendance_mode == 'auto'" 
+                       decoration-info="attendance_mode == 'traditional'"/>
+                <field name="live_capture_active" widget="boolean"/>
+                <field name="user_count"/>
+                <field name="record_usage_percent" widget="progressbar"/>
+                <field name="storage_warning" widget="boolean" 
+                       decoration-danger="storage_warning == True"/>
+                <field name="device_attendance_count" string="Records" optional="show"/>
+                <field name="last_download_time"/>
+                <field name="firmware_version" optional="hide"/>
+                <field name="serial_number" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- ==================== KANBAN VIEW (NEW - For Dashboard) ==================== -->
+    <record id="biometric_device_details_view_kanban" model="ir.ui.view">
+        <field name="name">biometric.device.details.view.kanban</field>
+        <field name="model">biometric.device.details</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="device_ip"/>
+                <field name="device_status"/>
+                <field name="record_usage_percent"/>
+                <field name="user_count"/>
+                <field name="user_capacity"/>
+                <field name="storage_warning"/>
+                <field name="live_capture_active"/>
+                <field name="firmware_version"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click"
+                             t-attf-class="#{record.storage_warning.raw_value ? 'oe_kanban_color_2' : ''}">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="o_kanban_record_subtitle">
+                                        <field name="device_ip"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Status:</strong>
+                                        <field name="device_status" widget="badge"
+                                               decoration-success="device_status == 'online'"
+                                               decoration-danger="device_status == 'offline'"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Live:</strong>
+                                        <field name="live_capture_active" widget="boolean"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <strong>Users:</strong> 
+                                        <field name="user_count"/> / <field name="user_capacity"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <strong>Storage:</strong>
+                                        <field name="record_usage_percent" widget="progressbar"/>%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span t-if="record.firmware_version.value">
+                                        <i class="fa fa-microchip" title="Firmware"/> <field name="firmware_version"/>
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <span t-if="record.storage_warning.raw_value" class="badge badge-danger">
+                                        <i class="fa fa-exclamation-triangle" title="Warning"/> Storage Full
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- ==================== SEARCH VIEW (Enhanced) ==================== -->
+    <record id="biometric_device_details_view_search" model="ir.ui.view">
+        <field name="name">biometric.device.details.view.search</field>
+        <field name="model">biometric.device.details</field>
+        <field name="arch" type="xml">
+            <search string="Search Biometric Devices">
+                <field name="name" string="Device Name"/>
+                <field name="device_ip" string="IP Address"/>
+                <field name="serial_number" string="Serial Number"/>
+                <field name="firmware_version" string="Firmware"/>
+                <filter name="filter_online" string="Online"
+                        domain="[('device_status', '=', 'online')]"/>
+                <filter name="filter_offline" string="Offline"
+                        domain="[('device_status', '=', 'offline')]"/>
+                <separator/>
+                <filter name="filter_live_active" string="Live Capture Active"
+                        domain="[('live_capture_active', '=', True)]"/>
+                <filter name="filter_live_enabled" string="Live Capture Enabled"
+                        domain="[('live_capture_enabled', '=', True)]"/>
+                <separator/>
+                <filter name="filter_storage_warning" string="Storage Warning"
+                        domain="[('storage_warning', '=', True)]"/>
+                <separator/>
+                <filter name="filter_auto_mode" string="Auto Mode"
+                        domain="[('attendance_mode', '=', 'auto')]"/>
+                <filter name="filter_traditional_mode" string="Traditional Mode"
+                        domain="[('attendance_mode', '=', 'traditional')]"/>
+                <separator/>
+                <filter name="group_by_company" string="Company"
+                        context="{'group_by': 'company_id'}"/>
+                <filter name="group_by_status" string="Status"
+                        context="{'group_by': 'device_status'}"/>
+                <filter name="group_by_mode" string="Attendance Mode"
+                        context="{'group_by': 'attendance_mode'}"/>
+            </search>
+        </field>
+    </record>
+    
+    <!-- ==================== ACTIONS ==================== -->
+    <record id="action_biometric_device_details" model="ir.actions.act_window">
+        <field name="name">Biometric Devices</field>
+        <field name="res_model">biometric.device.details</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Biometric Device!
+            </p>
+            <p>
+                Add ZKTeco biometric devices to sync attendance data with Odoo.
+                Configure real-time monitoring, LCD messages, and audio feedback.
+            </p>
+        </field>
+    </record>
+    
+    <record id="action_biometric_device_details_list" model="ir.actions.act_window">
+        <field name="name">All Devices</field>
+        <field name="res_model">biometric.device.details</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <record id="action_biometric_device_details_kanban" model="ir.actions.act_window">
+        <field name="name">Device Health Dashboard</field>
+        <field name="res_model">biometric.device.details</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_filter_storage_warning': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No devices configured yet!
+            </p>
+            <p>
+                Add biometric devices to monitor their health, capacity, and status.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ==================== MENUS ==================== -->
+    <menuitem id="menu_biometric_device_root"
+              name="ZKTeco Devices"
+              sequence="20"
+              parent="hr_attendance.menu_hr_attendance_root"
+              groups="hr_attendance.group_hr_attendance_officer"/>
+    
+    <menuitem id="menu_biometric_device_details"
+              name="Devices"
+              sequence="10"
+              parent="menu_biometric_device_root"
+              action="action_biometric_device_details"/>
+    
+<!--    <menuitem id="menu_biometric_device_health_dashboard"-->
+<!--              name="Device Health Dashboard"-->
+<!--              sequence="20"-->
+<!--              parent="menu_biometric_device_root"-->
+<!--              action="action_biometric_device_details_kanban"/>-->
+    
+</odoo>

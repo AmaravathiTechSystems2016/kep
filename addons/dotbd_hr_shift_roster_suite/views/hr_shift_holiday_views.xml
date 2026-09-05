@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_shift_holiday_tree" model="ir.ui.view">
+        <field name="name">hr.shift.holiday.list</field>
+        <field name="model">hr.shift.holiday</field>
+        <field name="arch" type="xml">
+            <list string="Shift Holidays">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="department_id"/>
+                <field name="attendance_category"/>
+                <field name="holiday_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_shift_holiday_form" model="ir.ui.view">
+        <field name="name">hr.shift.holiday.form</field>
+        <field name="model">hr.shift.holiday</field>
+        <field name="arch" type="xml">
+            <form string="Shift Holiday">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Independence Day"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="attendance_category"/>
+                        </group>
+                        <group>
+                            <field name="holiday_type"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_shift_holiday_search" model="ir.ui.view">
+        <field name="name">hr.shift.holiday.search</field>
+        <field name="model">hr.shift.holiday</field>
+        <field name="arch" type="xml">
+            <search string="Shift Holidays">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="department_id"/>
+                <field name="attendance_category"/>
+                <field name="holiday_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Public Holiday" name="public" domain="[('holiday_type', '=', 'public')]"/>
+                <filter string="Festival" name="festival" domain="[('holiday_type', '=', 'festival')]"/>
+                <filter string="Plant Holiday" name="plant" domain="[('holiday_type', '=', 'plant')]"/>
+                <separator string="Group By"/>
+                <group>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'attendance_category'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'holiday_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_shift_holiday" model="ir.actions.act_window">
+        <field name="name">Shift Holidays</field>
+        <field name="res_model">hr.shift.holiday</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_shift_holiday_search"/>
+    </record>
+</odoo>

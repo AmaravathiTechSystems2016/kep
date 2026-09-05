@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- User Group: Basic Employee - View Own Attendance Only -->
+        <record id="group_attendance_employee" model="res.groups">
+            <field name="name">ZK Attendance: Employee</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Employees can view their own attendance records and late check-ins</field>
+        </record>
+
+        <!-- User Group: HR Officer - Manage Attendance -->
+        <record id="group_attendance_officer" model="res.groups">
+            <field name="name">ZK Attendance: Officer</field>
+            <field name="implied_ids" eval="[(4, ref('group_attendance_employee')), (4, ref('hr.group_hr_user'))]"/>
+            <field name="comment">HR Officers can view all attendance, generate reports, but cannot configure devices or approve penalties</field>
+        </record>
+
+        <!-- Manager Group: HR Manager - Full Configuration -->
+        <record id="group_attendance_manager" model="res.groups">
+            <field name="name">ZK Attendance: Manager</field>
+            <field name="implied_ids" eval="[(4, ref('group_attendance_officer')), (4, ref('hr.group_hr_manager'))]"/>
+            <field name="comment">HR Managers have full access: configure devices, manage penalties, approve late check-ins, and access all reports</field>
+        </record>
+
+        <!-- Admin Group: System Administrator -->
+        <record id="group_attendance_admin" model="res.groups">
+            <field name="name">ZK Attendance: Administrator</field>
+            <field name="implied_ids" eval="[(4, ref('group_attendance_manager')), (4, ref('base.group_system'))]"/>
+            <field name="comment">System administrators have unrestricted access to all attendance features and configurations</field>
+        </record>
+
+        <!-- Record Rules for Employees - Own Records Only -->
+        <record id="attendance_record_rule_employee_own" model="ir.rule">
+            <field name="name">Employee: Own Attendance Records</field>
+            <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Late Check-in - Own Records Only -->
+        <record id="late_checkin_record_rule_employee_own" model="ir.rule">
+            <field name="name">Employee: Own Late Check-in Records</field>
+            <field name="model_id" ref="model_late_check_in"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Officers and Managers - All Records -->
+        <record id="attendance_record_rule_manager_all" model="ir.rule">
+            <field name="name">Manager: All Attendance Records</field>
+            <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_officer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Late Check-in - Officers and Managers -->
+        <record id="late_checkin_record_rule_manager_all" model="ir.rule">
+            <field name="name">Manager: All Late Check-in Records</field>
+            <field name="model_id" ref="model_late_check_in"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_officer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Record Rules for Biometric Devices - Manager Access Only -->
+        <record id="biometric_device_record_rule_manager" model="ir.rule">
+            <field name="name">Manager: Biometric Device Configuration</field>
+            <field name="model_id" ref="model_biometric_device_details"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Record Rules for Biometric Devices - Officer Read-Only -->
+        <record id="biometric_device_record_rule_officer" model="ir.rule">
+            <field name="name">Officer: Biometric Device Read-Only</field>
+            <field name="model_id" ref="model_biometric_device_details"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_officer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for ZK Machine Attendance - Employee Own Records -->
+        <record id="zk_machine_attendance_employee_own" model="ir.rule">
+            <field name="name">Employee: Own Machine Attendance</field>
+            <field name="model_id" ref="model_zk_machine_attendance"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for ZK Machine Attendance - Officer Access -->
+        <record id="zk_machine_attendance_officer_all" model="ir.rule">
+            <field name="name">Officer: All Machine Attendance</field>
+            <field name="model_id" ref="model_zk_machine_attendance"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_officer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Attendance Anomaly - Employee Own Records -->
+        <record id="attendance_anomaly_employee_own" model="ir.rule">
+            <field name="name">Employee: Own Attendance Anomalies</field>
+            <field name="model_id" ref="model_attendance_anomaly_analysis"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Attendance Anomaly - Officer Access -->
+        <record id="attendance_anomaly_officer_all" model="ir.rule">
+            <field name="name">Officer: All Attendance Anomalies</field>
+            <field name="model_id" ref="model_attendance_anomaly_analysis"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_officer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Daily Attendance - Employee Own Records -->
+        <record id="daily_attendance_employee_own" model="ir.rule">
+            <field name="name">Employee: Own Daily Attendance</field>
+            <field name="model_id" ref="model_daily_attendance"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Record Rules for Daily Attendance - Officer Access -->
+        <record id="daily_attendance_officer_all" model="ir.rule">
+            <field name="name">Officer: All Daily Attendance</field>
+            <field name="model_id" ref="model_daily_attendance"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_attendance_officer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Multi-Company Rules for Biometric Devices -->
+        <record id="biometric_device_multicompany_rule" model="ir.rule">
+            <field name="name">Multi-Company: Biometric Devices</field>
+            <field name="model_id" ref="model_biometric_device_details"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <!-- Multi-Company Rules for Attendance Records -->
+        <record id="attendance_multicompany_rule" model="ir.rule">
+            <field name="name">Multi-Company: Attendance Records</field>
+            <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+            <field name="domain_force">['|', ('employee_id.company_id', '=', False), ('employee_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <!-- Field-Level Security: Hide sensitive device fields from employees -->
+        <!-- Note: Field-level security for admin_password and device_password fields
+             should be implemented in the Python model definition using groups attribute.
+             Example in biometric_device_details.py:
+             admin_password = fields.Char(groups="dotbd_hr_zk_attendance_suite.group_attendance_manager")
+             device_password = fields.Char(groups="dotbd_hr_zk_attendance_suite.group_attendance_manager")
+        -->
+
+        <!-- Alternative approach using Python code (if needed in future):
+        <function model="ir.model.fields" name="_update_field_groups">
+            <value>biometric.device.details</value>
+            <value>admin_password</value>
+            <value eval="[ref('group_attendance_manager')]"/>
+        </function>
+        -->
+    </data>
+</odoo>

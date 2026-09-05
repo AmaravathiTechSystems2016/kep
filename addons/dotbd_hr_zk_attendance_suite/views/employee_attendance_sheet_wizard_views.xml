@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Employee Attendance Sheet Wizard Form View -->
+    <record id="employee_attendance_sheet_wizard_form" model="ir.ui.view">
+        <field name="name">employee.attendance.sheet.wizard.form</field>
+        <field name="model">employee.attendance.sheet.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Employee Attendance Sheet">
+                <group>
+                    <group>
+                        <field name="month" required="1"/>
+                        <field name="year" required="1"/>
+                    </group>
+                    <group>
+                        <field name="report_format" widget="radio"/>
+                        <field name="sheet_type" widget="radio"/>
+                    </group>
+                </group>
+
+                <group string="Select Employees (Leave empty for all employees)">
+                    <field name="employee_ids" widget="many2many_tags" nolabel="1"
+                           placeholder="Leave empty to include all employees"/>
+                </group>
+
+                <group string="Generated Report" invisible="file_data == False">
+                    <field name="file_data" filename="file_name" invisible="1"/>
+                    <field name="file_name" invisible="1"/>
+                    <div class="alert alert-success" role="alert" style="margin-bottom: 0px;">
+                        <i class="fa fa-check-circle"/> Report generated successfully! Click the button below to download.
+                    </div>
+                </group>
+
+                <footer>
+                    <button name="action_generate_report"
+                            string="Generate Report"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-file-excel-o"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Employee Attendance Sheet Wizard Action -->
+    <record id="employee_attendance_sheet_wizard_action" model="ir.actions.act_window">
+        <field name="name">Employee Attendance Sheet</field>
+        <field name="res_model">employee.attendance.sheet.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_employee_attendance_sheet_wizard"/>
+    </record>
+
+    <!-- Add Menu Item under Attendance -->
+    <menuitem id="employee_attendance_sheet_menu"
+              name="Employee Attendance Sheet"
+              action="employee_attendance_sheet_wizard_action"
+              parent="hr_attendance.menu_hr_attendance_root"
+              groups="hr_attendance.group_hr_attendance_officer"
+              sequence="25"/>
+</odoo>

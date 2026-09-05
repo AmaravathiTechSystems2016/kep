@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_attendance_regularization_user_own" model="ir.rule">
+        <field name="name">Attendance Regularization: own requests only</field>
+        <field name="model_id" ref="model_attendance_regularization_request"/>
+        <field name="domain_force">['|', ('create_uid', '=', user.id), ('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_attendance_regularization_manager_all" model="ir.rule">
+        <field name="name">Attendance Regularization: manager all access</field>
+        <field name="model_id" ref="model_attendance_regularization_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('hr_attendance.group_hr_attendance_manager'))]"/>
+    </record>
+</odoo>

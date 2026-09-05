@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_job_form_inherit_attendance_category" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit.attendance.category</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="attendance_category"/>
+                <field name="vacancy_state"/>
+                <field name="vacancy_reason"/>
+                <field name="replacement_employee_id"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Sourcing Channels">
+                    <field name="sourcing_channel_line_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="channel_type"/>
+                            <field name="primary_source"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_close_vacancy" type="object" string="Close Vacancy" class="btn-primary" invisible="vacancy_state == 'closed'"/>
+                <button name="action_reopen_vacancy" type="object" string="Reopen Vacancy" invisible="vacancy_state == 'open'"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object" name="action_close_vacancy" invisible="vacancy_state == 'closed'">
+                    <field name="vacancy_state" widget="statinfo" string="Vacancy"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_job_filter_inherit_attendance_category" model="ir.ui.view">
+        <field name="name">hr.job.search.inherit.attendance.category</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_job_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="attendance_category"/>
+                <field name="vacancy_state"/>
+            </xpath>
+            <group position="inside">
+                <filter string="Manufacturing Worker" name="group_job_worker" domain="[('attendance_category', '=', 'worker')]"/>
+                <filter string="Office Staff" name="group_job_office" domain="[('attendance_category', '=', 'office')]"/>
+                <filter string="Open Vacancy" name="job_vacancy_open" domain="[('vacancy_state', '=', 'open')]"/>
+                <filter string="Closed Vacancy" name="job_vacancy_closed" domain="[('vacancy_state', '=', 'closed')]"/>
+            </group>
+        </field>
+    </record>
+</odoo>

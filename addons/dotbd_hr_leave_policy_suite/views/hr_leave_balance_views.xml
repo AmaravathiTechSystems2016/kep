@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_attendance_leave_balance" model="ir.actions.act_window">
+        <field name="name">Leave Balances</field>
+        <field name="res_model">attendance.leave.balance</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_attendance_leave_balance_list" model="ir.ui.view">
+        <field name="name">attendance.leave.balance.list</field>
+        <field name="model">attendance.leave.balance</field>
+        <field name="arch" type="xml">
+            <list string="Leave Balances" default_order="balance_year desc, employee_id, leave_type_id">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="company_id"/>
+                <field name="attendance_category"/>
+                <field name="policy_id"/>
+                <field name="policy_line_id"/>
+                <field name="leave_type_id"/>
+                <field name="balance_year" string="Year"/>
+                <field name="opening_balance"/>
+                <field name="accrued_leave"/>
+                <field name="utilized_leave"/>
+                <field name="closing_balance"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_attendance_leave_balance_form" model="ir.ui.view">
+        <field name="name">attendance.leave.balance.form</field>
+        <field name="model">attendance.leave.balance</field>
+        <field name="arch" type="xml">
+            <form string="Leave Balance">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="employee_id"/>
+                            <field name="attendance_category" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="policy_id"/>
+                            <field name="policy_line_id"/>
+                            <field name="leave_type_id"/>
+                            <field name="balance_year" string="Year"/>
+                        </group>
+                    </group>
+                    <group string="Balance Summary">
+                        <group>
+                            <field name="opening_balance"/>
+                            <field name="accrued_leave"/>
+                        </group>
+                        <group>
+                            <field name="utilized_leave"/>
+                            <field name="closing_balance"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_attendance_leave_balance_search" model="ir.ui.view">
+        <field name="name">attendance.leave.balance.search</field>
+        <field name="model">attendance.leave.balance</field>
+        <field name="arch" type="xml">
+            <search string="Search Leave Balances">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="company_id"/>
+                <field name="attendance_category"/>
+                <field name="policy_id"/>
+                <field name="leave_type_id"/>
+                <field name="balance_year" string="Year"/>
+                <separator/>
+                <filter string="Worker" name="worker" domain="[('attendance_category', '=', 'worker')]"/>
+                <filter string="Office" name="office" domain="[('attendance_category', '=', 'office')]"/>
+                <separator/>
+                <filter string="Group by Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                <filter string="Group by Work Category" name="group_category" context="{'group_by': 'attendance_category'}"/>
+                <filter string="Group by Leave Type" name="group_leave_type" context="{'group_by': 'leave_type_id'}"/>
+                <filter string="Group by Year" name="group_year" context="{'group_by': 'balance_year'}"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

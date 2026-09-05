@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_shift_template_tree" model="ir.ui.view">
+        <field name="name">hr.shift.template.list</field>
+        <field name="model">hr.shift.template</field>
+        <field name="arch" type="xml">
+            <list string="Shift Templates">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="applicable_category"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="break_duration" widget="float_time"/>
+                <field name="grace_in_minutes"/>
+                <field name="grace_out_minutes"/>
+                <field name="overtime_allowed"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_shift_template_form" model="ir.ui.view">
+        <field name="name">hr.shift.template.form</field>
+        <field name="model">hr.shift.template</field>
+        <field name="arch" type="xml">
+            <form string="Shift Template">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. General Shift"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="company_id"/>
+                            <field name="applicable_category"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                            <field name="break_duration" widget="float_time"/>
+                            <field name="overtime_allowed"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Grace">
+                            <field name="grace_in_minutes"/>
+                            <field name="grace_out_minutes"/>
+                        </group>
+                        <group string="Weekly Off">
+                            <field name="weekly_off_day_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="note" placeholder="Shift policy notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_shift_template_search" model="ir.ui.view">
+        <field name="name">hr.shift.template.search</field>
+        <field name="model">hr.shift.template</field>
+        <field name="arch" type="xml">
+            <search string="Shift Templates">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="applicable_category"/>
+                <field name="company_id"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Workers" name="worker" domain="[('applicable_category', '=', 'worker')]"/>
+                <filter string="Office" name="office" domain="[('applicable_category', '=', 'office')]"/>
+                <separator string="Group By"/>
+                <group>
+                    <filter string="Category" name="group_category" context="{'group_by': 'applicable_category'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_shift_template" model="ir.actions.act_window">
+        <field name="name">Shift Templates</field>
+        <field name="res_model">hr.shift.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_shift_template_search"/>
+    </record>
+</odoo>

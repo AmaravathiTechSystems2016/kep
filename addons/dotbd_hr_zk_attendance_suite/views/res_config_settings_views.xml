@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Settings View to add Late Check-in Configuration -->
+    <record id="res_config_settings_view_form_inherit_hr_zk" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hr.zk.attendance</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_attendance.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='overtime_settings']" position="after">
+                <block title="Late Check-in" name="late_checkin_penalties_container">
+                    <!-- Enable Late Penalties -->
+                    <setting id="enable_late_penalties_setting"
+                             string="Enable Late Check-in Penalties"
+                             company_dependent="1"
+                             help="Enable automatic tracking and penalty calculation for late check-ins">
+                        <field name="enable_late_penalties"/>
+                    </setting>
+
+                    <!-- All late check-in settings -->
+                    <setting company_dependent="1" invisible="enable_late_penalties == False">
+                        <div class="mt16">
+                            <label for="deduction_amount" class="o_form_label">
+                                Deduction Amount
+                            </label>
+                            <div class="text-muted">
+                                Amount to be deducted from payslip. If 'Per Minute' is chosen, this amount is deducted for each minute late. If 'Per Total' is chosen, this fixed amount is deducted once per late check-in.
+                            </div>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="deduction_amount" class="text-center" style="width: 10ch;"/>
+                            <span class="ms-2">৳</span>
+                            <br/><br/>
+
+                            <label for="deduction_type" class="o_form_label">
+                                Deduction Type
+                            </label>
+                            <field name="deduction_type" widget="radio"/>
+                            <br/><br/>
+
+                            <label for="late_check_in_after" class="o_form_label">
+                                Late Check-in Starts After
+                            </label>
+                            <div class="text-muted">
+                                Grace period before considering check-in as late (tolerance time)
+                            </div>
+                            <span class="me-2">Time Period</span>
+                            <field name="late_check_in_after" class="text-center" style="width: 5ch;"/>
+                            <span class="ms-2">Minutes</span>
+                            <br/><br/>
+
+                            <label for="maximum_minutes" class="o_form_label">
+                                Maximum Late Minute
+                            </label>
+                            <div class="text-muted">
+                                Maximum threshold for recording late check-ins. Beyond this, the attendance may be treated as absence. For example, if set to 100, a 99-minute late check-in will be recorded, but a 101-minute late check-in will not.
+                            </div>
+                            <span class="me-2">Time Period</span>
+                            <field name="maximum_minutes" class="text-center" style="width: 5ch;"/>
+                            <span class="ms-2">Minutes</span>
+                        </div>
+                    </setting>
+                </block>
+                <block title="Weekend Days" name="weekend_days_container">
+                    <setting string="Monday"
+                             help="Mark Monday as a non-working (weekend) day for your company">
+                        <field name="weekend_monday"/>
+                    </setting>
+                    <setting string="Tuesday"
+                             help="Mark Tuesday as a non-working (weekend) day for your company">
+                        <field name="weekend_tuesday"/>
+                    </setting>
+                    <setting string="Wednesday"
+                             help="Mark Wednesday as a non-working (weekend) day for your company">
+                        <field name="weekend_wednesday"/>
+                    </setting>
+                    <setting string="Thursday"
+                             help="Mark Thursday as a non-working (weekend) day for your company">
+                        <field name="weekend_thursday"/>
+                    </setting>
+                    <setting string="Friday"
+                             help="Mark Friday as a non-working (weekend) day for your company">
+                        <field name="weekend_friday"/>
+                    </setting>
+                    <setting string="Saturday"
+                             help="Mark Saturday as a non-working (weekend) day for your company">
+                        <field name="weekend_saturday"/>
+                    </setting>
+                    <setting string="Sunday"
+                             help="Mark Sunday as a non-working (weekend) day for your company">
+                        <field name="weekend_sunday"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

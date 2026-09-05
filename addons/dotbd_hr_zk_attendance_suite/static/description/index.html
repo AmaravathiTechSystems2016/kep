@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZKteco HR Attendance Suite - Complete Biometric Integration</title>
+</head>
+
+<body>
+    <div class="container-fluid p-0">
+        <!-- Header Section -->
+        <div class="bg-white text-dark text-center py-5 border-bottom shadow-sm">
+            <div class="container">
+                <div class="mb-4">
+                    <div class="d-inline-block bg-white rounded p-3 shadow">
+                        <img src="icon.png" alt="Module Icon" style="width: 80px; height: 80px;">
+                    </div>
+                </div>
+                <img src="dotbd_solutions_logo.png" alt="Dot BD Solutions Logo" class="img-fluid mb-3"
+                    style="max-width: 200px;">
+                <h1 class="display-4 font-weight-bold mb-3 text-dark">ZKteco HR Attendance Suite</h1>
+                <p class="lead mb-3 text-secondary">Complete Biometric Integration (Enhanced)</p>
+                <span class="badge border border-dark px-4 py-2 shadow-sm"
+                    style="font-size: 1.1em; background-color: #ffffff !important; color: #000000 !important;">v19.0.7.0.0
+                    - Now with ADMS Cloud
+                    Push Protocol & Hybrid Connection Modes!</span>
+                <div class="mt-3">
+                    <span class="bg-light text-dark px-4 py-2 rounded font-weight-bold border"
+                        style="color: #000000 !important;">EDITION - This is a MAJOR upgrade with enterprise-grade
+                        features!</span>
+                </div>
+                <!-- <div class="mt-4">
+                    <a href="https://youtu.be/wx5P2C8AFA0" target="_blank"
+                        class="btn btn-danger btn-lg shadow rounded-pill"
+                        style="text-decoration: none; font-weight: bold; padding: 10px 30px; background-color: #dc3545; color: white;">
+                        ▶️ Watch Live Demo
+                    </a>
+                    <p class="mt-2 text-secondary" style="font-size: 0.9em;">Or copy link:
+                        <strong>https://youtu.be/wx5P2C8AFA0</strong>
+                    </p>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Feature Overview Hero Image -->
+        <div class="text-center py-4"
+            style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);">
+            <div class="container">
+                <img src="feature_overview.png" alt="ZKTeco Biometric HR Attendance Suite - Feature Overview"
+                    class="img-fluid shadow-lg"
+                    style="max-width: 95%; border-radius: 12px; border: 3px solid rgba(255,255,255,0.15);">
+            </div>
+        </div>
+
+        <!-- Info Bar -->
+        <div class="bg-light py-3 border-bottom border-primary" style="border-width: 3px !important;">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md">
+                        <small class="text-primary font-weight-bold d-block">ODOO VERSION</small>
+                        <strong>19.0</strong>
+                    </div>
+                    <div class="col-md">
+                        <small class="text-primary font-weight-bold d-block">LICENSE</small>
+                        <strong>OPL-1</strong>
+                    </div>
+                    <div class="col-md">
+                        <small class="text-primary font-weight-bold d-block">PLATFORMS</small>
+                        <strong>Odoo.sh / On Premise</strong>
+                    </div>
+                    <div class="col-md">
+                        <small class="text-primary font-weight-bold d-block">SUPPORT</small>
+                        <strong>30 Days Included</strong>
+                    </div>
+                    <div class="col-md">
+                        <small class="text-primary font-weight-bold d-block">DEPENDENCIES</small>
+                        <strong>hr_attendance, hr_holidays</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container py-5">
+            <!-- Introduction -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Transform Your
+                        Attendance Management</span>
+                </h2>
+                <p class="lead text-muted">
+                    The most comprehensive attendance management solution for Odoo 19, featuring seamless ZKteco
+                    biometric
+                    device integration, powerful real-time analytics dashboard, intelligent anomaly detection, and
+                    enterprise-grade reporting capabilities. Perfect for businesses of all sizes looking to automate
+                    attendance tracking and gain valuable workforce insights.
+                </p>
+            </div>
+
+            <!-- ==================== NEW: INTERACTIVE ATTENDANCE DASHBOARD ==================== -->
+            <div class="mb-5">
+                <div class="text-center mb-3">
+                    <span class="badge px-3 py-2 mb-3 d-inline-block"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 0.9em; border-radius: 20px; color: #fff;">
+                        NEW IN THIS VERSION
+                    </span>
+                    <h2 class="fw-bold" style="color: #1c1c2e;">Interactive Attendance Dashboard</h2>
+                    <p class="text-muted lead">A completely new visual command center for your workforce attendance —
+                        real-time, colour-coded, and actionable at a glance.</p>
+                </div>
+
+                <!-- Main dashboard screenshot -->
+                <div class="mb-4 rounded overflow-hidden shadow-lg"
+                    style="border: 2px solid #e9ecef; border-radius: 14px !important;">
+                    <img src="dashboard_main.png" alt="Interactive Attendance Dashboard - Full View"
+                        class="img-fluid w-100">
+                </div>
+
+                <!-- Feature highlights row -->
+                <div class="row g-4 mb-4">
+                    <!-- Holiday Detection -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3" style="font-size: 2em;">🎉</div>
+                                <h5 class="fw-bold" style="color: #92400e;">Smart Holiday Detection</h5>
+                                <p class="text-muted small mb-0">
+                                    The dashboard automatically detects if today is a public holiday and displays
+                                    a prominent banner with the holiday name. It also shows the next 2 upcoming
+                                    holidays so your team is always informed in advance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Live Stat Cards -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3" style="font-size: 2em;">📊</div>
+                                <h5 class="fw-bold" style="color: #15803d;">Today's Live Overview</h5>
+                                <p class="text-muted small mb-0">
+                                    Six real-time stat cards show Total Employees, Present, Absent, On Leave,
+                                    Late Today, and Total Fine — all updated live with department and employee
+                                    filters applied instantly.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Monthly Calendar -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3" style="font-size: 2em;">📅</div>
+                                <h5 class="fw-bold" style="color: #1e40af;">Colour-Coded Monthly Calendar</h5>
+                                <p class="text-muted small mb-0">
+                                    A full monthly grid per employee shows every day as Present (✓), Absent (A),
+                                    Leave with short code (CL, SL, OH…), Weekend (W), or Holiday (H). Late days
+                                    are highlighted in a distinct colour.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Leave Codes -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3" style="font-size: 2em;">🏷️</div>
+                                <h5 class="fw-bold" style="color: #b45309;">Leave Type Short Codes</h5>
+                                <p class="text-muted small mb-0">
+                                    Instead of a plain "L", each leave day shows its exact type code — CL
+                                    (Casual Leave), SL (Sick Leave), OH (Official Holiday), and more. Codes are
+                                    fully customisable from the Leave Type configuration.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Employee Summary Panel -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3" style="font-size: 2em;">👤</div>
+                                <h5 class="fw-bold" style="color: #6d28d9;">Employee Monthly Summary</h5>
+                                <p class="text-muted small mb-0">
+                                    Click any employee row to open a detailed summary panel showing their monthly
+                                    totals: days Present, Absent, on Leave, Weekend, Holiday, and Late — all in
+                                    one compact card with their photo and job title.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Weekend Config -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="mb-3" style="font-size: 2em;">⚙️</div>
+                                <h5 class="fw-bold" style="color: #374151;">Configurable Weekend Days</h5>
+                                <p class="text-muted small mb-0">
+                                    Weekend days are no longer hard-coded. Choose any combination of days
+                                    (e.g. Friday + Saturday for Bangladesh) from Attendance Settings. The
+                                    dashboard, calendar, and reports all respect your configuration.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overview / holiday screenshot -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+                            Holiday Banners &amp; Stat Cards
+                        </h6>
+                        <div class="rounded overflow-hidden shadow-sm border">
+                            <img src="dashboard_overview.png" alt="Holiday Banner and Today's Overview Cards"
+                                class="img-fluid w-100">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+                            Employee Summary Panel
+                        </h6>
+                        <div class="rounded overflow-hidden shadow-sm border">
+                            <img src="dashboard_employee_panel.png" alt="Employee Monthly Summary Panel"
+                                class="img-fluid w-100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar + settings screenshots -->
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+                            Monthly Calendar with Leave Codes (CL / SL / OH…)
+                        </h6>
+                        <div class="rounded overflow-hidden shadow-sm border">
+                            <img src="dashboard_calendar.png" alt="Monthly Attendance Calendar with Leave Type Codes"
+                                class="img-fluid w-100">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+                            Configurable Weekend Days Setting
+                        </h6>
+                        <div class="rounded overflow-hidden shadow-sm border">
+                            <img src="dashboard_weekend_settings.png" alt="Weekend Days Configuration in Attendance Settings"
+                                class="img-fluid w-100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ==================== END NEW DASHBOARD SECTION ==================== -->
+
+            <!-- What's New in This Version - Visual -->
+            <div class="mb-5">
+                <div class="text-center p-4 rounded"
+                    style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 16px !important;">
+                    <img src="whats_new.png" alt="What's New in This Version - Feature Highlights" class="img-fluid"
+                        style="max-width: 100%; border-radius: 10px;">
+                </div>
+            </div>
+
+            <!-- Key Highlights -->
+            <div class="card bg-primary text-white mb-5"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4">Why Choose This Suite?</h3>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🔐</div>
+                                <h5 class="mt-2">100% PyZK Integration</h5>
+                                <small>Direct device communication without third-party APIs</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🤖</div>
+                                <h5 class="mt-2">Auto Mode <span class="badge badge-success">NEW</span></h5>
+                                <small>Intelligent check-in/check-out that prevents HR mistakes</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">📡</div>
+                                <h5 class="mt-2">Live Capture <span class="badge badge-success">NEW</span></h5>
+                                <small>Real-time attendance monitoring as events happen</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">📊</div>
+                                <h5 class="mt-2">Advanced Dashboard</h5>
+                                <small>Interactive Chart.js visualizations & analytics</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🚪</div>
+                                <h5 class="mt-2">Door Control <span class="badge badge-success">NEW</span></h5>
+                                <small>Remote door unlock with configurable duration</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🔊</div>
+                                <h5 class="mt-2">Audio Feedback <span class="badge badge-success">NEW</span></h5>
+                                <small>Custom sounds for check-in, check-out & errors</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">📺</div>
+                                <h5 class="mt-2">LCD Messages <span class="badge badge-success">NEW</span></h5>
+                                <small>Personalized welcome/goodbye on device screen</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🚫</div>
+                                <h5 class="mt-2">Duplicate Prevention</h5>
+                                <small>Ignore repeated punches within time window</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🔄</div>
+                                <h5 class="mt-2">Auto Time Sync <span class="badge badge-success">NEW</span></h5>
+                                <small>Device clock auto-corrected before every download</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="bg-white bg-opacity-25 p-3 rounded text-center h-100"
+                                style="background: rgba(255,255,255,0.15) !important;">
+                                <div style="font-size: 2.5em;">🛡️</div>
+                                <h5 class="mt-2 text-danger">Robust Error Logs <span
+                                        class="badge badge-danger">NEW</span></h5>
+                                <small>Pinpoint EXACTLY why a punch failed (Savepoints active!)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Modes Guide -->
+            <div class="mb-5">
+                <div class="card border-0 shadow-lg"
+                    style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="card-body p-4 text-dark">
+                        <h2 class="card-title text-dark mb-3 fw-bold">Three Powerful Connection Modes</h2>
+                        <p class="lead mb-4 text-dark">Choose the perfect connection strategy for your deployment
+                            architecture.
+                        </p>
+
+                        <!-- Connection Modes Infographic -->
+                        <div class="text-center mb-4">
+                            <img src="connection_modes.png"
+                                alt="Three Powerful Connection Modes - Direct, Cloud & Hybrid" class="img-fluid"
+                                style="max-width: 100%; border-radius: 10px; border: 2px solid rgba(255,255,255,0.2);">
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card h-100 text-dark">
+                                    <div class="card-body">
+                                        <h4 class="card-title text-primary"><i class="fa fa-ethernet"></i> Direct Mode
+                                            (PyZK)</h4>
+                                        <p class="mb-3">Best for local networks or VPN connections where Odoo can
+                                            directly reach the device IP.</p>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="fa fa-check text-success"></i> 100% hardware control</li>
+                                            <li><i class="fa fa-check text-success"></i> Real-time Live Capture</li>
+                                            <li><i class="fa fa-check text-success"></i> LCD & Voice messages</li>
+                                            <li><i class="fa fa-check text-success"></i> Door access control</li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 mt-auto">
+                                        <img src="device_direct_mode.png" alt="Direct Connection (PyZK)"
+                                            class="img-fluid rounded border shadow-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card h-100 text-dark">
+                                    <div class="card-body">
+                                        <h4 class="card-title text-success"><i class="fa fa-cloud"></i> Cloud Mode
+                                            (ADMS)</h4>
+                                        <p class="mb-3">Best for SaaS/Cloud Odoo instances. The device pushes data to
+                                            Odoo over HTTP(S). No port forwarding needed!</p>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="fa fa-check text-success"></i> Perfect for remote sites</li>
+                                            <li><i class="fa fa-check text-success"></i> Bypass firewalls easily</li>
+                                            <li><i class="fa fa-check text-success"></i> Auto-registers devices</li>
+                                            <li><i class="fa fa-check text-success"></i> Remote Fingerprint Enrollment
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 mt-auto">
+                                        <img src="device_adms_mode.png" alt="Cloud Connection (ADMS)"
+                                            class="img-fluid rounded border shadow-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card h-100 border-3 border-warning text-dark">
+                                    <div class="card-body">
+                                        <h4 class="card-title text-warning text-dark"><i class="fa fa-random"></i>
+                                            Hybrid Mode</h4>
+                                        <p class="mb-3">The ultimate flexibilty. Uses ADMS for reliable attendance push,
+                                            and PyZK for deep hardware control.</p>
+                                        <ul class="list-unstyled small">
+                                            <li><i class="fa fa-star text-warning"></i> <strong>Our Unique
+                                                    Offering!</strong></li>
+                                            <li><i class="fa fa-check text-success"></i> Best of both worlds</li>
+                                            <li><i class="fa fa-check text-success"></i> Automatic attendance sync</li>
+                                            <li><i class="fa fa-check text-success"></i> Full hardware capabilities</li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 mt-auto">
+                                        <img src="device_settings_bottom.png" alt="Advanced Device Settings"
+                                            class="img-fluid rounded border shadow-sm mt-2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ATTENDANCE MODES ==================== -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Four Intelligent
+                        Attendance Modes</span>
+                </h2>
+                <p class="lead text-muted mb-4">Choose how your module processes each punch. Configurable per device —
+                    mix and match across your organization.</p>
+
+                <!-- Attendance Modes Infographic -->
+                <div class="text-center mb-4">
+                    <div class="p-3 rounded"
+                        style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px !important;">
+                        <img src="attendance_modes.png"
+                            alt="Four Intelligent Attendance Modes - Traditional, Auto, Auto Per Day, Traditional Per Day"
+                            class="img-fluid" style="max-width: 100%; border-radius: 10px;">
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Traditional Mode -->
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-primary"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <div style="font-size: 2em;" class="mb-2">📋</div>
+                                <h5 class="card-title text-primary">Traditional Mode</h5>
+                                <p class="text-muted small">Uses the device's punch type directly.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-1">✅ Punch type 0 = Check-in</li>
+                                    <li class="mb-1">✅ Punch type 1 = Check-out</li>
+                                    <li class="mb-1">⚠️ Device must be configured correctly</li>
+                                    <li class="mb-1">📝 Multiple records per day possible</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-light text-center small text-muted">
+                                Best for: Devices with separate in/out buttons
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto Mode -->
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-success"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <div style="font-size: 2em;" class="mb-2">🤖</div>
+                                <h5 class="card-title text-success">Auto Mode</h5>
+                                <p class="text-muted small">Ignores device punch type. Auto-alternates.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-1">✅ 1st punch → Check-in</li>
+                                    <li class="mb-1">✅ 2nd punch → Check-out</li>
+                                    <li class="mb-1">✅ 3rd punch → Check-in again</li>
+                                    <li class="mb-1">🛡️ Prevents HR mistakes</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-light text-center small text-muted">
+                                Best for: Simple single-button devices
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto Per Day Mode -->
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-warning"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <div style="font-size: 2em;" class="mb-2">📅</div>
+                                <h5 class="card-title text-warning" style="color: #e67e22 !important;">Auto Per Day
+                                    <span class="badge bg-danger text-white" style="font-size: 0.6em;">NEW</span>
+                                </h5>
+                                <p class="text-muted small">One attendance record per employee per day.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-1">✅ First punch of day = Check-in</li>
+                                    <li class="mb-1">✅ Last punch of day = Check-out</li>
+                                    <li class="mb-1">✅ Middle punches update check-out</li>
+                                    <li class="mb-1">🔄 Auto-closes missed check-outs</li>
+                                </ul>
+                                <div class="bg-light rounded p-2 mt-2 small">
+                                    <strong>Example:</strong><br>
+                                    08:55 → Check-in<br>
+                                    12:00 → Check-out updated<br>
+                                    13:00 → Check-out updated<br>
+                                    17:30 → <strong>Final check-out</strong>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light text-center small text-muted">
+                                <strong>Best for: Most common use case</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Traditional Per Day Mode -->
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm border-top"
+                            style="border-top-width: 4px !important; border-top-color: #6f42c1 !important;">
+                            <div class="card-body">
+                                <div style="font-size: 2em;" class="mb-2">🔒</div>
+                                <h5 class="card-title" style="color: #6f42c1;">Traditional Per Day <span
+                                        class="badge bg-danger text-white" style="font-size: 0.6em;">NEW</span></h5>
+                                <p class="text-muted small">Device punch type respected, but max one in/out per day.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-1">✅ Only first check-in counts</li>
+                                    <li class="mb-1">✅ Only first check-out counts</li>
+                                    <li class="mb-1">🚫 Duplicate punches ignored</li>
+                                    <li class="mb-1">🔄 Auto-closes missed check-outs</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-light text-center small text-muted">
+                                Best for: Strict one-in/one-out policies
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edge Case Handling -->
+                <div class="card bg-light border-0 shadow-sm mt-3">
+                    <div class="card-body p-4">
+                        <h5 class="text-dark mb-3">🛡️ Smart Edge Case Handling (Per-Day Modes)</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-danger text-white mr-3 p-2" style="min-width: 40px;">❌</span>
+                                    <div>
+                                        <strong>Employee forgot to check out yesterday</strong>
+                                        <p class="text-muted small mb-0">Module auto-closes yesterday's record at
+                                            <strong>23:59:59</strong>, then creates today's new check-in normally.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-warning text-dark mr-3 p-2" style="min-width: 40px;">🔁</span>
+                                    <div>
+                                        <strong>Multiple punches throughout the day</strong>
+                                        <p class="text-muted small mb-0">In Auto Per Day, every punch after the first
+                                            updates the check-out. The last punch always wins.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-info text-white mr-3 p-2" style="min-width: 40px;">🕐</span>
+                                    <div>
+                                        <strong>Timezone-aware day boundaries</strong>
+                                        <p class="text-muted small mb-0">Uses the device's configured timezone to
+                                            determine
+                                            "today" — so midnight is always correct for your location.</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-success text-white mr-3 p-2" style="min-width: 40px;">✅</span>
+                                    <div>
+                                        <strong>Works with all connection modes</strong>
+                                        <p class="text-muted small mb-0">PyZK Download, Live Capture, and ADMS Cloud
+                                            Push
+                                            all support all four attendance modes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ROBUST ERROR LOGGING ==================== -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #dc3545; padding-left: 15px;">🛡️ Robust Error
+                        Logging & Transaction Protection</span>
+                </h2>
+                <p class="lead text-muted mb-4">Enterprise-grade resilience. Every failed punch is logged with the
+                    exact reason — your bulk downloads <strong>never</strong> crash midway through.</p>
+
+                <div class="row g-4">
+                    <!-- Savepoint Protection -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-danger"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <div style="font-size: 2em;" class="mb-2">🔒</div>
+                                <h5 class="card-title text-danger">Database Savepoint Protection</h5>
+                                <p class="text-muted small">Each attendance record is processed inside an isolated
+                                    database savepoint. If one record fails (overlap, invalid timestamp, missing
+                                    employee), only that record is rolled back — the rest continue processing
+                                    normally.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-1">✅ Downloads 10,000+ records without crashing</li>
+                                    <li class="mb-1">✅ Bad records are skipped, not fatal</li>
+                                    <li class="mb-1">✅ Works for both PyZK & ADMS modes</li>
+                                    <li class="mb-1">✅ Cron jobs complete even with errors</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Common Failure Reasons -->
+                <div class="card bg-light border-0 shadow-sm mt-3">
+                    <div class="card-body p-4">
+                        <h5 class="text-dark mb-3">⚠️ Common Reasons a Punch May Fail (All Auto-Logged)</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-danger text-white mr-3 p-2" style="min-width: 40px;">🔀</span>
+                                    <div>
+                                        <strong>Overlapping Attendance</strong>
+                                        <p class="text-muted small mb-0">Employee already has an active shift covering
+                                            the punch timestamp. Odoo rejects duplicate overlap.</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-warning text-dark mr-3 p-2" style="min-width: 40px;">⏰</span>
+                                    <div>
+                                        <strong>Invalid Timestamp</strong>
+                                        <p class="text-muted small mb-0">Device sent a corrupted or impossible date
+                                            (e.g. Jan 1, 1970 after a power reset).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-info text-white mr-3 p-2" style="min-width: 40px;">👤</span>
+                                    <div>
+                                        <strong>Deleted Employee</strong>
+                                        <p class="text-muted small mb-0">Employee was removed from Odoo but still
+                                            punches on the biometric device.</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start mb-3">
+                                    <span class="badge bg-secondary text-white mr-3 p-2"
+                                        style="min-width: 40px;">🔗</span>
+                                    <div>
+                                        <strong>Unmapped Device User</strong>
+                                        <p class="text-muted small mb-0">Device user ID not linked to any Odoo
+                                            employee. Logged as a warning for admin review.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== SETUP INSTRUCTIONS ==================== -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Quick Setup
+                        Guide</span>
+                </h2>
+                <p class="lead text-muted mb-4">Get your ZKTeco devices connected in minutes. Choose the method that
+                    matches your network.</p>
+
+                <div class="row g-4">
+                    <!-- PyZK Setup -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-header bg-primary text-white py-3">
+                                <h4 class="mb-0">🔌 Direct Mode (PyZK) Setup</h4>
+                                <small>For local network / VPN deployments</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3 p-3 bg-light rounded">
+                                    <strong class="text-danger">⚠️ Requirement:</strong> Odoo server must be able
+                                    to reach the device IP on port 4370 (UDP).
+                                </div>
+                                <ol class="mb-0">
+                                    <li class="mb-3">
+                                        <strong>Install the PyZK library</strong> on your Odoo server:
+                                        <pre class="bg-dark text-success p-2 rounded mt-1 small">pip3 install pyzk</pre>
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Find the device IP</strong>: On the device menu, go to
+                                        <em>COMM → Ethernet → IP Address</em>.
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>In Odoo</strong>, go to <em>Attendances → ZK Devices → Create</em>.
+                                    </li>
+                                    <li class="mb-3">
+                                        Fill in:
+                                        <ul>
+                                            <li><strong>Name</strong>: e.g. "Main Entrance"</li>
+                                            <li><strong>IP Address</strong>: The device IP (e.g. 192.168.1.201)</li>
+                                            <li><strong>Port</strong>: 4370 (default)</li>
+                                            <li><strong>Connection Mode</strong>: Direct (PyZK)</li>
+                                            <li><strong>Attendance Mode</strong>: Choose your preferred mode</li>
+                                        </ul>
+                                    </li>
+                                    <li class="mb-3">
+                                        Click <strong>"Test Connection"</strong>. If successful ✅, you're ready!
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Map employees</strong>: Set each employee's <em>ZK Device User ID</em>
+                                        in their HR profile (must match the ID on the device).
+                                    </li>
+                                    <li class="mb-3">
+                                        Click <strong>"Download Attendance"</strong> to fetch records, or enable the
+                                        <strong>Scheduled Action</strong> for automatic downloads.
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADMS Setup -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-header bg-success text-white py-3">
+                                <h4 class="mb-0">☁️ Cloud Mode (ADMS) Setup</h4>
+                                <small>For Odoo.sh, cloud hosting, or remote sites</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3 p-3 bg-light rounded">
+                                    <strong class="text-success">✅ No port forwarding needed!</strong> The device
+                                    initiates the connection to your Odoo URL.
+                                </div>
+                                <ol class="mb-0">
+                                    <li class="mb-3">
+                                        <strong>Ensure your Odoo is accessible</strong> via a public URL
+                                        (e.g. <code>https://mycompany.odoo.com</code>).
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>On the ZKTeco device</strong>, go to <em>COMM → Cloud Server
+                                            Setting</em>:
+                                        <ul>
+                                            <li><strong>Enable</strong>: Yes</li>
+                                            <li><strong>Server Address</strong>: your-odoo-domain.com</li>
+                                            <li><strong>Server Port</strong>: 443 (HTTPS) or 80 (HTTP)</li>
+                                        </ul>
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Restart the device</strong>. It will automatically connect to Odoo
+                                        and register itself.
+                                    </li>
+                                    <li class="mb-3">
+                                        In Odoo, go to <em>Attendances → ZK Devices</em>. You'll see the device
+                                        auto-created with its serial number.
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Configure</strong> the device record:
+                                        <ul>
+                                            <li><strong>Connection Mode</strong>: Cloud (ADMS) or Hybrid</li>
+                                            <li><strong>Attendance Mode</strong>: Choose your preferred mode</li>
+                                        </ul>
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Map employees</strong>: Set each employee's <em>ZK Device User ID</em>
+                                        to match the device.
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Done!</strong> 🎉 Attendance is pushed automatically in real-time
+                                        whenever an employee punches.
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hybrid Note -->
+                <div class="card border-warning shadow-sm mt-3" style="border-width: 2px !important;">
+                    <div class="card-body p-3">
+                        <h5 class="text-dark mb-2">⚡ Hybrid Mode — Best of Both Worlds</h5>
+                        <p class="mb-0 text-muted">Want automatic attendance push (ADMS) <strong>plus</strong> hardware
+                            control like LCD messages, voice feedback, and door unlock (PyZK)? Set
+                            <strong>Connection Mode = Hybrid</strong>. The device pushes data via ADMS, while Odoo uses
+                            PyZK for hardware features. Requires both network paths to be available.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting & Employee Mapping -->
+                <div class="card border-danger shadow-sm mt-4" style="border-width: 2px !important;">
+                    <div class="card-header bg-danger text-white py-3">
+                        <h4 class="mb-0">🔧 Troubleshooting & Common Issues</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-4">
+                                    <span class="badge bg-danger text-white mr-3 p-2"
+                                        style="min-width: 40px; font-size: 1.2em;">❌</span>
+                                    <div>
+                                        <strong class="text-danger">"ATTLOG: 1 failed" / Employee Not Found</strong>
+                                        <p class="text-muted small mb-2">This happens when the device sends a punch for
+                                            a user ID
+                                            that is not linked to any employee in Odoo.</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <strong>✅ Solution:</strong>
+                                            <ol class="small mb-0 mt-1">
+                                                <li>Go to <strong>HR → Employees</strong> in Odoo</li>
+                                                <li>Open or create the employee record</li>
+                                                <li>Set the <strong>"Device ID Number"</strong> field to match the user
+                                                    ID on the biometric device</li>
+                                                <li>Save. Next punch will be processed automatically!</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-start mb-4">
+                                    <span class="badge bg-warning text-dark mr-3 p-2"
+                                        style="min-width: 40px; font-size: 1.2em;">⚠️</span>
+                                    <div>
+                                        <strong class="text-warning">ADMS Device Not Appearing in Odoo</strong>
+                                        <p class="text-muted small mb-2">The device connects but doesn't show in the
+                                            device list.</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <strong>✅ Solution:</strong>
+                                            <ol class="small mb-0 mt-1">
+                                                <li>First create the device in Odoo with <strong>Connection Mode = Cloud
+                                                        (ADMS)</strong></li>
+                                                <li>Set the <strong>Device Serial Number</strong> to match the device's
+                                                    serial (shown on device menu)</li>
+                                                <li>Restart the device — it will auto-match on next heartbeat</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-4">
+                                    <span class="badge bg-info text-white mr-3 p-2"
+                                        style="min-width: 40px; font-size: 1.2em;">💡</span>
+                                    <div>
+                                        <strong class="text-info">How to Find Device User ID</strong>
+                                        <p class="text-muted small mb-2">Each user enrolled on the biometric device has
+                                            a unique ID number.</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <strong>Finding the ID:</strong>
+                                            <ul class="small mb-0 mt-1">
+                                                <li><strong>On Device:</strong> Menu → User Mgt → All Users → select
+                                                    user → see ID</li>
+                                                <li><strong>In Odoo Log:</strong> Check the server log for the error
+                                                    message — it shows the exact Device ID Number to use</li>
+                                                <li><strong>Example log:</strong>
+                                                    <code>No employee found with Device ID Number '6666'</code> → Set
+                                                    employee's Device ID = 6666
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-start mb-4">
+                                    <span class="badge bg-secondary text-white mr-3 p-2"
+                                        style="min-width: 40px; font-size: 1.2em;">🔄</span>
+                                    <div>
+                                        <strong>ADMS Auto Time Sync</strong>
+                                        <p class="text-muted small mb-2">In ADMS mode, the device clock is automatically
+                                            synced from the server on every heartbeat.</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <strong>⚠️ Important:</strong>
+                                            <ul class="small mb-0 mt-1">
+                                                <li><strong>Device time = Server Time.</strong> If you
+                                                    manually change time on the device, it will revert within seconds.
+                                                </li>
+                                                <li>To change your device time, you must change your <strong>server
+                                                        time</strong>.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Mapping Guide -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #17a2b8; padding-left: 15px;">👥 Employee Mapping
+                        Guide</span>
+                </h2>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 bg-light rounded">
+                        <p class="mb-3 text-muted">Properly mapping employees is crucial for a smooth experience and to
+                            avoid duplicate records.</p>
+
+                        <h5 class="text-dark mb-2">✅ Recommended Workflow:</h5>
+                        <ol class="mb-4">
+                            <li class="mb-1"><strong>Create Employee</strong> in the Odoo HR module first.</li>
+                            <li class="mb-1"><strong>Set ZK Device User ID</strong> in the employee's Biometric settings
+                                tab.</li>
+                            <li class="mb-1"><strong>Connect the Device</strong> to Odoo.</li>
+                            <li class="mb-1"><strong>Download Attendance:</strong> Now, attendance records will sync
+                                perfectly without duplicates!</li>
+                        </ol>
+
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <h6 class="text-primary">🔌 For PyZK Mode</h6>
+                                <p class="small text-muted mb-0">If your Odoo database has no employees yet but the
+                                    device contains all employee records, you can download users directly from the
+                                    device to auto-create them in Odoo.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-success">☁️ For ADMS Mode</h6>
+                                <p class="small text-muted mb-0">ADMS cannot download users from the device. You
+                                    <strong>MUST</strong> create the employees in Odoo and map their Device IDs before
+                                    downloading attendance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fingerprint Enrollment Guide -->
+            <div class="mb-5">
+                <h2 class="text-success border-bottom border-success pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #28a745; padding-left: 15px;">Remote Fingerprint
+                        Enrollment (ADMS)</span>
+                </h2>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <p class="lead">Enroll employee fingerprints directly from Odoo without touching the device
+                            menu!</p>
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <ol class="fs-5 mb-0">
+                                    <li class="mb-3">Go to the <strong>Employee Profile</strong> and set their <em>ZK
+                                            Device User ID</em>.</li>
+                                    <li class="mb-3">Go to the device form and click <strong>Sync Users (ADMS)</strong>.
+                                    </li>
+                                    <li class="mb-3">Back on the Employee profile, click <strong>Enroll Fingerprint
+                                            (ADMS)</strong>.</li>
+                                    <li class="mb-3">Select the finger index and click Enroll.</li>
+                                    <li class="mb-3 text-success"><strong>The device screen will ask the employee to
+                                            place their finger 3 times. The template is saved to Odoo
+                                            automatically!</strong></li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6 text-center bg-light p-4 rounded">
+                                <img src="employee_biometric_tab.png" alt="Employee Biometric Data"
+                                    class="img-fluid rounded shadow mb-3">
+                                <img src="enroll_fingerprint_wizard.png" alt="Fingerprint Enrollment"
+                                    class="img-fluid rounded shadow" style="border: 2px solid #ddd;">
+                                <p class="text-muted mt-3 small"><em>Everything is managed centrally from Odoo. Command
+                                        is queued instantly.</em></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Features -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Core Features</span>
+                </h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🔐 Advanced Biometric Integration</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Multi-device support (uFace 202, 800, K40, ZK4500)</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Face &
+                                        fingerprint recognition</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Auto Check-in/Check-out Mode</strong> - Prevents HR mistakes
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Duplicate Punch Prevention</strong> - Configurable window
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Traditional Mode for backward compatibility</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Automatic
+                                        sync with configurable intervals</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Centralized device management</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Auto
+                                        employee mapping</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">📊 Real-time Analytics Dashboard</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Interactive Chart.js visualizations</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Smart
+                                        date filters (Today/Week/Month/Year)</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Live
+                                        attendance metrics & KPIs</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Instant
+                                        anomaly alerts</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Department analytics</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Export
+                                        capabilities</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Employee
+                                        time-off tracking</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Manual
+                                        attendance monitoring</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🔍 Intelligent Anomaly Detection</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Missing
+                                        check-in/out detection</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Duplicate
+                                        punch identification</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Attendance violation tracking</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Automated
+                                        categorization</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Compliance reporting</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Issue
+                                        resolution workflow</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Invalid
+                                        time entry detection</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Audit
+                                        trail support</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">⏰ Late Check-in Management</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Configurable grace periods</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Automatic
+                                        penalty calculation</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> 4-state
+                                        approval workflow</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Payroll
+                                        integration</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Late
+                                        analytics dashboard</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Email
+                                        notifications</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Penalty
+                                        waiver system</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Department-wise tracking</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">📅 Professional Attendance Sheets</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Calendar-style monthly layout</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Color-coded status indicators</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> PDF &
+                                        Excel export</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Individual or combined reports</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Rich
+                                        statistics & rankings</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Leave &
+                                        holiday integration</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Work
+                                        hours calculation</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Attendance rate tracking</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">📈 Comprehensive Reporting</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Summary &
+                                        detailed reports</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Late
+                                        check-in penalty reports</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Anomaly
+                                        compliance reports</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Professional Excel export</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Print-ready PDF generation</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Custom
+                                        date range filtering</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Department analytics</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Employee
+                                        performance metrics</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compatible Devices -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Compatible ZKTeco
+                        Devices by Connection Mode</span>
+                </h2>
+
+                <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                    <div style="font-size: 1.5rem; margin-right: 1rem;">✅</div>
+                    <div>
+                        <strong>Key Compatibility Rule:</strong> If your device supports TCP/IP network connection (Port
+                        4370 usually), it supports Direct (PyZK) mode. If it has the ADMS firmware feature, it supports
+                        Cloud mode.
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- PyZK / Direct Method -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-primary"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary mb-3"><i class="fa fa-ethernet"></i> PyZK / Direct
+                                    Method Supported</h5>
+                                <p class="small text-muted mb-3">Almost all ZKTeco network devices support Direct PyZK.
+                                </p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-2"><strong>F Series:</strong> F18, F16, F19</li>
+                                    <li class="mb-2"><strong>K Series:</strong> K14, K20, K28, K30, K40, K50, K60</li>
+                                    <li class="mb-2"><strong>uFace Series:</strong> uFace 202, uFace 402, uFace 800,
+                                        uFace 302</li>
+                                    <li class="mb-2"><strong>iClock Series:</strong> iClock260, iClock360, iClock560,
+                                        iClock680, iClock700, iClock880, iClock990</li>
+                                    <li class="mb-2"><strong>MA Series:</strong> MA300, MA500</li>
+                                    <li class="mb-2"><strong>MB Series:</strong> MB10, MB10VL, MB160, MB200, MB360,
+                                        MB460, MB560, MB860</li>
+                                    <li class="mb-2"><strong>Card Terminals:</strong> SC405, SC700</li>
+                                    <li class="mb-2"><strong>Standalone:</strong> SilkFP-101TA, MultiBio 700</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADMS / Cloud Method -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-success"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-success mb-3"><i class="fa fa-cloud"></i> ADMS / Cloud Method
+                                    Supported</h5>
+                                <p class="small text-muted mb-3">Requires firmware with ADMS activated.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-2"><strong>SpeedFace Series:</strong> SpeedFace-V5L, SpeedFace-H5,
+                                        SpeedFace-M4</li>
+                                    <li class="mb-2"><strong>ProFace Series:</strong> ProFace X, ProFace Plus</li>
+                                    <li class="mb-2"><strong>Green Label / G Series:</strong> G1, G2, G3, G4</li>
+                                    <li class="mb-2"><strong>IN Series:</strong> in01-A, IN05</li>
+                                    <li class="mb-2"><strong>SilkID:</strong> Silk104</li>
+                                    <li class="mb-2"><strong>Biometrics Models:</strong> uFace800 Plus, F22, K40 Pro (if
+                                        ADMS enabled)</li>
+                                    <li class="mb-2"><strong>Access Panels:</strong> inBio160, inBio260, inBio460</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hybrid Method -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-top border-warning"
+                            style="border-top-width: 4px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-warning text-dark mb-3"><i class="fa fa-random"></i> Hybrid
+                                    Method Supported</h5>
+                                <p class="small text-muted mb-3">Devices that support BOTH PyZK and ADMS.</p>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-2"><strong>Highest Compatibility:</strong></li>
+                                    <li class="mb-2"><strong>uFace 800 Plus:</strong> Incredible hardware allowing
+                                        real-time TCP/IP alongside ADMS.</li>
+                                    <li class="mb-2"><strong>SpeedFace V5L:</strong> Modern Visible Light facial tech.
+                                    </li>
+                                    <li class="mb-2"><strong>F22:</strong> Ultra-thin fingerprint terminal.</li>
+                                    <li class="mb-2"><strong>G3/G4:</strong> Multi-biometric identification.</li>
+                                    <li class="mb-2"><strong>Any ADMS Device on local LAN:</strong> Any device from the
+                                        ADMS list that is also accessible locally (no NAT/firewall blocking) can use
+                                        Hybrid Mode!</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connection Requirements -->
+                <div class="card mt-2 bg-light border-0">
+                    <div class="card-body">
+                        <h5 class="card-title h6 font-weight-bold mb-3">🔌 Connection Requirements</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled small mb-0">
+                                    <li class="mb-2"><span class="text-success mr-2">✓</span> Device must support
+                                        <strong>TCP/IP connection</strong>
+                                    </li>
+                                    <li class="mb-2"><span class="text-success mr-2">✓</span> Device must use
+                                        <strong>Standalone
+                                            SDK Protocol</strong>
+                                    </li>
+                                    <li class="mb-2"><span class="text-success mr-2">✓</span> Device firmware should be
+                                        <strong>up-to-date</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <strong class="d-block mb-2">Network connectivity via:</strong>
+                                <ul class="list-unstyled small mb-0">
+                                    <li class="mb-2"><span class="text-success mr-2">✓</span> <strong>LAN:</strong>
+                                        (same network)</li>
+                                    <li class="mb-2"><span class="text-success mr-2">✓</span> <strong>VPN:</strong>
+                                        (Site-to-Site for cloud server)</li>
+                                    <li class="mb-2"><span class="text-success mr-2">✓</span> <strong>Port
+                                            Forwarding:</strong> (with static IP)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screenshots - Getting Started -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Getting Started
+                        Guide</span>
+                </h2>
+
+                <!-- Step 1 -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">1. Configure Your ZKteco Device</h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img.png" alt="Initial Attendance Module"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Access the Attendance module from the
+                                        main menu</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_2.png" alt="Biometric Device Menu"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Navigate to Biometric Devices section
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_3.png" alt="Add New Device"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Click "New" to add a new device</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_4.png" alt="Device Configuration"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Enter device IP, port, and password</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_5.png" alt="Device Test Success"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Test connection to verify setup</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 - New Device Management -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">2. Advanced Device Management <span
+                                class="badge badge-success">NEW</span></h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-30-01.png"
+                                        alt="Device Configuration" class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Configuration Tab:</strong> Connection
+                                        details, attendance modes (Auto/Traditional), duplicate prevention settings, and
+                                        location information</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-30-20.png"
+                                        alt="Capacity & Health" class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Capacity & Health:</strong> Monitor user
+                                        capacity, fingerprint enrollment, face templates, and attendance record storage
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-30-34.png" alt="Live Monitoring"
+                                        class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Live Monitoring:</strong> Real-time
+                                        attendance capture settings with instant notifications and event statistics</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-31-10.png" alt="Messages & Audio"
+                                        class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Messages & Audio:</strong> LCD message
+                                        customization, welcome/goodbye messages, and audio feedback with 55+ voice
+                                        options</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-31-31.png" alt="Door Control"
+                                        class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Door Control:</strong> Remote door unlock,
+                                        lock status monitoring, and configurable unlock duration with security warnings
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-32-06.png" alt="Users Management"
+                                        class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Users Tab:</strong> Sync employees to
+                                        device, backup biometric templates, verify employee data, and automatic
+                                        enrollment</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-32-56.png" alt="Status Bar"
+                                        class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Status Bar:</strong> Quick overview of
+                                        device status, attendance records count, enrolled users, and backup templates
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">3. Attendance Overview & Working Schedules</h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_6.png" alt="Attendance Overview"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">View real-time attendance records and
+                                        monitoring</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_7.png" alt="Working Schedule Setup"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Configure working schedules for
+                                        employees</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_8.png" alt="Employee Schedule Assignment"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Assign schedules and link ZK User IDs
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">4. Attendance Settings & Rules</h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_9.png" alt="Attendance Settings"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Configure tolerance time and validation
+                                        rules</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_10.png" alt="Late Check-in Settings"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Setup late check-in penalties and grace
+                                        periods</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_11.png" alt="Schedule Actions"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Configure automated cron jobs and
+                                        actions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">5. Analytics Dashboard</h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_12.png" alt="Attendance Analytics"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Interactive charts and real-time KPIs
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_13.png" alt="Attendance Reports"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Comprehensive attendance statistics</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_14.png" alt="Attendance Statistics"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Department-wise attendance analysis</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/Screenshot from 2025-11-12 12-38-55.png"
+                                        alt="Dashboard Features" class="img-fluid rounded border">
+                                    <p class="text-center mt-2 mb-0"><strong>Employee Time Off & Manual
+                                            Entries:</strong> Track leave dates, monitor manual attendance with missing
+                                        check-out alerts</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5b - Attendance Dashboard -->
+                <div class="card mb-4 border-0 shadow-sm"
+                    style="background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);">
+                    <div class="card-body p-4">
+                        <h4 class="mb-1" style="color: #5b21b6;">
+                            5b. Attendance Dashboard — See Everything at a Glance
+                        </h4>
+                        <p class="text-muted mb-4">
+                            A live, interactive attendance view built right into your Odoo. No reports to run —
+                            just open the dashboard and instantly know who is in the office, who is late, who is
+                            absent, and who is on leave — all in one screen.
+                        </p>
+
+                        <!-- Main screenshot -->
+                        <div class="bg-white p-3 rounded shadow-sm mb-4">
+                            <img src="screenshot/attendance_dashboard_overview.png"
+                                 alt="Attendance Dashboard Overview"
+                                 class="img-fluid rounded border"
+                                 style="width: 100%;">
+                            <p class="text-center mt-2 mb-0 text-muted">
+                                The full Attendance Dashboard — today's numbers, monthly calendar, filters, and
+                                employee details all in one place
+                            </p>
+                        </div>
+
+                        <!-- Feature highlights -->
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+                                <div class="bg-white p-3 rounded shadow-sm h-100">
+                                    <div style="font-size: 1.8em;">📊</div>
+                                    <h5 class="mt-2" style="color: #5b21b6;">Today's Overview Cards</h5>
+                                    <p class="text-muted mb-0">
+                                        At the very top, four cards instantly show you how many employees are
+                                        <strong>total</strong>, how many are <strong>present</strong>,
+                                        <strong>absent</strong>, and <strong>on leave</strong> — right now, today.
+                                        When late penalties are enabled, two extra cards appear showing today's
+                                        <strong>late count</strong> and <strong>total fine amount</strong>.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="bg-white p-3 rounded shadow-sm h-100">
+                                    <div style="font-size: 1.8em;">🔍</div>
+                                    <h5 class="mt-2" style="color: #5b21b6;">One-Click Status Filters</h5>
+                                    <p class="text-muted mb-0">
+                                        Click <strong>Present</strong>, <strong>Absent</strong>,
+                                        <strong>Late</strong>, or <strong>On Leave</strong> buttons to instantly
+                                        show only the employees matching that status. The count on each button
+                                        always reflects today's numbers. Click again to clear the filter.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="bg-white p-3 rounded shadow-sm h-100">
+                                    <div style="font-size: 1.8em;">📅</div>
+                                    <h5 class="mt-2" style="color: #5b21b6;">Full Monthly Calendar</h5>
+                                    <p class="text-muted mb-0">
+                                        See every employee's attendance for the entire month in a scrollable
+                                        grid. Each day shows a colour-coded status: green check for present,
+                                        red <strong>A</strong> for absent, amber check for late,
+                                        <strong>L</strong> for leave, <strong>W</strong> for weekend,
+                                        and <strong>H</strong> for public holiday.
+                                        Summary totals appear at the end of each row.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="bg-white p-3 rounded shadow-sm h-100">
+                                    <div style="font-size: 1.8em;">👤</div>
+                                    <h5 class="mt-2" style="color: #5b21b6;">Click Any Employee for Their Summary</h5>
+                                    <p class="text-muted mb-0">
+                                        Click any employee row to highlight it and reveal a personal summary
+                                        card showing their exact monthly counts for Present, Absent, Leave,
+                                        Weekend, Holiday, and Late days. Click the same row again — or the
+                                        close button — to dismiss it.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="bg-white p-3 rounded shadow-sm h-100">
+                                    <div style="font-size: 1.8em;">🏆</div>
+                                    <h5 class="mt-2" style="color: #5b21b6;">Top Rankings in One Click</h5>
+                                    <p class="text-muted mb-0">
+                                        Four sort buttons let you instantly re-order the list:
+                                        <strong>Top Present</strong> puts the most-present employees first,
+                                        <strong>Top Absent</strong> shows who missed the most days,
+                                        <strong>Top Late</strong> surfaces the most frequently late arrivals,
+                                        and <strong>Top Leave</strong> highlights who took the most time off.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="bg-white p-3 rounded shadow-sm h-100">
+                                    <div style="font-size: 1.8em;">🔒</div>
+                                    <h5 class="mt-2" style="color: #5b21b6;">Role-Based Access</h5>
+                                    <p class="text-muted mb-0">
+                                        Managers and HR officers see the full team. Regular employees who open
+                                        the dashboard see only their own attendance — no one else's data is
+                                        ever visible to them. Filters and sort buttons work the same way for
+                                        everyone within their allowed scope.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">6. Anomaly Detection & Analysis</h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_15.png" alt="Anomaly Detection"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Automatic anomaly identification</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_16.png" alt="Anomaly Reports"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Detailed anomaly breakdown</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_17.png" alt="Anomaly Statistics"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Statistical analysis of issues</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_18.png" alt="Anomaly Analysis"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Compliance and audit reports</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h4 class="text-primary mb-4">7. Reports & Exports</h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_19.png" alt="Generate Report Options"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Multiple report generation options</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_20.png" alt="Report Generation"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Custom date range selection</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_21.png" alt="Report Settings"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Advanced filtering options</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_22.png" alt="Anomaly Analysis Graph"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Visual anomaly trends</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_23.png" alt="Employee Attendance Download"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Excel export functionality</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_24.png" alt="Attendance Sheet View"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Calendar-style attendance view</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_25.png" alt="Detailed Attendance Report"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Comprehensive daily breakdown</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <img src="screenshot/img_26.png" alt="Attendance Sheet Overview"
+                                        class="img-fluid rounded border">
+                                    <p class="text-muted text-center mt-2 mb-0">Monthly attendance summary</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What's New -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">What's New in This
+                        Version</span>
+                </h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-success" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🤖 Auto Check-in/Check-out Mode <span
+                                        class="badge badge-warning">RECOMMENDED</span></h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Intelligent Processing:</strong> Automatically determines
+                                        check-in/check-out based on last attendance
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Prevents HR Mistakes:</strong> Ignores device punch type completely
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>How it works:</strong> First punch → Check-in, Second → Check-out,
+                                        alternates automatically
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Zero Configuration:</strong> No device setup needed
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-info" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">📡 Real-Time Live Capture</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Instant
+                                        attendance capture as events occur</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> No more
+                                        polling delays</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Immediate
+                                        notifications to relevant users</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> LCD and
+                                        audio feedback triggered automatically</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-warning" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🔧 Device Health Monitoring</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Track
+                                        firmware version and device info</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Monitor
+                                        storage capacity and usage</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> User and
+                                        biometric template statistics</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Network
+                                        information tracking</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-danger" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🚪 Door Access Control</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Remote
+                                        door unlock from Odoo</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Configurable unlock duration</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Lock
+                                        status monitoring</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> All
+                                        actions logged in chatter</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-primary" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🕒 Intelligent Time Sync &amp; Auto-Correction <span
+                                        class="badge badge-success">ENHANCED</span></h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Auto-Sync Before Download:</strong> Device clock is automatically
+                                        checked and corrected before every attendance download — manual or cron
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Drift Detection:</strong> Detects clock drift &gt;30 seconds and
+                                        auto-corrects — no manual intervention needed
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Cron-Safe Timezone:</strong> Stores effective timezone on device record
+                                        — cron jobs no longer depend on user timezone setting
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Flexible Options:</strong> Sync using Odoo User Time, Server UTC, Custom
+                                        Timezone, or Manual override
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Live Capture Ready:</strong> Auto-sync also runs before live capture
+                                        starts
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Visible Status:</strong> "Current Device TZ" field shows exactly which
+                                        timezone the device is running in
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-dark" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🛡️ Identity Protection <span
+                                        class="badge badge-success">NEW</span></h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Safe Sync Topology:</strong> Protects existing face/fingerprint data
+                                        during sync
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Ghost Prevention:</strong> Stops cross-assignment of employee IDs
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Active Tracking:</strong> Logs unmapped device users into Odoo for HR
+                                        review
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- NEW: Multi-Device Global Sort -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-success" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🔀 Multi-Device Global Sort <span
+                                        class="badge badge-danger">NEW</span></h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Two-Phase Download:</strong> All devices downloaded first, then all
+                                        punches processed together in true chronological order
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Download Button Downloads All:</strong> Clicking Download on any device
+                                        automatically downloads all devices — no need to click each one
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>No More Duplicate Records:</strong> Employees registered on multiple
+                                        devices no longer get double attendance records
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>All Modes Supported:</strong> Works correctly for Auto, Auto Per Day,
+                                        Traditional, and Traditional Per Day
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- NEW: Odoo Punch Type + Chronological Fix -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 border-left border-primary" style="border-left-width: 5px !important;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🔍 Odoo Punch Type Visibility <span
+                                        class="badge badge-danger">NEW</span></h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>New Column in Attendance Analysis:</strong> "Odoo Punch Type" shows
+                                        whether the module processed a punch as Check In or Check Out — separate from
+                                        the device's reported punch type
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Chronological Fix:</strong> Punches now always processed in time order —
+                                        fixes the bug where check-out was recorded before check-in
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Full Traceability:</strong> Every raw punch record now links directly to
+                                        its generated hr.attendance record
+                                    </li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        <strong>Live Capture UTC Fix:</strong> Live capture timestamps now correctly
+                                        converted from device local time to UTC before storage
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <strong>💡 Pro Tip:</strong> Use Auto Mode for hassle-free attendance management! It's smart,
+                    forgiving, and prevents configuration mistakes. The new device management features provide complete
+                    control over your ZKteco devices.
+                </div>
+            </div>
+
+            <!-- Enterprise Features -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Enterprise
+                        Features</span>
+                </h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🎯 Integration & Automation</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Time Off
+                                        (hr_holidays) integration</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Public
+                                        holidays detection</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Working
+                                        calendar respect</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Overtime
+                                        tracking</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Payroll
+                                        deductions (optional)</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Automated
+                                        scheduled actions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🛡️ Security & Compliance</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Multi-company support</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Role-based access control</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Complete
+                                        audit trail</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Data
+                                        security & encryption</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Compliance reporting</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> GDPR
+                                        ready</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What's Included -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">What's
+                        Included</span>
+                </h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">📦 Complete Package</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Full
+                                        source code with AGPL-3 license</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Comprehensive documentation</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span>
+                                        Installation guide</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Sample
+                                        data for testing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">🔧 Support & Updates</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> 30 Days
+                                        premium email support</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> 24-48
+                                        hour response time</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Free bug
+                                        fixes</li>
+                                    <li class="mb-2"><span class="text-success font-weight-bold mr-2">✓</span> Security
+                                        patches included</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mb-5">
+                <h2 class="text-primary border-bottom border-primary pb-2 mb-4">
+                    <span class="mr-2" style="border-left: 5px solid #667eea; padding-left: 15px;">Frequently Asked
+                        Questions</span>
+                </h2>
+                <div class="accordion" id="faqAccordion">
+                    <!-- Q1 -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white" id="headingOne">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link text-primary font-weight-bold text-decoration-none"
+                                    type="button" data-toggle="collapse" data-target="#collapseOne">
+                                    ❓ Does this work with Odoo on AWS/Cloud with devices in a local office?
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse show">
+                            <div class="card-body text-muted">
+                                <strong>Yes!</strong> However, since the server is on the cloud and devices are behind a
+                                local router, you need a network configuration:
+                                <ul class="mt-2">
+                                    <li><strong>VPN (Recommended):</strong> Set up a Site-to-Site VPN between your
+                                        office network and your Cloud Server.</li>
+                                    <li><strong>Port Forwarding:</strong> Forward the device port (default 4370) on your
+                                        office router to the public internet (requires Static IP at office).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link text-primary font-weight-bold text-decoration-none"
+                                    type="button">
+                                    ❓ Is my ZKTeco device compatible (e.g., MB10VL, K40)?
+                                </button>
+                            </h5>
+                        </div>
+                        <div class="collapse show">
+                            <div class="card-body text-muted">
+                                <strong>Yes, almost certainly.</strong> This suite supports devices that use the
+                                <strong>Standalone SDK Protocol</strong> (TCP/IP).
+                                <br>
+                                Compatible models include: <strong>uFace 202, uFace 800, iClock series, K40, K14,
+                                    MB10VL, F18, UA300, ZK4500, and more.</strong>
+                                <br>
+                                <em>Simple test: If your device works with the old ZKTime.net 3.0 software, it will work
+                                    with this module!</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link text-primary font-weight-bold text-decoration-none"
+                                    type="button">
+                                    ❓ Do I need a Windows Server or Middleware?
+                                </button>
+                            </h5>
+                        </div>
+                        <div class="collapse show">
+                            <div class="card-body text-muted">
+                                <strong>No!</strong> This is a 100% native Python solution installed directly inside
+                                Odoo. It communicates directly with the devices. No extra Windows server, middleware, or
+                                "attendance service" is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link text-primary font-weight-bold text-decoration-none"
+                                    type="button">
+                                    ❓ Can I control doors remotely?
+                                </button>
+                            </h5>
+                        </div>
+                        <div class="collapse show">
+                            <div class="card-body text-muted">
+                                <strong>Yes.</strong> If your biometric device has Access Control features (relay
+                                output), you can trigger the "Door Unlock" command directly from your Odoo dashboard.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standardized Support Section -->
+            <div class="section support-section"
+                style="background-color: #ffffff; color: #000000; padding: 40px 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+
+                <div style="margin-bottom: 30px;">
+                    <img src="https://odoocdn.com/openerp_website/static/src/img/assets/svg/odoo_ready_partners_rgb.svg"
+                        alt="Odoo Ready Partner" style="max-width: 200px; height: auto;">
+                </div>
+
+                <h2 style="color: #000000; margin-bottom: 20px; font-weight: bold;">Support & Resources</h2>
+                <p style="color: #333333; margin-bottom: 30px;">Need help? We're here for you!</p>
+
+                <div class="support-content"
+                    style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; font-size: 16px;">
+
+                    <!-- Email -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">📧</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">Email Us</strong>
+                        <a href="mailto:info@dotbdsolutions.com"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">info@dotbdsolutions.com</a>
+                    </div>
+
+                    <!-- WhatsApp -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">💬</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">WhatsApp</strong>
+                        <a href="https://wa.me/8801810025181" target="_blank"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">+880
+                            1810-025181</a>
+                    </div>
+
+                    <!-- Website -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">🌐</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">Website</strong>
+                        <a href="https://www.dotbdsolutions.com" target="_blank"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">https://www.dotbdsolutions.com</a>
+                    </div>
+
+                    <!-- Learning Platform -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">📚</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">Learning Platform</strong>
+                        <a href="https://learn.dotbdsolutions.com" target="_blank"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">https://learn.dotbdsolutions.com</a>
+                    </div>
+
+                </div>
+                <div class="support-content"
+                    style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; font-size: 16px;">
+
+
+                    <!-- YouTube -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">🎥</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">YouTube</strong>
+                        <a href="https://www.youtube.com/@DotBdSolutionsLimited" target="_blank"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">https://www.youtube.com/@DotBdSolutionsLimited</a>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">📘</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">Facebook</strong>
+                        <a href="https://www.facebook.com/dotbdsolutions" target="_blank"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">https://www.facebook.com/dotbdsolutions</a>
+                    </div>
+
+                    <!-- LinkedIn -->
+                    <div class="support-item" style="min-width: 250px; max-width: 300px;">
+                        <span style="font-size: 24px; display: block; margin-bottom: 10px;">💼</span>
+                        <strong style="display: block; margin-bottom: 5px; color: #000000;">LinkedIn</strong>
+                        <a href="https://www.linkedin.com/company/dot-bd-solutions/" target="_blank"
+                            style="color: #000000; text-decoration: none; font-weight: 500; word-break: break-all; display: block; line-height: 1.4;">https://www.linkedin.com/company/dot-bd-solutions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-light py-5 text-center border-top border-primary" style="border-width: 3px !important;">
+            <div class="container">
+                <img src="dotbd_solutions_logo.png" alt="Dot BD Solutions Logo" class="img-fluid mb-3"
+                    style="max-width: 180px;">
+                <p class="mb-2" style="color: #000000;"><strong>Dot BD Solutions Limited</strong></p>
+                <p class="mb-2" style="color: #000000;">Copyright © 2025 Dot BD Solutions Limited. All rights reserved.
+                </p>
+                <p class="mb-2" style="color: #000000;">Author: Rafiur Rahman Rafit</p>
+                <p class="mb-3" style="color: #000000;">Licensed under <a
+                        href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank"
+                        class="text-primary font-weight-bold">OPL-3</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

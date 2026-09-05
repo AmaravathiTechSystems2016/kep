@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Standard internal-user allocation ACL is too broad for this HR design. -->
+    <record id="hr_holidays.access_hr_holidays_employee_allocation" model="ir.model.access">
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="template_worker_onboarding" model="hr.onboarding.template">
+        <field name="name">Worker Onboarding</field>
+        <field name="employee_category">worker</field>
+        <field name="description">&lt;p&gt;Starter onboarding flow for manufacturing workers.&lt;/p&gt;</field>
+        <field name="line_ids" eval="[
+            (0, 0, {'sequence': 10, 'name': 'Joining Confirmation', 'step_type': 'information', 'required': True, 'responsible_role': 'HR'}),
+            (0, 0, {'sequence': 20, 'name': 'Document Verification', 'step_type': 'document', 'required': True, 'responsible_role': 'HR'}),
+            (0, 0, {'sequence': 30, 'name': 'Safety Induction', 'step_type': 'training', 'required': True, 'responsible_role': 'Safety Officer'}),
+            (0, 0, {'sequence': 40, 'name': 'PPE / Access Issue', 'step_type': 'access', 'required': True, 'responsible_role': 'Store / Admin'}),
+            (0, 0, {'sequence': 50, 'name': 'Week 1 Review', 'step_type': 'review', 'required': False, 'responsible_role': 'Supervisor'}),
+        ]"/>
+    </record>
+
+    <record id="template_office_onboarding" model="hr.onboarding.template">
+        <field name="name">Office Onboarding</field>
+        <field name="employee_category">office</field>
+        <field name="description">&lt;p&gt;Starter onboarding flow for office staff.&lt;/p&gt;</field>
+        <field name="line_ids" eval="[
+            (0, 0, {'sequence': 10, 'name': 'Joining Confirmation', 'step_type': 'information', 'required': True, 'responsible_role': 'HR'}),
+            (0, 0, {'sequence': 20, 'name': 'Document Verification', 'step_type': 'document', 'required': True, 'responsible_role': 'HR'}),
+            (0, 0, {'sequence': 30, 'name': 'System / Email Access', 'step_type': 'access', 'required': True, 'responsible_role': 'IT / Admin'}),
+            (0, 0, {'sequence': 40, 'name': 'Workplace Orientation', 'step_type': 'training', 'required': True, 'responsible_role': 'Manager'}),
+            (0, 0, {'sequence': 50, 'name': '30-Day Review', 'step_type': 'review', 'required': False, 'responsible_role': 'Manager'}),
+        ]"/>
+    </record>
+</odoo>
+

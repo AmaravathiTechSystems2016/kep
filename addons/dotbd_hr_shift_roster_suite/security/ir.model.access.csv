@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_shift_weekday_user,hr.shift.weekday user,model_hr_shift_weekday,hr.group_hr_user,1,1,1,1
+access_hr_shift_template_user,hr.shift.template user,model_hr_shift_template,hr.group_hr_user,1,1,1,1
+access_hr_shift_assignment_user,hr.shift.assignment user,model_hr_shift_assignment,hr.group_hr_user,1,1,1,1
+access_hr_shift_assignment_rotation_line_user,hr.shift.assignment.rotation.line user,model_hr_shift_assignment_rotation_line,hr.group_hr_user,1,1,1,1
+access_hr_shift_holiday_user,hr.shift.holiday user,model_hr_shift_holiday,hr.group_hr_user,1,1,1,1
+access_hr_shift_roster_user,hr.shift.roster user,model_hr_shift_roster,hr.group_hr_user,1,1,1,1
+access_hr_shift_roster_line_user,hr.shift.roster.line user,model_hr_shift_roster_line,hr.group_hr_user,1,1,1,1
+access_hr_shift_roster_bulk_update_wizard_user,hr.shift.roster.bulk.update.wizard user,model_hr_shift_roster_bulk_update_wizard,hr.group_hr_user,1,1,1,1
+access_hr_shift_roster_revision_user,hr.shift.roster.revision user,model_hr_shift_roster_revision,hr.group_hr_user,1,1,1,1
+access_hr_shift_roster_revision_line_user,hr.shift.roster.revision.line user,model_hr_shift_roster_revision_line,hr.group_hr_user,1,1,1,1
+access_hr_shift_planning_dashboard_user,hr.shift.planning.dashboard user,model_hr_shift_planning_dashboard,hr.group_hr_user,1,1,1,1

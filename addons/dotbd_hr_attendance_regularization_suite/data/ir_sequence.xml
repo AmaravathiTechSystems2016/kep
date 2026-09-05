@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_attendance_regularization_request" model="ir.sequence">
+        <field name="name">Attendance Regularization Request</field>
+        <field name="code">attendance.regularization.request</field>
+        <field name="prefix">ARQ/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

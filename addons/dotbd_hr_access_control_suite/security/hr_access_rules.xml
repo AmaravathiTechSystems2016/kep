@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_employee_own" model="ir.rule">
+        <field name="name">Employee: Own Employee Profile</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_employee_public_own" model="ir.rule">
+        <field name="name">Employee: Own Public Employee Profile</field>
+        <field name="model_id" ref="hr.model_hr_employee_public"/>
+        <field name="domain_force">[('id', '=', user.employee_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_hr_version_own" model="ir.rule">
+        <field name="name">Employee: Own Contract Version</field>
+        <field name="model_id" ref="hr.model_hr_version"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_leave_policy_own" model="ir.rule">
+        <field name="name">Employee: Assigned Leave Policy</field>
+        <field name="model_id" ref="dotbd_hr_leave_policy_suite.model_attendance_leave_policy"/>
+        <field name="domain_force">[('id', '=', user.employee_id.leave_policy_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_leave_policy_line_own" model="ir.rule">
+        <field name="name">Employee: Assigned Leave Policy Rules</field>
+        <field name="model_id" ref="dotbd_hr_leave_policy_suite.model_attendance_leave_policy_line"/>
+        <field name="domain_force">[('policy_id', '=', user.employee_id.leave_policy_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_attendance_own" model="ir.rule">
+        <field name="name">Employee: Own Attendance</field>
+        <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_regularization_own" model="ir.rule">
+        <field name="name">Employee: Own Regularization Requests</field>
+        <field name="model_id" ref="dotbd_hr_attendance_regularization_suite.model_attendance_regularization_request"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_overtime_own" model="ir.rule">
+        <field name="name">Employee: Own Overtime Requests</field>
+        <field name="model_id" ref="dotbd_hr_overtime_request_suite.model_hr_overtime_request"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id), ('employee_id.attendance_category', '=', 'worker')]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_leave_own" model="ir.rule">
+        <field name="name">Employee: Own Leave Requests</field>
+        <field name="model_id" ref="hr_holidays.model_hr_leave"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_leave_balance_own" model="ir.rule">
+        <field name="name">Employee: Own Leave Balances</field>
+        <field name="model_id" ref="dotbd_hr_leave_policy_suite.model_attendance_leave_balance"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_leave_encashment_own" model="ir.rule">
+        <field name="name">Employee: Own Leave Encashments</field>
+        <field name="model_id" ref="dotbd_hr_leave_policy_suite.model_attendance_leave_encashment"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_leave_allocation_own_read" model="ir.rule">
+        <field name="name">Employee: Own Leave Allocations</field>
+        <field name="model_id" ref="hr_holidays.model_hr_leave_allocation"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_leave_allocation_department_manager_read" model="ir.rule">
+        <field name="name">Department Manager: Department Leave Allocations</field>
+        <field name="model_id" ref="hr_holidays.model_hr_leave_allocation"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_leave_allocation_hr_all" model="ir.rule">
+        <field name="name">HR: All Leave Allocations</field>
+        <field name="model_id" ref="hr_holidays.model_hr_leave_allocation"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_officer'))]"/>
+    </record>
+
+    <record id="rule_payslip_own" model="ir.rule">
+        <field name="name">Employee: Own Payslips</field>
+        <field name="model_id" ref="hr_payroll_community.model_hr_payslip"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_payslip_line_own" model="ir.rule">
+        <field name="name">Employee: Own Payslip Lines</field>
+        <field name="model_id" ref="hr_payroll_community.model_hr_payslip_line"/>
+        <field name="domain_force">[('slip_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_payslip_worked_days_own" model="ir.rule">
+        <field name="name">Employee: Own Payslip Worked Days</field>
+        <field name="model_id" ref="hr_payroll_community.model_hr_payslip_worked_days"/>
+        <field name="domain_force">[('payslip_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_payslip_input_own" model="ir.rule">
+        <field name="name">Employee: Own Payslip Inputs</field>
+        <field name="model_id" ref="hr_payroll_community.model_hr_payslip_input"/>
+        <field name="domain_force">[('payslip_id.employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_resignation_own" model="ir.rule">
+        <field name="name">Employee: Own Resignation</field>
+        <field name="model_id" ref="hr_resignation.model_hr_resignation"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_employee'))]"/>
+    </record>
+
+    <record id="rule_employee_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Employees</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="domain_force">[('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_department_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Own Department</field>
+        <field name="model_id" ref="hr.model_hr_department"/>
+        <field name="domain_force">[('manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_employee_public_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Employee Directory</field>
+        <field name="model_id" ref="hr.model_hr_employee_public"/>
+        <field name="domain_force">[('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_onboarding_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Onboarding</field>
+        <field name="model_id" ref="dotbd_hr_onboarding_suite.model_hr_employee_onboarding"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_manpower_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Manpower Requisitions</field>
+        <field name="model_id" ref="dotbd_hr_manpower_requisition_suite.model_manpower_requisition"/>
+        <field name="domain_force">[('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_manpower_hr_all" model="ir.rule">
+        <field name="name">HR: All Manpower Requisitions</field>
+        <field name="model_id" ref="dotbd_hr_manpower_requisition_suite.model_manpower_requisition"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_officer'))]"/>
+    </record>
+
+    <record id="rule_attendance_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Attendance</field>
+        <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_late_check_in_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Late Check-ins</field>
+        <field name="model_id" ref="dotbd_hr_zk_attendance_suite.model_late_check_in"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_regularization_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Regularization</field>
+        <field name="model_id" ref="dotbd_hr_attendance_regularization_suite.model_attendance_regularization_request"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_overtime_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Overtime</field>
+        <field name="model_id" ref="dotbd_hr_overtime_request_suite.model_hr_overtime_request"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id), ('employee_id.attendance_category', '=', 'worker')]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_overtime_hr_all" model="ir.rule">
+        <field name="name">HR Manager: All Overtime Requests</field>
+        <field name="model_id" ref="dotbd_hr_overtime_request_suite.model_hr_overtime_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_officer'))]"/>
+    </record>
+
+    <record id="rule_leave_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Leave Requests</field>
+        <field name="model_id" ref="hr_holidays.model_hr_leave"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_leave_balance_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Leave Balances</field>
+        <field name="model_id" ref="dotbd_hr_leave_policy_suite.model_attendance_leave_balance"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_leave_encashment_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Leave Encashment</field>
+        <field name="model_id" ref="dotbd_hr_leave_policy_suite.model_attendance_leave_encashment"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_shift_assignment_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Shift Assignments</field>
+        <field name="model_id" ref="dotbd_hr_shift_roster_suite.model_hr_shift_assignment"/>
+        <field name="domain_force">['|', ('department_id.manager_id.user_id', '=', user.id), ('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_shift_roster_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Rosters</field>
+        <field name="model_id" ref="dotbd_hr_shift_roster_suite.model_hr_shift_roster"/>
+        <field name="domain_force">[('department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_shift_roster_line_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Roster Lines</field>
+        <field name="model_id" ref="dotbd_hr_shift_roster_suite.model_hr_shift_roster_line"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_payslip_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Payslips</field>
+        <field name="model_id" ref="hr_payroll_community.model_hr_payslip"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+
+    <record id="rule_resignation_department_manager" model="ir.rule">
+        <field name="name">Department Manager: Department Resignations</field>
+        <field name="model_id" ref="hr_resignation.model_hr_resignation"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_hr_department_manager'))]"/>
+    </record>
+</odoo>

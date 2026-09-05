@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="hr_rule_overtime" model="hr.salary.rule">
+            <field name="name">Overtime Allowance</field>
+            <field name="active" eval="False"/>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="sequence" eval="110"/>
+            <field name="code">OT</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+ot_line = worked_days.OT
+ot_hours = ot_line.number_of_hours if ot_line else 0.0
+calendar_days = (payslip.date_to - payslip.date_from).days + 1
+hours_per_day = getattr(contract.resource_calendar_id, 'hours_per_day', 0.0) or 0.0
+multiplier = getattr(contract, 'overtime_multiplier', 0.0) or 0.0
+if calendar_days and hours_per_day and ot_hours and multiplier:
+    daily_gross = categories.GROSS / calendar_days
+    hourly_gross = daily_gross / hours_per_day
+    result = ot_hours * hourly_gross * multiplier
+else:
+    result = 0.0</field>
+        </record>
+        <record id="structure_worker" model="hr.payroll.structure">
+            <field name="rule_ids" eval="[(3, ref('hr_rule_overtime'))]"/>
+        </record>
+        <record id="structure_office" model="hr.payroll.structure">
+            <field name="rule_ids" eval="[(3, ref('hr_rule_overtime'))]"/>
+        </record>
+    </data>
+</odoo>

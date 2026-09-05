@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_employee_form_inherit_master_data" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.master.data</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='hr_family_group']" position="before">
+                <group string="Statutory">
+                    <field name="blood_group"/>
+                    <field name="aadhaar_number"/>
+                    <field name="pan_number"/>
+                </group>
+                <group string="Nominee Details">
+                    <field name="nominee_name"/>
+                    <field name="nominee_relation"/>
+                    <field name="nominee_phone"/>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='work_information']//group[@name='departure']" position="after">
+                <group string="Additional Employment Details" groups="hr.group_hr_user">
+                    <field name="grade_band"/>
+                    <field name="confirmation_date"/>
+                    <field name="employee_status"/>
+                    <field name="notice_period_days"/>
+                    <field name="cost_centre"/>
+                    <field name="joining_source"/>
+                    <field name="machine_line_assignment"/>
+                    <field name="contractor_code"/>
+                    <field name="safety_certification"/>
+                    <field name="safety_certification_expiry"/>
+                    <field name="ppe_issue_log"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_tree_inherit_master_data" model="ir.ui.view">
+        <field name="name">hr.employee.list.inherit.master.data</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="blood_group" optional="hide"/>
+                <field name="aadhaar_number" optional="hide"/>
+                <field name="pan_number" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_search_inherit_master_data" model="ir.ui.view">
+        <field name="name">hr.employee.search.inherit.master.data</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="blood_group"/>
+            </xpath>
+            <xpath expr="//group/filter[@name='group_job']" position="after">
+                <filter string="Blood Group" name="group_blood_group" domain="[]" context="{'group_by': 'blood_group'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

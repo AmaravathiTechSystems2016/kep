@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_manpower_requisition_dashboard_form" model="ir.ui.view">
+        <field name="name">manpower.requisition.dashboard.form</field>
+        <field name="model">manpower.requisition.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Manpower Dashboard">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Manpower Dashboard</h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_open_all" class="oe_stat_button" icon="fa-list">
+                            <field name="total_requisition_count" widget="statinfo" string="Total Requisitions"/>
+                        </button>
+                        <button type="object" name="action_open_draft" class="oe_stat_button" icon="fa-pencil">
+                            <field name="draft_count" widget="statinfo" string="Draft"/>
+                        </button>
+                        <button type="object" name="action_open_submitted" class="oe_stat_button" icon="fa-paper-plane">
+                            <field name="submitted_count" widget="statinfo" string="Submitted"/>
+                        </button>
+                        <button type="object" name="action_open_approved" class="oe_stat_button" icon="fa-check">
+                            <field name="approved_count" widget="statinfo" string="Approved"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Workforce Split">
+                            <field name="worker_count" readonly="1"/>
+                            <field name="office_count" readonly="1"/>
+                        </group>
+                        <group string="Headcount Totals">
+                            <field name="total_requested_headcount" readonly="1"/>
+                            <field name="total_headcount_gap" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Workflow">
+                            <field name="rejected_count" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_manpower_requisition_dashboard" model="ir.actions.act_window">
+        <field name="name">Manpower Dashboard</field>
+        <field name="res_model">manpower.requisition.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

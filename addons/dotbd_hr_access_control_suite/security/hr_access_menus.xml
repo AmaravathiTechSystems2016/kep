@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_my_payslips" model="ir.actions.act_window">
+        <field name="name">My Payslips</field>
+        <field name="res_model">hr.payslip</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+    </record>
+    <menuitem id="menu_my_payslips" name="My Payslips" parent="hr_payroll_community.menu_hr_payroll_community_root" action="action_my_payslips" groups="base.group_user" sequence="10"/>
+    <menuitem id="dotbd_hr_overtime_request_suite.menu_hr_overtime_request_root" name="Overtime Requests" groups="dotbd_hr_access_control_suite.group_hr_manufacturing_worker,dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive,hr_payroll_community.group_hr_payroll_community_user"/>
+    <menuitem id="dotbd_hr_overtime_request_suite.menu_hr_overtime_register" name="Overtime Register" groups="dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive,hr_payroll_community.group_hr_payroll_community_user"/>
+    <menuitem id="dotbd_hr_manpower_requisition_suite.menu_manpower_requisition_root" name="Manpower" groups="dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"/>
+    <menuitem id="dotbd_hr_manpower_requisition_suite.menu_manpower_requisition" name="Requisitions" groups="dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"/>
+    <menuitem id="dotbd_hr_manpower_requisition_suite.menu_manpower_requisition_report" name="Reporting" groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"/>
+    <record id="action_my_attendance_history" model="ir.actions.act_window">
+        <field name="name">My Attendances</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="hr_attendance.view_attendance_tree_management"/>
+        <field name="search_view_id" ref="hr_attendance.hr_attendance_management_view_filter"/>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+    </record>
+    <menuitem id="hr_attendance.menu_hr_attendance_root" name="Attendances" groups="dotbd_hr_access_control_suite.group_hr_employee,dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive" sequence="7"/>
+    <menuitem id="menu_my_attendance_history" name="Attendances" parent="hr_attendance.menu_hr_attendance_root" action="action_my_attendance_history" groups="dotbd_hr_access_control_suite.group_hr_employee" sequence="1"/>
+    <menuitem id="hr_attendance.menu_hr_attendance_view_attendances_management" name="Attendances" parent="hr_attendance.menu_hr_attendance_root" action="hr_attendance.hr_attendance_management_action" groups="dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive" sequence="1"/>
+    <menuitem id="dotbd_hr_zk_attendance_suite.menu_attendance_main_dashboard" name="Dashboard" parent="hr_attendance.menu_hr_attendance_root" action="dotbd_hr_zk_attendance_suite.action_attendance_main_dashboard" groups="dotbd_hr_access_control_suite.group_hr_employee,dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive" sequence="10"/>
+    <function model="ir.ui.menu" name="cleanup_duplicate_attendance_menus"/>
+</odoo>

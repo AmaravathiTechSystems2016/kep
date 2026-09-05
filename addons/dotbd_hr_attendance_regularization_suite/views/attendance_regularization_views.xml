@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attendance_regularization_request_search" model="ir.ui.view">
+        <field name="name">attendance.regularization.request.search</field>
+        <field name="model">attendance.regularization.request</field>
+        <field name="arch" type="xml">
+            <search string="Attendance Regularization Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="request_date"/>
+                <field name="request_type"/>
+                <field name="state"/>
+                <separator/>
+                <filter string="My Requests" name="my_requests" domain="[('create_uid', '=', uid)]"/>
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter string="Group by Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                <filter string="Group by State" name="group_state" context="{'group_by': 'state'}"/>
+                <filter string="Group by Request Date" name="group_date" context="{'group_by': 'request_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_attendance_regularization_request_list" model="ir.ui.view">
+        <field name="name">attendance.regularization.request.list</field>
+        <field name="model">attendance.regularization.request</field>
+        <field name="arch" type="xml">
+            <list string="Attendance Regularization Requests"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'submitted'"
+                  decoration-success="state == 'approved'"
+                  decoration-danger="state == 'rejected'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="request_date"/>
+                <field name="request_type"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="attendance_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_attendance_regularization_request_form" model="ir.ui.view">
+        <field name="name">attendance.regularization.request.form</field>
+        <field name="model">attendance.regularization.request</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Regularization Request">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary" invisible="state != 'submitted'"/>
+                    <button name="action_reject" string="Reject" type="object" invisible="state not in ('draft', 'submitted')"/>
+                    <button name="action_revoke_approval" string="Revoke Approval" type="object" invisible="state != 'approved'"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state not in ('submitted', 'rejected')"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('approved', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" options="{'no_quick_create': True, 'no_create_edit': True}" readonly="state != 'draft'"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                            <field name="request_type" readonly="state != 'draft'"/>
+                            <field name="existing_attendance_info" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="manager_id" readonly="1"/>
+                            <field name="attendance_id" readonly="1"/>
+                            <field name="attendance_created_by_request" readonly="1" invisible="1"/>
+                            <field name="manager_user_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="check_in" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="check_out" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Reason" col="1">
+                        <field name="reason" nolabel="1" colspan="4"
+                               placeholder="Explain the missed punch or correction..."/>
+                    </group>
+                    <group string="Manager Note" col="1">
+                        <field name="approval_note" nolabel="1" colspan="4"
+                               placeholder="Approval or rejection note..."/>
+                    </group>
+                    <group string="Attachments">
+                        <field name="attachment_ids" widget="many2many_binary" readonly="state in ('approved', 'cancelled')"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attendance_regularization_request" model="ir.actions.act_window">
+        <field name="name">Attendance Regularization</field>
+        <field name="res_model">attendance.regularization.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+</odoo>

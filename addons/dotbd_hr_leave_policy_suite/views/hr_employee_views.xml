@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_employee_form_inherit_leave_policy" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.leave.policy</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_leave_policy"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-folder-open"
+                        invisible="not leave_policy_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Leave Policy</span>
+                    </div>
+                </button>
+                <button name="action_open_leave_allocations"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-calendar"
+                        invisible="not id">
+                    <div class="o_stat_info">
+                        <field name="leave_allocation_count" class="o_stat_value"/>
+                        <span class="o_stat_text">View Allocations</span>
+                    </div>
+                </button>
+                <button name="action_generate_employee_leave_allocations"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-refresh"
+                        invisible="not leave_policy_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Generate Allocations</span>
+                    </div>
+                </button>
+                <button name="action_reset_employee_leave_allocations"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-undo"
+                        invisible="not leave_policy_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Reset Allocations</span>
+                    </div>
+                </button>
+                <button name="action_open_leave_balance_import"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-upload">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Import Old Balances</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="leave_policy_id"
+                       domain="[('company_id', '=', company_id), ('attendance_category', '=', attendance_category)]"/>
+            </xpath>
+            <xpath expr="//field[@name='joining_date']" position="after">
+                <field name="probation_end_date" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_tree_inherit_leave_policy" model="ir.ui.view">
+        <field name="name">hr.employee.list.inherit.leave.policy</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_open_leave_balance_import"
+                            type="object"
+                            string="Import Old Balances"
+                            class="btn-primary"/>
+                </header>
+            </xpath>
+            <field name="company_id" position="after">
+                <field name="leave_policy_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

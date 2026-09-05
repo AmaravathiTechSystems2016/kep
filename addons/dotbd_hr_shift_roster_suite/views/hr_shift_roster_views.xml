@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_shift_roster_line_tree" model="ir.ui.view">
+        <field name="name">hr.shift.roster.line.list</field>
+        <field name="model">hr.shift.roster.line</field>
+        <field name="arch" type="xml">
+            <list string="Roster Lines">
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="attendance_category"/>
+                <field name="shift_template_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="break_duration" widget="float_time"/>
+                <field name="is_weekly_off"/>
+                <field name="is_public_holiday"/>
+                <field name="holiday_name"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_shift_roster_form" model="ir.ui.view">
+        <field name="name">hr.shift.roster.form</field>
+        <field name="model">hr.shift.roster</field>
+        <field name="arch" type="xml">
+            <form string="Shift Roster">
+                <header>
+                    <button name="action_generate_lines" type="object" string="Generate Lines" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_rebuild_lines" type="object" string="Rebuild Lines" invisible="state not in ('draft','generated')"/>
+                    <button name="action_open_bulk_update_wizard" type="object" string="Bulk Update Lines" invisible="state == 'cancelled'"/>
+                    <button name="action_open_history" type="object" string="View History" invisible="not revision_count"/>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state not in ('draft','generated')"/>
+                    <button name="action_done" type="object" string="Mark Done" invisible="state != 'confirmed'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state == 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,confirmed,done,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Weekly Worker Roster"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="attendance_category"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="line_count" readonly="1"/>
+                            <field name="revision_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Roster Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="employee_id"/>
+                                    <field name="department_id" readonly="1"/>
+                                    <field name="attendance_category" readonly="1"/>
+                                    <field name="shift_template_id"/>
+                                    <field name="start_time" widget="float_time" readonly="1"/>
+                                    <field name="end_time" widget="float_time" readonly="1"/>
+                                    <field name="break_duration" widget="float_time" readonly="1"/>
+                                    <field name="is_weekly_off"/>
+                                    <field name="is_public_holiday"/>
+                                    <field name="holiday_name"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="History">
+                            <field name="revision_ids" readonly="1">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="action_type"/>
+                                    <field name="user_id"/>
+                                    <field name="line_count"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_shift_roster_search" model="ir.ui.view">
+        <field name="name">hr.shift.roster.search</field>
+        <field name="model">hr.shift.roster</field>
+        <field name="arch" type="xml">
+            <search string="Shift Rosters">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="department_id"/>
+                <field name="attendance_category"/>
+                <field name="state"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Generated" name="generated" domain="[('state', '=', 'generated')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <separator string="Group By"/>
+                <group>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'attendance_category'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_shift_roster" model="ir.actions.act_window">
+        <field name="name">Shift Rosters</field>
+        <field name="res_model">hr.shift.roster</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_shift_roster_search"/>
+    </record>
+</odoo>

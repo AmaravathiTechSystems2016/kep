@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ADMS Device Command List View -->
+    <record id="adms_device_command_view_list" model="ir.ui.view">
+        <field name="name">adms.device.command.view.list</field>
+        <field name="model">adms.device.command</field>
+        <field name="arch" type="xml">
+            <list string="ADMS Commands"
+                  decoration-muted="status == 'done'"
+                  decoration-danger="status == 'failed'"
+                  decoration-info="status == 'pending'"
+                  decoration-warning="status == 'sent'">
+                <field name="command_id" string="ID"/>
+                <field name="command_type"/>
+                <field name="command_body" optional="show"/>
+                <field name="employee_id" optional="show"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'done'"
+                       decoration-danger="status == 'failed'"
+                       decoration-info="status == 'pending'"
+                       decoration-warning="status == 'sent'"/>
+                <field name="create_date" string="Created"/>
+                <field name="sent_time" optional="show"/>
+                <field name="done_time" optional="show"/>
+                <field name="result" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ADMS Device Command Form View -->
+    <record id="adms_device_command_view_form" model="ir.ui.view">
+        <field name="name">adms.device.command.view.form</field>
+        <field name="model">adms.device.command</field>
+        <field name="arch" type="xml">
+            <form string="ADMS Command">
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="pending,sent,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Command Details">
+                            <field name="device_id"/>
+                            <field name="command_type"/>
+                            <field name="command_id" readonly="1"/>
+                        </group>
+                        <group string="Target">
+                            <field name="employee_id"
+                                   invisible="command_type not in ('enroll_fp', 'sync_user', 'delete_user')"/>
+                            <field name="finger_index"
+                                   invisible="command_type != 'enroll_fp'"/>
+                        </group>
+                    </group>
+                    <group string="Command Body">
+                        <field name="command_body" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Result" invisible="status not in ('done', 'failed')">
+                        <field name="result" nolabel="1" colspan="2"/>
+                        <field name="sent_time"/>
+                        <field name="done_time"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Biometric Fingerprint Template List View -->
+    <record id="biometric_fp_template_view_list" model="ir.ui.view">
+        <field name="name">biometric.fp.template.view.list</field>
+        <field name="model">biometric.fp.template</field>
+        <field name="arch" type="xml">
+            <list string="Fingerprint Templates">
+                <field name="employee_id"/>
+                <field name="device_id"/>
+                <field name="finger_index"/>
+                <field name="template_size"/>
+                <field name="capture_time"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Biometric Fingerprint Template Form View -->
+    <record id="biometric_fp_template_view_form" model="ir.ui.view">
+        <field name="name">biometric.fp.template.view.form</field>
+        <field name="model">biometric.fp.template</field>
+        <field name="arch" type="xml">
+            <form string="Fingerprint Template">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="device_id"/>
+                            <field name="finger_index"/>
+                        </group>
+                        <group>
+                            <field name="template_size"/>
+                            <field name="template_version"/>
+                            <field name="capture_time"/>
+                        </group>
+                    </group>
+                    <group string="Template Data (Base64)">
+                        <field name="template_data" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

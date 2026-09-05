@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_employee_form_inherit_dotbd_payroll" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.dotbd.payroll</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='leave_policy_id']" position="after">
+                <field name="payroll_profile_id"/>
+                <field name="esi_applicable"/>
+                <field name="pf_applicable"/>
+                <field name="payroll_basic"/>
+                <field name="payroll_hra"/>
+                <field name="payroll_special_allowance"/>
+                <field name="payroll_conveyance_allowance"/>
+                <field name="payroll_washing_allowance"/>
+                <field name="payroll_medical_allowance"/>
+                <field name="payroll_overtime_multiplier"/>
+                <field name="payroll_gross_preview" readonly="1"/>
+                <field name="payroll_notes" placeholder="Payroll remarks or special handling notes."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

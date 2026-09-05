@@ -1,0 +1,38 @@
+/**
+ * Attendance Module Scrollbar Fix
+ * This CSS enables natural scrolling behavior in attendance LIST views only
+ * Scoped to avoid interfering with form views or chatter
+ */
+
+/* List View - Allow scrolling when content overflows */
+.o_action .o_list_view {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* List Table Container - Enable scrolling */
+.o_action .o_list_view .o_list_renderer {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Table scrolling within list view */
+.o_action .o_list_view .o_list_renderer table {
+    width: 100%;
+}
+
+/* Gantt View - Allow scrolling when content overflows */
+.o_action .o_gantt_view {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Gantt Content - Enable scrolling */
+.o_action .o_gantt_view .o_gantt_renderer {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}

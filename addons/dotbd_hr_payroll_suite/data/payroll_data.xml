@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="dotbd_rule_hra" model="hr.salary.rule">
+            <field name="name">House Rent Allowance</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">DBD_HRA</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.payroll_hra</field>
+        </record>
+
+        <record id="dotbd_rule_special_allowance" model="hr.salary.rule">
+            <field name="name">Special Allowance</field>
+            <field name="sequence" eval="10"/>
+            <field name="code">DBD_SPALW</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.payroll_special_allowance</field>
+        </record>
+
+        <record id="dotbd_rule_conveyance_allowance" model="hr.salary.rule">
+            <field name="name">Conveyance Allowance</field>
+            <field name="sequence" eval="15"/>
+            <field name="code">DBD_CONV</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.payroll_conveyance_allowance</field>
+        </record>
+
+        <record id="dotbd_rule_washing_allowance" model="hr.salary.rule">
+            <field name="name">Washing Allowance</field>
+            <field name="sequence" eval="20"/>
+            <field name="code">DBD_WASH</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.payroll_washing_allowance</field>
+        </record>
+
+        <record id="dotbd_rule_medical_allowance" model="hr.salary.rule">
+            <field name="name">Medical Allowance</field>
+            <field name="sequence" eval="25"/>
+            <field name="code">DBD_MED</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.payroll_medical_allowance</field>
+        </record>
+
+        <record id="dotbd_overtime_salary_rule" model="hr.salary.rule">
+            <field name="name">Overtime Allowance</field>
+            <field name="sequence" eval="30"/>
+            <field name="code">DOTBD_OT</field>
+            <field name="category_id" ref="hr_payroll_community.ALW"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+try:
+    if inputs.DOTBD_OT:
+        amount = inputs.DOTBD_OT.amount
+except Exception:
+    amount = 0.0
+result = amount</field>
+        </record>
+
+        <record id="dotbd_rule_pf_deduction" model="hr.salary.rule">
+            <field name="name">Provident Fund</field>
+            <field name="sequence" eval="120"/>
+            <field name="code">DBD_PF</field>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = bool(employee.pf_applicable)
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = 0.0
+profile = employee.payroll_profile_id
+if employee.pf_applicable and profile:
+    rate = profile.pf_percentage or 0.0
+    base = categories.BASIC + categories.ALW
+    result = -(base * rate / 100.0)</field>
+        </record>
+
+        <record id="dotbd_rule_esi_deduction" model="hr.salary.rule">
+            <field name="name">Employee State Insurance</field>
+            <field name="sequence" eval="130"/>
+            <field name="code">DBD_ESI</field>
+            <field name="category_id" ref="hr_payroll_community.DED"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = bool(employee.esi_applicable)
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = 0.0
+profile = employee.payroll_profile_id
+if employee.esi_applicable and profile:
+    rate = profile.esi_percentage or 0.0
+    base = categories.BASIC + categories.ALW
+    result = -(base * rate / 100.0)</field>
+        </record>
+
+        <record id="dotbd_worker_payroll_structure" model="hr.payroll.structure">
+            <field name="name">Dot BD Worker Payroll Structure</field>
+            <field name="code">DBD-WORKER</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="rule_ids" eval="[(6, 0, [
+                ref('hr_payroll_community.hr_rule_basic'),
+                ref('dotbd_rule_hra'),
+                ref('dotbd_rule_special_allowance'),
+                ref('dotbd_rule_conveyance_allowance'),
+                ref('dotbd_rule_washing_allowance'),
+                ref('dotbd_rule_medical_allowance'),
+                ref('hr_payroll_community.hr_rule_taxable'),
+                ref('dotbd_rule_pf_deduction'),
+                ref('dotbd_rule_esi_deduction'),
+                ref('dotbd_overtime_salary_rule'),
+                ref('hr_payroll_community.hr_rule_net'),
+            ])]"/>
+        </record>
+
+        <record id="dotbd_office_payroll_structure" model="hr.payroll.structure">
+            <field name="name">Dot BD Office Payroll Structure</field>
+            <field name="code">DBD-OFFICE</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="rule_ids" eval="[(6, 0, [
+                ref('hr_payroll_community.hr_rule_basic'),
+                ref('dotbd_rule_hra'),
+                ref('dotbd_rule_special_allowance'),
+                ref('dotbd_rule_conveyance_allowance'),
+                ref('dotbd_rule_washing_allowance'),
+                ref('dotbd_rule_medical_allowance'),
+                ref('hr_payroll_community.hr_rule_taxable'),
+                ref('dotbd_rule_pf_deduction'),
+                ref('dotbd_rule_esi_deduction'),
+                ref('dotbd_overtime_salary_rule'),
+                ref('hr_payroll_community.hr_rule_net'),
+            ])]"/>
+        </record>
+    </data>
+</odoo>

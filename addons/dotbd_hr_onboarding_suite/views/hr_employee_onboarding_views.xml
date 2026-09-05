@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_employee_onboarding_tree" model="ir.ui.view">
+        <field name="name">hr.employee.onboarding.list</field>
+        <field name="model">hr.employee.onboarding</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="employee_category"/>
+                <field name="template_id"/>
+                <field name="state"/>
+                <field name="start_date"/>
+                <field name="completion_date"/>
+                <field name="progress_rate"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_onboarding_form" model="ir.ui.view">
+        <field name="name">hr.employee.onboarding.form</field>
+        <field name="model">hr.employee.onboarding</field>
+        <field name="arch" type="xml">
+            <form string="Employee Onboarding">
+                <header>
+                    <button name="action_load_template" type="object" string="Load Template" class="btn-primary" invisible="template_id == False"/>
+                    <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_confirm_joining" type="object" string="Confirm Joining" class="btn-primary" invisible="joining_confirmed"/>
+                    <button name="action_schedule_probation_review" type="object" string="Schedule Probation Review" invisible="probation_review_state != 'draft'"/>
+                    <button name="action_mark_probation_review_done" type="object" string="Probation Reviewed" invisible="probation_review_state != 'scheduled'"/>
+                    <button name="action_mark_done" type="object" string="Mark Done" invisible="state != 'in_progress'"/>
+                    <button name="action_reset" type="object" string="Reset" invisible="state == 'cancel'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="employee_category"/>
+                            <field name="template_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" readonly="1"/>
+                            <field name="start_date"/>
+                            <field name="joining_confirmed"/>
+                            <field name="joining_confirmed_date" readonly="1"/>
+                            <field name="joining_confirmed_by" readonly="1"/>
+                            <field name="completion_date" readonly="1"/>
+                            <field name="progress_rate" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Joining">
+                            <group>
+                                <group>
+                                    <field name="probation_review_state"/>
+                                    <field name="probation_review_date"/>
+                                </group>
+                                <group>
+                                    <field name="probation_review_notes"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Checklist">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="step_type"/>
+                                    <field name="document_name"/>
+                                    <field name="required"/>
+                                    <field name="responsible_role"/>
+                                    <field name="verification_status"/>
+                                    <field name="status"/>
+                                    <field name="done_by" readonly="1"/>
+                                    <field name="done_on" readonly="1"/>
+                                    <field name="verified_by" readonly="1"/>
+                                    <field name="verified_on" readonly="1"/>
+                                    <field name="duration_days"/>
+                                    <button name="action_mark_verified" type="object" string="Verify" invisible="step_type != 'document'"/>
+                                    <button name="action_mark_rejected" type="object" string="Reject" invisible="step_type != 'document'"/>
+                                    <button name="action_mark_done" type="object" string="Done" invisible="step_type == 'document'"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="sequence"/>
+                                                <field name="name"/>
+                                                <field name="step_type"/>
+                                                <field name="document_name"/>
+                                                <field name="required"/>
+                                                <field name="responsible_role"/>
+                                            </group>
+                                            <group>
+                                                <field name="verification_status"/>
+                                                <field name="status"/>
+                                                <field name="duration_days"/>
+                                                <field name="done_by" readonly="1"/>
+                                                <field name="done_on" readonly="1"/>
+                                                <field name="verified_by" readonly="1"/>
+                                                <field name="verified_on" readonly="1"/>
+                                            </group>
+                                        </group>
+                                        <group string="Attachments" invisible="step_type != 'document'">
+                                            <field name="attachment_ids" widget="many2many_binary"/>
+                                        </group>
+                                        <group string="Rejection" invisible="step_type != 'document'">
+                                            <field name="rejection_reason"/>
+                                        </group>
+                                        <group>
+                                            <button name="action_mark_verified" type="object" string="Verify" class="btn-primary" invisible="step_type != 'document'"/>
+                                            <button name="action_mark_rejected" type="object" string="Reject" invisible="step_type != 'document'"/>
+                                            <button name="action_mark_done" type="object" string="Done" invisible="step_type == 'document'"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_employee_onboarding" model="ir.actions.act_window">
+        <field name="name">Employee Onboarding</field>
+        <field name="res_model">hr.employee.onboarding</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

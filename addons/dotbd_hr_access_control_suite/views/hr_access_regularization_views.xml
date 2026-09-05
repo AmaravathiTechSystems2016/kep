@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attendance_regularization_request_form_access" model="ir.ui.view">
+        <field name="name">attendance.regularization.request.form.access</field>
+        <field name="model">attendance.regularization.request</field>
+        <field name="inherit_id" ref="dotbd_hr_attendance_regularization_suite.view_attendance_regularization_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_approve']" position="attributes">
+                <attribute name="groups">dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_reject']" position="attributes">
+                <attribute name="groups">dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_revoke_approval']" position="attributes">
+                <attribute name="groups">dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_attendance_management_access" model="ir.ui.view">
+        <field name="name">hr.attendance.management.access</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree_management"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/header/button" position="attributes">
+                <attribute name="groups">dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

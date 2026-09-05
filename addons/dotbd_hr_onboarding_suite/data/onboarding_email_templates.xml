@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_hr_onboarding_started" model="mail.template">
+            <field name="name">HR Onboarding: Started</field>
+            <field name="model_id" ref="dotbd_hr_onboarding_suite.model_hr_employee_onboarding"/>
+            <field name="subject">Onboarding Started: {{ object.name }}</field>
+            <field name="email_to" eval="False"/>
+            <field name="partner_to" eval="False"/>
+            <field name="use_default_to" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-size: 13px; margin: 0px; padding: 0px;">
+    Hello <t t-out="object.employee_id.name or ''">Employee</t>,<br/><br/>
+    Your onboarding has started for the employee record <strong t-out="object.name or ''">ONB/2026/0001</strong>.
+    <br/><br/>
+    Please complete the required joining steps and upload any pending documents.
+    <br/><br/>
+    Regards,<br/>
+    HR Team
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_hr_onboarding_completed" model="mail.template">
+            <field name="name">HR Onboarding: Completed</field>
+            <field name="model_id" ref="dotbd_hr_onboarding_suite.model_hr_employee_onboarding"/>
+            <field name="subject">Onboarding Completed: {{ object.name }}</field>
+            <field name="email_to" eval="False"/>
+            <field name="partner_to" eval="False"/>
+            <field name="use_default_to" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-size: 13px; margin: 0px; padding: 0px;">
+    Hello <t t-out="object.employee_id.name or ''">Employee</t>,<br/><br/>
+    Your onboarding has been completed successfully for <strong t-out="object.name or ''">ONB/2026/0001</strong>.
+    <br/><br/>
+    Welcome aboard.
+    <br/><br/>
+    Regards,<br/>
+    HR Team
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_hr_onboarding_document_rejected" model="mail.template">
+            <field name="name">HR Onboarding: Document Rejected</field>
+            <field name="model_id" ref="dotbd_hr_onboarding_suite.model_hr_employee_onboarding_line"/>
+            <field name="subject">Document Rejected: {{ object.document_name or object.name }}</field>
+            <field name="email_to" eval="False"/>
+            <field name="partner_to" eval="False"/>
+            <field name="use_default_to" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-size: 13px; margin: 0px; padding: 0px;">
+    Hello <t t-out="object.onboarding_id.employee_id.name or ''">Employee</t>,<br/><br/>
+    The following document was rejected during onboarding:
+    <br/>
+    <strong t-out="object.document_name or object.name">Document</strong>
+    <br/><br/>
+    <t t-if="object.rejection_reason">
+        Reason: <t t-out="object.rejection_reason"/>
+        <br/><br/>
+    </t>
+    Please upload the corrected document and inform HR.
+    <br/><br/>
+    Regards,<br/>
+    HR Team
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

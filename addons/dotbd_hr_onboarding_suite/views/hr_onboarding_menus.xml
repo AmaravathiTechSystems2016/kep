@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hr_onboarding_root" name="Onboarding" parent="hr.menu_hr_root" sequence="35"/>
+    <menuitem id="menu_hr_onboarding_templates" name="Templates" parent="menu_hr_onboarding_root" action="action_hr_onboarding_template" sequence="10"/>
+    <menuitem id="menu_hr_employee_onboarding" name="Employee Onboarding" parent="menu_hr_onboarding_root" action="action_hr_employee_onboarding" sequence="20"/>
+</odoo>
+

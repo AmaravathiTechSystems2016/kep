@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_recruitment_stage_tree_inherit_employee_category" model="ir.ui.view">
+        <field name="name">hr.recruitment.stage.list.inherit.employee.category</field>
+        <field name="model">hr.recruitment.stage</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_recruitment_stage_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="attendance_category"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_recruitment_stage_form_inherit_employee_category" model="ir.ui.view">
+        <field name="name">hr.recruitment.stage.form.inherit.employee.category</field>
+        <field name="model">hr.recruitment.stage</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_recruitment_stage_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="attendance_category"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_attendance_regularization_user,Attendance Regularization User,model_attendance_regularization_request,base.group_user,1,1,1,0
+access_attendance_regularization_manager,Attendance Regularization Manager,model_attendance_regularization_request,hr_attendance.group_hr_attendance_manager,1,1,1,1

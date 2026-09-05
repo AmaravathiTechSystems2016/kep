@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_attendance_leave_encashment" model="ir.actions.act_window">
+        <field name="name">Leave Encashments</field>
+        <field name="res_model">attendance.leave.encashment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_attendance_leave_encashment_tree" model="ir.ui.view">
+        <field name="name">attendance.leave.encashment.list</field>
+        <field name="model">attendance.leave.encashment</field>
+        <field name="arch" type="xml">
+            <list string="Leave Encashments" default_order="departure_date desc">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="policy_id"/>
+                <field name="leave_type_id"/>
+                <field name="departure_date"/>
+                <field name="encashment_days"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_attendance_leave_encashment_form" model="ir.ui.view">
+        <field name="name">attendance.leave.encashment.form</field>
+        <field name="model">attendance.leave.encashment</field>
+        <field name="arch" type="xml">
+            <form string="Leave Encashment">
+                <header>
+                    <button name="action_done" type="object" string="Mark Done" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done,cancel"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="company_id"/>
+                            <field name="departure_date"/>
+                        </group>
+                        <group>
+                            <field name="policy_id"/>
+                            <field name="policy_line_id"/>
+                            <field name="leave_type_id"/>
+                            <field name="encashment_days"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Optional HR note..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_attendance_leave_encashment"
+              name="Leave Encashments"
+              parent="hr_holidays.menu_hr_holidays_configuration"
+              action="action_attendance_leave_encashment"
+              sequence="41"
+              groups="hr_holidays.group_hr_holidays_user"/>
+</odoo>
+

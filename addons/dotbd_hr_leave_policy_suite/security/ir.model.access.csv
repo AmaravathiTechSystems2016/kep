@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_attendance_leave_policy_user,attendance.leave.policy user,model_attendance_leave_policy,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_attendance_leave_policy_line_user,attendance.leave.policy.line user,model_attendance_leave_policy_line,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_attendance_leave_encashment_user,attendance.leave.encashment user,model_attendance_leave_encashment,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_attendance_leave_balance_user,attendance.leave.balance user,model_attendance_leave_balance,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_attendance_leave_balance_import_wizard_user,attendance.leave.balance.import.wizard user,model_attendance_leave_balance_import_wizard,hr_holidays.group_hr_holidays_user,1,1,1,1
+access_attendance_leave_balance_import_wizard_line_user,attendance.leave.balance.import.wizard.line user,model_attendance_leave_balance_import_wizard_line,hr_holidays.group_hr_holidays_user,1,1,1,1

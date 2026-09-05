@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_manpower_partial_approval_wizard_form" model="ir.ui.view">
+        <field name="name">manpower.requisition.partial.approval.wizard.form</field>
+        <field name="model">manpower.requisition.partial.approval.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Partial Approval">
+                <sheet>
+                    <group>
+                        <field name="requisition_id" invisible="1"/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        Set the total <strong>approved so far</strong> for each requisition line.
+                        Leave a line at <strong>0</strong> if it is not approved yet.
+                    </div>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="designation" readonly="1"/>
+                            <field name="required_count" readonly="1"/>
+                            <field name="approved_count"/>
+                        </list>
+                    </field>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

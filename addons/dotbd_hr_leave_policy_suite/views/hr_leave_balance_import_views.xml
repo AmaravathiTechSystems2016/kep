@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_attendance_leave_balance_import" model="ir.actions.act_window">
+        <field name="name">Import Old Balances</field>
+        <field name="res_model">attendance.leave.balance.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_attendance_leave_balance_import_wizard_form" model="ir.ui.view">
+        <field name="name">attendance.leave.balance.import.wizard.form</field>
+        <field name="model">attendance.leave.balance.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Old Leave Balances">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="employee_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="csv_file" filename="csv_filename"/>
+                        </group>
+                        <group>
+                            <field name="balance_year"/>
+                            <field name="csv_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" style="margin-bottom:8px;">
+                        CSV columns supported: employee_id, employee_name, policy_id, policy_name,
+                        leave_type_id, leave_type_code, leave_type_name, balance_year, opening_balance, notes.
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <button name="action_load_csv" type="object" string="Load CSV" class="btn-secondary"/>
+                    </div>
+                    <separator string="Old Balances"/>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="employee_id"/>
+                            <field name="policy_id"/>
+                            <field name="leave_type_id"/>
+                            <field name="balance_year"/>
+                            <field name="opening_balance"/>
+                            <field name="notes"/>
+                        </list>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <field name="employee_id"/>
+                                    <field name="policy_id"/>
+                                    <field name="leave_type_id"/>
+                                    <field name="balance_year"/>
+                                    <field name="opening_balance"/>
+                                    <field name="notes"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                    <div class="text-muted" style="margin-top:8px;">
+                        Imported balances will be stored as opening balances and matching opening allocations,
+                        so employees can use them in the leave flow.
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_reset_imported_balances" type="object" string="Reset Imported" class="btn-secondary"/>
+                    <button name="action_import" type="object" string="Import" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_attendance_leave_balance_import"
+              name="Import Old Balances"
+              parent="menu_attendance_leave_policy_root"
+              action="action_attendance_leave_balance_import"
+              sequence="45"
+              groups="hr_holidays.group_hr_holidays_user"/>
+</odoo>

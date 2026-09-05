@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_manpower_requisition_tree" model="ir.ui.view">
+        <field name="name">manpower.requisition.list</field>
+        <field name="model">manpower.requisition</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="employee_category"/>
+                <field name="requested_by"/>
+                <field name="request_date"/>
+                <field name="requested_headcount"/>
+                <field name="headcount_gap"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_manpower_requisition_form" model="ir.ui.view">
+        <field name="name">manpower.requisition.form</field>
+        <field name="model">manpower.requisition</field>
+        <field name="arch" type="xml">
+            <form string="Manpower Requisition">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_open_partial_approval_wizard" type="object" string="Partial Approve" class="btn-secondary" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state == 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_generated_jobs"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-briefcase"
+                                invisible="job_count == 0">
+                            <field name="job_count" widget="statinfo" string="Jobs"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="requested_by"/>
+                            <field name="employee_category"/>
+                            <field name="request_date"/>
+                        </group>
+                        <group>
+                            <field name="requested_headcount" readonly="1"/>
+                            <field name="headcount_gap" readonly="1"/>
+                            <field name="job_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Requisition Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="designation"/>
+                                    <field name="required_count"/>
+                                    <field name="approved_count" readonly="1"/>
+                                    <field name="trade_skill" invisible="parent.employee_category != 'worker'"/>
+                                    <field name="qualification" invisible="parent.employee_category != 'office'"/>
+                                    <field name="experience_years"/>
+                                    <field name="shift_requirement" invisible="parent.employee_category != 'worker'"/>
+                                    <field name="technical_skills" invisible="parent.employee_category != 'office'"/>
+                                    <field name="expected_joining_date"/>
+                                    <field name="job_id" invisible="1"/>
+                                    <field name="remarks"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Justification">
+                            <field name="justification" placeholder="Explain why this manpower is required..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_manpower_requisition_search" model="ir.ui.view">
+        <field name="name">manpower.requisition.search</field>
+        <field name="model">manpower.requisition</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="requested_by"/>
+                <field name="employee_category"/>
+                <field name="state"/>
+                <filter string="Manufacturing Workers" name="employee_worker" domain="[('employee_category', '=', 'worker')]"/>
+                <filter string="Office Staff" name="employee_office" domain="[('employee_category', '=', 'office')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <separator/>
+                <filter string="Group by Department" name="group_department" domain="[]" context="{'group_by': 'department_id'}"/>
+                <filter string="Group by Employee Category" name="group_employee_category" domain="[]" context="{'group_by': 'employee_category'}"/>
+                <filter string="Group by Status" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_manpower_requisition_pivot" model="ir.ui.view">
+        <field name="name">manpower.requisition.pivot</field>
+        <field name="model">manpower.requisition</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="department_id" type="row"/>
+                <field name="employee_category" type="col"/>
+                <field name="state" type="col"/>
+                <field name="requested_headcount" type="measure"/>
+                <field name="headcount_gap" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_manpower_requisition_graph" model="ir.ui.view">
+        <field name="name">manpower.requisition.graph</field>
+        <field name="model">manpower.requisition</field>
+        <field name="arch" type="xml">
+            <graph string="Manpower Requisition Analysis" type="bar">
+                <field name="department_id" type="row"/>
+                <field name="request_type" type="col"/>
+                <field name="requested_headcount" type="measure"/>
+                <field name="headcount_gap" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_manpower_requisition" model="ir.actions.act_window">
+        <field name="name">Manpower Requisitions</field>
+        <field name="res_model">manpower.requisition</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_manpower_requisition_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first manpower requisition</p>
+        </field>
+    </record>
+
+    <record id="action_manpower_requisition_report" model="ir.actions.act_window">
+        <field name="name">Manpower Requisition Report</field>
+        <field name="res_model">manpower.requisition</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_manpower_requisition_search"/>
+        <field name="context">{'search_default_group_department': 1}</field>
+    </record>
+
+    <menuitem id="menu_manpower_requisition_root" name="Manpower" sequence="210"/>
+    <menuitem id="menu_manpower_requisition" name="Requisitions" parent="menu_manpower_requisition_root" action="action_manpower_requisition" sequence="10"/>
+    <menuitem id="menu_manpower_requisition_report" name="Reporting" parent="menu_manpower_requisition_root" action="action_manpower_requisition_report" sequence="20"/>
+    <menuitem id="menu_manpower_requisition_dashboard" name="Dashboard" parent="menu_manpower_requisition_root" action="action_manpower_requisition_dashboard" sequence="5"/>
+</odoo>

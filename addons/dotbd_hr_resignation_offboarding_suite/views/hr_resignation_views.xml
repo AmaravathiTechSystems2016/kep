@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_resignation_form_offboarding" model="ir.ui.view">
+        <field name="name">hr.resignation.form.offboarding</field>
+        <field name="model">hr.resignation</field>
+        <field name="inherit_id" ref="hr_resignation.hr_resignation_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reason']" position="after">
+                <group string="Knowledge Transfer">
+                    <field name="attendance_category"/>
+                    <field name="handover_status"/>
+                    <field name="handover_recipient"/>
+                    <field name="handover_notes" colspan="2"/>
+                </group>
+                <group string="Exit Clearance">
+                    <field name="department_clearance"/>
+                    <field name="stores_clearance"/>
+                    <field name="admin_clearance"/>
+                    <field name="hr_clearance"/>
+                    <field name="finance_clearance"/>
+                    <field name="contractor_clearance"/>
+                    <field name="clearance_notes" colspan="2"/>
+                </group>
+                <group string="Full &amp; Final Settlement">
+                    <field name="settlement_status"/>
+                    <field name="leave_encashment_amount"/>
+                    <field name="gratuity_amount"/>
+                    <field name="dues_recovery_amount"/>
+                    <field name="esop_clawback_amount"/>
+                    <field name="settlement_notes" colspan="2"/>
+                </group>
+                <group string="Exit Interview">
+                    <field name="exit_interview_completed"/>
+                    <field name="exit_interview_feedback" colspan="2"/>
+                </group>
+                <group string="Relieving Documents">
+                    <field name="relieving_letter_issued"/>
+                    <field name="experience_certificate_issued"/>
+                    <field name="service_certificate_issued"/>
+                    <field name="trade_skill_certificate_issued"/>
+                </group>
+                <group string="PF / ESI Transfer">
+                    <field name="pf_esi_transfer_status"/>
+                    <field name="pf_esi_transfer_notes" colspan="2"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

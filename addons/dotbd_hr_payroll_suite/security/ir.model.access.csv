@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dotbd_hr_payroll_profile_hr_user,Dot BD Payroll Profile HR User,model_dotbd_hr_payroll_profile,hr.group_hr_user,1,1,1,1
+access_dotbd_hr_payroll_profile_hr_manager,Dot BD Payroll Profile HR Manager,model_dotbd_hr_payroll_profile,hr.group_hr_manager,1,1,1,1

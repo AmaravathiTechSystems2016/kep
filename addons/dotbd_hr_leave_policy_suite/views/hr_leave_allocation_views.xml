@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hr_leave_allocation_filter_inherit_leave_policy" model="ir.ui.view">
+        <field name="name">hr.leave.allocation.search.inherit.leave.policy</field>
+        <field name="model">hr.leave.allocation</field>
+        <field name="inherit_id" ref="hr_holidays.view_hr_leave_allocation_filter"/>
+        <field name="arch" type="xml">
+            <field name="holiday_status_id" position="after">
+                <field name="leave_policy_id"/>
+                <field name="leave_policy_line_id"/>
+            </field>
+            <group position="inside">
+                <filter string="Policy"
+                        name="group_leave_policy"
+                        context="{'group_by': 'leave_policy_id'}"/>
+            </group>
+        </field>
+    </record>
+
+    <record id="view_hr_leave_allocation_tree_inherit_leave_policy" model="ir.ui.view">
+        <field name="name">hr.leave.allocation.list.inherit.leave.policy</field>
+        <field name="model">hr.leave.allocation</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_allocation_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="holiday_status_id" position="after">
+                <field name="leave_policy_id" optional="show"/>
+                <field name="leave_policy_line_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>
+

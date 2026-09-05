@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_overtime_request_user,hr.overtime.request user,model_hr_overtime_request,base.group_user,1,1,1,1
+access_hr_overtime_request_manager,hr.overtime.request manager,model_hr_overtime_request,hr.group_hr_manager,1,1,1,1
+access_hr_overtime_request_payroll,hr.overtime.request payroll,model_hr_overtime_request,hr_payroll_community.group_hr_payroll_community_user,1,1,1,0
+access_hr_attendance_overtime_register,hr.attendance overtime register,model_hr_attendance,hr_payroll_community.group_hr_payroll_community_user,1,0,0,0

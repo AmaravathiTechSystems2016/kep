@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_attendance_regularization_root"
+              name="Attendance Regularization"
+              parent="hr_attendance.menu_hr_attendance_root"
+              action="action_attendance_regularization_request"
+              sequence="28"
+              groups="base.group_user"/>
+</odoo>

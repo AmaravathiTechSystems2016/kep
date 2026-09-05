@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hr_overtime_request_root"
+              name="Overtime Requests"
+              parent="hr_payroll_community.menu_hr_payroll_community_root"
+              action="action_hr_overtime_request"
+              sequence="55"/>
+    <menuitem id="menu_hr_overtime_register"
+              name="Overtime Register"
+              parent="hr_payroll_community.menu_hr_payroll_community_root"
+              action="action_hr_attendance_overtime_register"
+              sequence="56"/>
+</odoo>

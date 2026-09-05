@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_shift_roster_bulk_update_wizard_form" model="ir.ui.view">
+        <field name="name">hr.shift.roster.bulk.update.wizard.form</field>
+        <field name="model">hr.shift.roster.bulk.update.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Bulk Update Roster Lines">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="roster_id"/>
+                            <field name="line_date_from"/>
+                            <field name="line_date_to"/>
+                        </group>
+                        <group>
+                            <field name="shift_template_id"/>
+                            <field name="is_weekly_off"/>
+                            <field name="is_public_holiday"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="holiday_name"/>
+                        </group>
+                        <group>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
