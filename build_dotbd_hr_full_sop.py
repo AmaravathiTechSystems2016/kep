@@ -299,7 +299,6 @@ def build():
         ['Attendance Regularization Suite', 'Requests for missing or incorrect punches.', 'Employees, managers, HR'],
         ['Leave Policy Suite', 'Category-based leave policy, probation allocation, balances, carry-forward.', 'Employees, managers, HR'],
         ['Shift Roster Suite', 'Shift templates, assignments, roster generation and confirmation.', 'Managers, HR, attendance officer'],
-        ['Payroll Suite', 'Payroll profiles, allowances, PF/ESI flags, overtime input.', 'Payroll, HR'],
         ['Onboarding Suite', 'Employee onboarding templates, checklist, progress and documents.', 'HR, managers'],
         ['Resignation Offboarding Suite', 'Handover, clearance, settlement inputs, exit interview and documents.', 'Employee, manager, HR, Finance, Admin'],
     ], [2200, 4800, 2360])
@@ -626,7 +625,7 @@ def build():
         ['Employee master data', 'addons/dotbd_hr_manpower_requisition_suite/models/hr_employee.py and views/hr_employee_views.xml'],
         ['Attendance', 'addons/dotbd_hr_zk_attendance_suite and addons/dotbd_hr_attendance_regularization_suite'],
         ['Leave policy', 'addons/dotbd_hr_leave_policy_suite'],
-        ['Payroll', 'addons/dotbd_hr_payroll_suite and addons/hr_payroll_community'],
+        ['Payroll', 'addons/hr_payroll_community and standard payroll configuration'],
         ['Onboarding/manpower', 'addons/dotbd_hr_onboarding_suite and addons/dotbd_hr_manpower_requisition_suite'],
         ['Resignation offboarding', 'addons/dotbd_hr_resignation_offboarding_suite'],
     ], [2200, 7160])
