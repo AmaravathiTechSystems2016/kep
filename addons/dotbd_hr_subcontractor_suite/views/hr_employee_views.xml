@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='payroll_group']/group[@name='contract']" position="after">
-                <group string="Subcontractor Assignment"
-                       invisible="not subcontractor_id"
+                    <group string="Subcontractor Assignment"
+                       invisible="employee_type != 'contractor' and not subcontractor_id"
                        groups="hr.group_hr_user">
                     <field name="subcontractor_id"/>
                     <field name="subcontractor_status"/>
