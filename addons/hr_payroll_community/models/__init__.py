@@ -21,6 +21,7 @@
 #
 #############################################################################
 from . import hr_version
+from . import payroll_profile
 from . import hr_contract_advantage_template
 from . import hr_contribution_register
 from . import hr_employee

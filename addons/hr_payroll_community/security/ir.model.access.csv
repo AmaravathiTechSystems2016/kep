@@ -1,5 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_payslip_community_user,access.hr.payslip.community.user,model_hr_payslip,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
+access_hr_payroll_profile_user,access.hr.payroll.profile.user,model_hr_payroll_profile,hr_payroll_community.group_hr_payroll_community_user,1,0,0,0
+access_hr_payroll_profile_manager,access.hr.payroll.profile.manager,model_hr_payroll_profile,hr_payroll_community.group_hr_payroll_community_manager,1,1,1,1
 access_hr_salary_rule_community_user,access.hr.salary.rule.community.user,model_hr_salary_rule,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_hr_payroll_community_structure_community_user,access.hr.payroll.structure.community.user,model_hr_payroll_structure,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_hr_payroll_community_structure_hr_user,access.hr.payroll.structure.hr.user,model_hr_payroll_structure,hr.group_hr_user,1,0,0,0

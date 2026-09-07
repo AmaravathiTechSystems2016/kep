@@ -40,10 +40,10 @@ class HrContract(models.Model):
     ], string='Payroll Profile', default='manufacturing_worker',
         help="Select the payroll policy profile for this employee.")
     basic_percentage = fields.Float(
-        string='Basic Percentage (%)', default=50.0,
+        string='Basic Percentage (%)',
         help="Percentage of monthly wage used as basic salary.")
     hra_percentage = fields.Float(
-        string='HRA Percentage (%)', default=30.0,
+        string='HRA Percentage (%)',
         help="Percentage applied on basic salary for HRA.")
     schedule_pay = fields.Selection([
         ('monthly', 'Monthly'),
@@ -73,16 +73,13 @@ class HrContract(models.Model):
     esi_employee_rate = fields.Float(
         string="ESI Rate (%)",
         digits='Payroll Rate',
-        default=0.75,
         help="Employee ESI contribution percentage.")
     esi_employer_rate = fields.Float(
         string="ESI Employer Rate (%)",
         digits='Payroll Rate',
-        default=3.25,
         help="Employer ESI contribution percentage.")
     esi_wage_ceiling = fields.Float(
         string="ESI Wage Ceiling",
-        default=21000.0,
         help="Maximum monthly wage eligible for ESI.")
     professional_tax = fields.Monetary(
         string="Professional Tax",
@@ -90,11 +87,9 @@ class HrContract(models.Model):
     pf_rate = fields.Float(
         string="PF Rate (%)",
         digits='Payroll Rate',
-        default=12.0,
         help="Employee provident fund contribution percentage.")
     pf_wage_ceiling = fields.Monetary(
         string="PF Wage Ceiling",
-        default=15000.0,
         help="Maximum monthly Basic plus DA amount subject to PF.")
     uan_number = fields.Char(
         string="UAN Number",
@@ -109,7 +104,7 @@ class HrContract(models.Model):
     other_allowance = fields.Monetary(string="Other Allowance",
                                       help="Other allowances")
     overtime_multiplier = fields.Float(
-        string="Overtime Multiplier", default=2.0,
+        string="Overtime Multiplier",
         help="Multiplier applied for overtime calculations.")
 
     def get_all_structures(self):
@@ -134,39 +129,22 @@ class HrContract(models.Model):
             contract.update(contract._payroll_profile_defaults())
 
     def _payroll_profile_defaults(self):
-        """Return the standard contract values for the selected profile."""
-        profile = self.payroll_profile
-        defaults = {
-            'basic_percentage': 50.0,
-            'hra_percentage': 30.0,
-            'allowance_amount': 0.0,
-            'washing_allowance': 0.0,
-            'conveyance_allowance': 0.0,
-            'medical_allowance': 0.0,
-            'esi_applicable': False,
-            'esi_employee_rate': 0.0,
-            'esi_wage_ceiling': 0.0,
-        }
-        if profile == 'manufacturing_worker':
-            defaults.update({
-                'washing_allowance': 1250.0,
-                'esi_applicable': True,
-                'esi_employee_rate': 0.75,
-                'esi_wage_ceiling': 21000.0,
-            })
-        elif profile == 'computer_esi':
-            defaults.update({
-                'allowance_amount': 1250.0,
-                'esi_applicable': True,
-                'esi_employee_rate': 0.75,
-                'esi_wage_ceiling': 21000.0,
-            })
-        elif profile == 'computer_no_esi':
-            defaults.update({
-                'hra_percentage': 40.0,
-                'medical_allowance': 1250.0,
-            })
-        return defaults
+        """Return values from the editable profile configuration record."""
+        profile = self.env['hr.payroll.profile'].sudo().search([
+            ('code', '=', self.payroll_profile),
+        ], limit=1)
+        if not profile:
+            return {}
+        fields_to_copy = [
+            'basic_percentage', 'hra_percentage', 'allowance_amount',
+            'washing_allowance', 'conveyance_allowance', 'medical_allowance',
+            'da', 'travel_allowance', 'meal_allowance', 'other_allowance',
+            'overtime_multiplier', 'esi_applicable', 'esi_employee_rate',
+            'esi_employer_rate', 'esi_wage_ceiling', 'pf_rate',
+            'pf_wage_ceiling',
+            'professional_tax',
+        ]
+        return {field_name: profile[field_name] for field_name in fields_to_copy}
 
     @api.model_create_multi
     def create(self, vals_list):

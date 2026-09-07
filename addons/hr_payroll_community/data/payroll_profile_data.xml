@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="payroll_profile_manufacturing_worker" model="hr.payroll.profile">
+            <field name="name">Manufacturing Worker</field>
+            <field name="code">manufacturing_worker</field>
+            <field name="basic_percentage">50</field>
+            <field name="hra_percentage">30</field>
+            <field name="washing_allowance">1250</field>
+            <field name="esi_applicable">True</field>
+            <field name="esi_employee_rate">0.75</field>
+            <field name="esi_employer_rate">3.25</field>
+            <field name="esi_wage_ceiling">21000</field>
+            <field name="pf_rate">12</field>
+            <field name="pf_wage_ceiling">15000</field>
+            <field name="overtime_multiplier">2</field>
+        </record>
+        <record id="payroll_profile_computer_esi" model="hr.payroll.profile">
+            <field name="name">Computer Worker With ESI</field>
+            <field name="code">computer_esi</field>
+            <field name="basic_percentage">50</field>
+            <field name="hra_percentage">30</field>
+            <field name="allowance_amount">1250</field>
+            <field name="esi_applicable">True</field>
+            <field name="esi_employee_rate">0.75</field>
+            <field name="esi_employer_rate">3.25</field>
+            <field name="esi_wage_ceiling">21000</field>
+            <field name="pf_rate">12</field>
+            <field name="pf_wage_ceiling">15000</field>
+            <field name="overtime_multiplier">2</field>
+        </record>
+        <record id="payroll_profile_computer_no_esi" model="hr.payroll.profile">
+            <field name="name">Computer Worker Without ESI</field>
+            <field name="code">computer_no_esi</field>
+            <field name="basic_percentage">50</field>
+            <field name="hra_percentage">40</field>
+            <field name="medical_allowance">1250</field>
+            <field name="esi_applicable">False</field>
+            <field name="pf_rate">12</field>
+            <field name="pf_wage_ceiling">15000</field>
+            <field name="overtime_multiplier">2</field>
+        </record>
+    </data>
+</odoo>

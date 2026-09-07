@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payroll_profile_view_list" model="ir.ui.view">
+        <field name="name">hr.payroll.profile.list</field>
+        <field name="model">hr.payroll.profile</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="basic_percentage"/>
+                <field name="hra_percentage"/>
+                <field name="allowance_amount"/>
+                <field name="washing_allowance"/>
+                <field name="esi_applicable"/>
+                <field name="overtime_multiplier"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_payroll_profile_view_form" model="ir.ui.view">
+        <field name="name">hr.payroll.profile.form</field>
+        <field name="model">hr.payroll.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="currency_id"/>
+                    </group>
+                    <group string="Earnings">
+                        <field name="basic_percentage"/>
+                        <field name="hra_percentage"/>
+                        <field name="da"/>
+                        <field name="allowance_amount"/>
+                        <field name="washing_allowance"/>
+                        <field name="conveyance_allowance"/>
+                        <field name="medical_allowance"/>
+                        <field name="travel_allowance"/>
+                        <field name="meal_allowance"/>
+                        <field name="other_allowance"/>
+                        <field name="overtime_multiplier"/>
+                    </group>
+                    <group string="Statutory Deductions">
+                        <field name="esi_applicable"/>
+                        <field name="esi_employee_rate"/>
+                        <field name="esi_employer_rate"/>
+                        <field name="esi_wage_ceiling"/>
+                        <field name="pf_rate"/>
+                        <field name="pf_wage_ceiling"/>
+                        <field name="professional_tax"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_payroll_profile_action" model="ir.actions.act_window">
+        <field name="name">Payroll Profiles</field>
+        <field name="res_model">hr.payroll.profile</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="hr_payroll_profile_menu"
+              name="Payroll Profiles"
+              parent="hr_payroll_community.menu_hr_payroll_community_configuration"
+              action="hr_payroll_profile_action"
+              groups="hr_payroll_community.group_hr_payroll_community_manager"
+              sequence="10"/>
+</odoo>
