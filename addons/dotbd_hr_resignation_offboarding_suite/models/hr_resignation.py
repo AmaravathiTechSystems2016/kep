@@ -6,6 +6,20 @@ from odoo import api, fields, models
 class HrResignation(models.Model):
     _inherit = 'hr.resignation'
 
+    def action_approve_resignation(self):
+        """Approve using the requested last day as the final date."""
+        result = super().action_approve_resignation()
+        for resignation in self:
+            if resignation.state == 'approved' and resignation.expected_revealing_date:
+                resignation.approved_revealing_date = (
+                    resignation.expected_revealing_date
+                )
+                if not resignation.employee_id.active:
+                    resignation.employee_id.departure_date = (
+                        resignation.expected_revealing_date
+                    )
+        return result
+
     @api.depends('employee_id')
     def _compute_notice_period(self):
         """Read protected contract data without exposing it to employees."""
