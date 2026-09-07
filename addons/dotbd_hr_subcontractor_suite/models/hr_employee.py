@@ -28,13 +28,22 @@ class HrEmployee(models.Model):
 
     def write(self, vals):
         vals = dict(vals)
-        if 'contractor_code' in vals and any(employee.subcontractor_id for employee in self):
+        if (not self.env.context.get('allow_subcontractor_code')
+                and 'contractor_code' in vals
+                and any(employee.subcontractor_id for employee in self)):
             vals.pop('contractor_code')
         result = super().write(vals)
         for employee in self:
-            if employee.subcontractor_id and not employee.contractor_code:
-                employee.contractor_code = self._next_subcontractor_code(
-                    employee.subcontractor_id)
+            if employee.subcontractor_id:
+                expected_prefix = '%s-EMP/' % employee.subcontractor_id.code
+                if ('subcontractor_id' in vals
+                        or not employee.contractor_code
+                        or not employee.contractor_code.startswith(expected_prefix)):
+                    employee.with_context(
+                        allow_subcontractor_code=True).write({
+                            'contractor_code': self._next_subcontractor_code(
+                                employee.subcontractor_id),
+                        })
         return result
 
     def _next_subcontractor_code(self, subcontractor):
