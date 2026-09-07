@@ -20,6 +20,32 @@ class HrResignation(models.Model):
                     )
         return result
 
+    def update_employee_status(self):
+        """Deactivate approved resignations when their last day is reached."""
+        today = fields.Date.today()
+        resignations = self.sudo().search([
+            ('state', '=', 'approved'),
+            ('approved_revealing_date', '<=', today),
+            ('employee_id.active', '=', True),
+        ])
+        for resignation in resignations:
+            employee = resignation.employee_id
+            employee.active = False
+            employee.resign_date = resignation.approved_revealing_date
+            if resignation.resignation_type == 'resigned':
+                employee.resigned = True
+                reason_name = 'Resigned'
+            else:
+                employee.fired = True
+                reason_name = 'Fired'
+            employee.departure_reason_id = self.env[
+                'hr.departure.reason'
+            ].search([('name', '=', reason_name)], limit=1)
+            employee.departure_date = resignation.approved_revealing_date
+            if employee.user_id:
+                employee.user_id.active = False
+                employee.user_id = False
+
     @api.depends('employee_id')
     def _compute_notice_period(self):
         """Read protected contract data without exposing it to employees."""
