@@ -39,17 +39,28 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <strong>Date of Joining</strong>
+                                </td>
+                                <td>
+                                    <span t-if="o.employee_id.joining_date" t-field="o.employee_id.joining_date"/>
+                                    <span t-else="">Not provided</span>
+                                </td>
+                                <td>
                                     <strong>Reference</strong>
                                 </td>
                                 <td>
                                     <span t-field="o.number"/>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td>
                                     <strong>Bank Account</strong>
                                 </td>
                                 <td>
                                     <span t-field="o.employee_id.bank_account_id"/>
                                 </td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>
