@@ -6,6 +6,17 @@ from odoo import api, fields, models
 class HrResignation(models.Model):
     _inherit = 'hr.resignation'
 
+    resignation_type = fields.Selection(
+        [
+            ('resigned', 'Normal Resignation'),
+            ('fired', 'Fired by the company'),
+        ],
+        string='Type',
+        default='resigned',
+        groups='hr.group_hr_user',
+        tracking=True,
+    )
+
     def action_approve_resignation(self):
         """Approve using the requested last day as the final date."""
         result = super().action_approve_resignation()
