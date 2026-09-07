@@ -22,7 +22,6 @@ class HrEmployee(models.Model):
         for employee in self:
             if employee.subcontractor_id:
                 employee.employee_type = 'contractor'
-                employee.contractor_code = employee.subcontractor_id.code
                 if not employee.subcontractor_join_date:
                     employee.subcontractor_join_date = employee.subcontractor_id.contract_start
 
