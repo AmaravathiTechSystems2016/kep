@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_view_form_subcontractor" model="ir.ui.view">
+        <field name="name">hr.employee.form.subcontractor</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_type']" position="after">
+                <group string="Subcontractor Assignment"
+                       invisible="not subcontractor_id"
+                       groups="hr.group_hr_user">
+                    <field name="subcontractor_id"/>
+                    <field name="subcontractor_status"/>
+                    <field name="subcontractor_join_date"/>
+                    <field name="subcontractor_end_date"/>
+                    <field name="contractor_code"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

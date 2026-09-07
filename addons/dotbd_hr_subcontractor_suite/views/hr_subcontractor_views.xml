@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_subcontractor_view_list" model="ir.ui.view">
+        <field name="name">hr.subcontractor.list</field>
+        <field name="model">hr.subcontractor</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="service_type"/>
+                <field name="contract_start"/>
+                <field name="contract_end"/>
+                <field name="employee_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_subcontractor_view_form" model="ir.ui.view">
+        <field name="name">hr.subcontractor.form</field>
+        <field name="model">hr.subcontractor</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object"
+                            class="oe_highlight" invisible="state != 'submitted'"
+                            groups="dotbd_hr_access_control_suite.group_hr_manager"/>
+                    <button name="action_activate" string="Activate" type="object"
+                            class="oe_highlight" invisible="state != 'approved'"
+                            groups="dotbd_hr_access_control_suite.group_hr_manager"/>
+                    <button name="action_close" string="Close" type="object"
+                            invisible="state != 'active'"
+                            groups="dotbd_hr_access_control_suite.group_hr_manager"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state not in ('draft', 'submitted')"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft"
+                            type="object" invisible="state not in ('cancelled', 'closed')"
+                            groups="dotbd_hr_access_control_suite.group_hr_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,active,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <field name="code" readonly="1"/>
+                    </div>
+                    <group>
+                        <group string="Subcontractor">
+                            <field name="partner_id"/>
+                            <field name="contact_name"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="service_type"/>
+                        </group>
+                        <group string="Assignment Control">
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="responsible_user_id"/>
+                            <field name="contract_start"/>
+                            <field name="contract_end"/>
+                            <field name="employee_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assigned Employees">
+                            <field name="employee_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="employee_type"/>
+                                    <field name="department_id"/>
+                                    <field name="subcontractor_status"/>
+                                    <field name="subcontractor_join_date"/>
+                                    <field name="subcontractor_end_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_subcontractor_action" model="ir.actions.act_window">
+        <field name="name">Subcontractors</field>
+        <field name="res_model">hr.subcontractor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="hr_subcontractor_menu_root" name="Subcontractors"
+              parent="hr.menu_hr_root"
+              groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_department_manager"
+              sequence="35"/>
+    <menuitem id="hr_subcontractor_menu_request" name="Subcontractors"
+              parent="hr_subcontractor_menu_root" action="hr_subcontractor_action"
+              groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_department_manager"/>
+</odoo>
