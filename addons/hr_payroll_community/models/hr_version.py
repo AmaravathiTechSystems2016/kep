@@ -131,37 +131,57 @@ class HrContract(models.Model):
     def _onchange_payroll_profile(self):
         """Apply a sensible default setup for the chosen payroll profile."""
         for contract in self:
-            profile = contract.payroll_profile
-            if profile == 'manufacturing_worker':
-                contract.basic_percentage = 50.0
-                contract.hra_percentage = 30.0
-                contract.allowance_amount = 0.0
-                contract.washing_allowance = 1250.0
-                contract.conveyance_allowance = 0.0
-                contract.medical_allowance = 0.0
-                contract.esi_applicable = True
-                contract.esi_employee_rate = 0.75
-                contract.esi_wage_ceiling = 21000.0
-            elif profile == 'computer_esi':
-                contract.basic_percentage = 50.0
-                contract.hra_percentage = 30.0
-                contract.allowance_amount = 1250.0
-                contract.washing_allowance = 0.0
-                contract.conveyance_allowance = 0.0
-                contract.medical_allowance = 0.0
-                contract.esi_applicable = True
-                contract.esi_employee_rate = 0.75
-                contract.esi_wage_ceiling = 21000.0
-            elif profile == 'computer_no_esi':
-                contract.basic_percentage = 50.0
-                contract.hra_percentage = 40.0
-                contract.allowance_amount = 0.0
-                contract.washing_allowance = 0.0
-                contract.conveyance_allowance = 0.0
-                contract.medical_allowance = 1250.0
-                contract.esi_applicable = False
-                contract.esi_employee_rate = 0.0
-                contract.esi_wage_ceiling = 0.0
+            contract.update(contract._payroll_profile_defaults())
+
+    def _payroll_profile_defaults(self):
+        """Return the standard contract values for the selected profile."""
+        profile = self.payroll_profile
+        defaults = {
+            'basic_percentage': 50.0,
+            'hra_percentage': 30.0,
+            'allowance_amount': 0.0,
+            'washing_allowance': 0.0,
+            'conveyance_allowance': 0.0,
+            'medical_allowance': 0.0,
+            'esi_applicable': False,
+            'esi_employee_rate': 0.0,
+            'esi_wage_ceiling': 0.0,
+        }
+        if profile == 'manufacturing_worker':
+            defaults.update({
+                'washing_allowance': 1250.0,
+                'esi_applicable': True,
+                'esi_employee_rate': 0.75,
+                'esi_wage_ceiling': 21000.0,
+            })
+        elif profile == 'computer_esi':
+            defaults.update({
+                'allowance_amount': 1250.0,
+                'esi_applicable': True,
+                'esi_employee_rate': 0.75,
+                'esi_wage_ceiling': 21000.0,
+            })
+        elif profile == 'computer_no_esi':
+            defaults.update({
+                'hra_percentage': 40.0,
+                'medical_allowance': 1250.0,
+            })
+        return defaults
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        contracts = super().create(vals_list)
+        for contract, vals in zip(contracts, vals_list):
+            if 'payroll_profile' in vals:
+                contract.update(contract._payroll_profile_defaults())
+        return contracts
+
+    def write(self, vals):
+        result = super().write(vals)
+        if 'payroll_profile' in vals:
+            for contract in self:
+                contract.update(contract._payroll_profile_defaults())
+        return result
 
     def get_attribute(self, code, attribute):
         """Function for return code for Contract"""
