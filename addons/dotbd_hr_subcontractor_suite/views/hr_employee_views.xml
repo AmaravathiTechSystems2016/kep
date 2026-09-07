@@ -5,6 +5,9 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='contractor_code']" position="attributes">
+                <attribute name="readonly">subcontractor_id</attribute>
+            </xpath>
             <xpath expr="//group[@name='payroll_group']/group[@name='contract']" position="after">
                     <group string="Subcontractor Assignment"
                        invisible="employee_type != 'contractor' and not subcontractor_id"

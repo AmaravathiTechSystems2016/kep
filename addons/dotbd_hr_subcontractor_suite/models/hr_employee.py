@@ -20,13 +20,16 @@ class HrEmployee(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('subcontractor_id') and not vals.get('contractor_code'):
+            if vals.get('subcontractor_id'):
                 subcontractor = self.env['hr.subcontractor'].browse(
                     vals['subcontractor_id'])
                 vals['contractor_code'] = self._next_subcontractor_code(subcontractor)
         return super().create(vals_list)
 
     def write(self, vals):
+        vals = dict(vals)
+        if 'contractor_code' in vals and any(employee.subcontractor_id for employee in self):
+            vals.pop('contractor_code')
         result = super().write(vals)
         for employee in self:
             if employee.subcontractor_id and not employee.contractor_code:
