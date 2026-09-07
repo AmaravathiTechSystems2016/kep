@@ -95,9 +95,9 @@
 
     <menuitem id="hr_subcontractor_menu_root" name="Subcontractors"
               parent="hr.menu_hr_root"
-              groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_department_manager"
+              groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_department_manager,base.group_system"
               sequence="35"/>
     <menuitem id="hr_subcontractor_menu_request" name="Subcontractors"
               parent="hr_subcontractor_menu_root" action="hr_subcontractor_action"
-              groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_department_manager"/>
+              groups="dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_department_manager,base.group_system"/>
 </odoo>

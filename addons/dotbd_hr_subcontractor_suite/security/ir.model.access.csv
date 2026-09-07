@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_subcontractor_officer,HR Subcontractor HR Officer,model_hr_subcontractor,dotbd_hr_access_control_suite.group_hr_officer,1,1,1,1
 access_hr_subcontractor_manager,HR Subcontractor HR Manager,model_hr_subcontractor,dotbd_hr_access_control_suite.group_hr_manager,1,1,1,1
 access_hr_subcontractor_department_manager,HR Subcontractor Department Manager,model_hr_subcontractor,dotbd_hr_access_control_suite.group_hr_department_manager,1,0,0,0
+access_hr_subcontractor_system,HR Subcontractor System Administrator,model_hr_subcontractor,base.group_system,1,1,1,1
