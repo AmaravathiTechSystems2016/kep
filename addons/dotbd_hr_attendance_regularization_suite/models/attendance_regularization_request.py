@@ -175,6 +175,30 @@ class AttendanceRegularizationRequest(models.Model):
                     'There is already a draft/submitted regularization request for this employee on the same date.'
                 ))
 
+    def _check_approved_leave(self):
+        Leave = self.env['hr.leave'].sudo()
+        for request in self:
+            if not request.employee_id or not request.request_date:
+                continue
+            leave = Leave.search([
+                ('employee_id', '=', request.employee_id.id),
+                ('state', '=', 'validate'),
+                ('request_date_from', '<=', request.request_date),
+                ('request_date_to', '>=', request.request_date),
+            ], limit=1)
+            if leave:
+                raise ValidationError(_(
+                    'Attendance regularization is not allowed for %(employee)s on %(date)s because %(leave)s is approved.'
+                ) % {
+                    'employee': request.employee_id.name,
+                    'date': request.request_date,
+                    'leave': leave.holiday_status_id.sudo().name,
+                })
+
+    @api.constrains('employee_id', 'request_date')
+    def _check_regularization_leave_conflict(self):
+        self._check_approved_leave()
+
     def _get_day_bounds(self):
         self.ensure_one()
         day_start = datetime.combine(self.request_date, time.min)
@@ -247,6 +271,8 @@ class AttendanceRegularizationRequest(models.Model):
         for rec in self:
             if rec.state not in ('submitted', 'draft'):
                 continue
+
+            rec._check_approved_leave()
 
             attendance = rec._find_attendance()
             values = {}

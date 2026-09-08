@@ -1,0 +1,27 @@
+EMPLOYEE LEAVE OPENING BALANCE IMPORT - DOTBD LEAVE POLICY SUITE
+
+This file is for the custom module `dotbd_hr_leave_policy_suite`.
+It can be opened and edited in Excel, then uploaded through the custom import wizard.
+
+Before importing:
+1. Create the employees in Employees.
+2. Assign the correct leave policy to each employee.
+3. Create the required Time Off Types in Time Off > Configuration > Time Off Types.
+4. Replace the sample Employee, Policy, and Leave Type names with exact names from Odoo.
+5. Enter the year as a four-digit number.
+6. Enter a positive opening_balance. Do not use a negative value.
+
+Import steps:
+1. Open Time Off > Configuration > Import Old Balances.
+2. Set the Company and Balance Year.
+3. Upload employee_leave_opening_balance_import.csv.
+4. Click Load CSV.
+5. Review the displayed balance lines and correct any unmatched names.
+6. Click Import.
+
+Important:
+- This custom wizard stores the opening balance in Leave Balances and creates the matching opening allocation automatically.
+- The custom wizard approves the opening allocation automatically.
+- The supported CSV columns are: employee_id, employee_name, policy_id, policy_name, leave_type_id, leave_type_code, leave_type_name, balance_year, opening_balance, notes.
+- Use either an ID or a name for employees, policies, and leave types. Names must match Odoo exactly.
+- Import each employee/leave type/year combination only once to avoid duplicate balances.

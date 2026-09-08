@@ -30,6 +30,9 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
     _name = 'report.hr_payroll_community.report_payslipdetails'
     _description = 'Payslip Details Report'
 
+    # The payslip builder consolidates unpaid leave and absence into one line.
+    _LOP_CODES = frozenset(('LOP',))
+
     @staticmethod
     def _line_amounts(payslip):
         amounts = {}
@@ -56,7 +59,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         )
         lop_days = sum(
             line.number_of_days for line in payslip.worked_days_line_ids
-            if line.code in ('UNPAID', 'LOP')
+            if (line.code or '').strip().upper() in self._LOP_CODES
         )
         wage = float(getattr(contract, 'wage', 0.0) or 0.0)
         basic_percentage = float(
@@ -79,7 +82,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         conveyance = self._amount(amounts, 'Travel')
         net = self._amount(amounts, 'NET')
         deduction_codes = ('PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS',
-                           'UNPAID', 'LOP')
+                           *self._LOP_CODES)
         total_deductions = abs(sum(
             amount for code, amount in amounts.items()
             if code in deduction_codes and amount < 0
@@ -87,7 +90,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         other_deductions = abs(sum(
             amount for code, amount in amounts.items()
             if code not in ('PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS',
-                            'UNPAID', 'LOP', 'NET') and amount < 0
+                            *self._LOP_CODES, 'NET') and amount < 0
         ))
         total_deductions += other_deductions
         master_total = (
@@ -119,7 +122,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
             'salary_advance': abs(self._amount(amounts, 'SALARY_ADVANCE')),
             'tds': abs(self._amount(amounts, 'TDS')),
             'other_deductions': other_deductions,
-            'lop': abs(self._amount(amounts, 'UNPAID', 'LOP')),
+            'lop': abs(self._amount(amounts, *self._LOP_CODES)),
             'total_deductions': total_deductions,
             'net': net,
             'salary_in_words': payslip.company_id.currency_id.amount_to_text(net),

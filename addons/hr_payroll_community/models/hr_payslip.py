@@ -288,6 +288,7 @@ class HrPayslip(models.Model):
             == 'worker'
         )
 
+
     @api.model
     def get_worked_day_lines(self, contracts, date_from, date_to):
         """
@@ -374,6 +375,28 @@ class HrPayslip(models.Model):
                 while current_date <= last_date:
                     if current_date.weekday() == 6:
                         attendance_days[current_date] = 1.0
+                    current_date += timedelta(days=1)
+
+            # Keep LOP as an informational count only. Salary is already
+            # prorated by the payroll rules, so this line must not deduct pay.
+            lop_days = 0.0
+            current_date = fields.Date.from_string(date_from)
+            last_date = fields.Date.from_string(date_to)
+            leave_dates = {
+                day.date() if hasattr(day, 'date') else day
+                for day, hours, leave in day_leave_intervals
+                if leave
+            }
+            while current_date <= last_date:
+                if not self._is_unpaid_sunday(contract, current_date):
+                    scheduled_hours = self._get_scheduled_hours_for_day(
+                        contract, current_date
+                    )
+                    if scheduled_hours and current_date not in leave_dates:
+                        lop_days += max(
+                            1.0 - min(attendance_days.get(current_date, 0.0), 1.0),
+                            0.0,
+                        )
                 current_date += timedelta(days=1)
 
             worked_days = sum(
@@ -395,6 +418,17 @@ class HrPayslip(models.Model):
                 'contract_id': contract.id,
             }
             res.append(attendances)
+            if lop_days:
+                res.append({
+                    'name': _('Loss of Pay (Informational)'),
+                    'sequence': 10,
+                    'code': 'LOP',
+                    'number_of_days': lop_days,
+                    'number_of_hours': lop_days * (
+                        getattr(calendar, 'hours_per_day', 0.0) or 0.0
+                    ),
+                    'contract_id': contract.id,
+                })
             uniq_leaves = [*set(multi_leaves)]
             c_leaves = {}
             for rec in uniq_leaves:
@@ -688,9 +722,9 @@ class HrPayslip(models.Model):
         locale = self.env.context.get('lang') or 'en_US'
         res['value'].update({
             'name': _('Salary Slip of %s for %s') % (
-                employee.name, tools.ustr(
-                    babel.dates.format_date(date=ttyme, format='MMMM-y',
-                                            locale=locale))),
+                employee.name,
+                babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale),
+            ),
             'company_id': employee.company_id.id,
         })
         if not self.env.context.get('contract'):
@@ -739,9 +773,9 @@ class HrPayslip(models.Model):
         ttyme = datetime.combine(fields.Date.from_string(date_from), time.min)
         locale = self.env.context.get('lang') or 'en_US'
         self.name = _('Salary Slip of %s for %s') % (
-            employee.name, tools.ustr(
-                babel.dates.format_date(date=ttyme, format='MMMM-y',
-                                        locale=locale)))
+            employee.name,
+            babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale),
+        )
         self.company_id = employee.company_id
         if not self.env.context.get('contract') or not self.contract_id:
             contract_ids = self.get_contract(employee, date_from, date_to)

@@ -144,6 +144,7 @@
                         <page string="Worked Days &amp; Inputs">
                             <separator string="Worked Days"/>
                             <field name="worked_days_line_ids"
+                                   domain="[('code', '!=', 'LOP')]"
                                    readonly="state != 'draft'">
                                 <list string="Worked Days" editable="bottom">
                                     <field name="name"/>

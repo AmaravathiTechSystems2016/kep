@@ -9,6 +9,7 @@ import logging
 import pytz
 from datetime import datetime, timedelta, time
 from odoo import fields, models, api
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -75,6 +76,45 @@ class HrAttendance(models.Model):
         string='Comp-Off Hours',
         compute='_compute_roster_time_metrics',
         help='Hours worked on a rostered weekly off.')
+
+    def _approved_leave_for_datetime(self, employee, value):
+        """Return approved leave covering the local date of a punch."""
+        if not employee or not value:
+            return self.env['hr.leave'].browse()
+        local_date = fields.Datetime.context_timestamp(
+            employee, fields.Datetime.to_datetime(value)
+        ).date()
+        return self.env['hr.leave'].sudo().search([
+            ('employee_id', '=', employee.id),
+            ('state', '=', 'validate'),
+            ('request_date_from', '<=', local_date),
+            ('request_date_to', '>=', local_date),
+        ], limit=1)
+
+    def _check_approved_leave(self, employee, value):
+        leave = self._approved_leave_for_datetime(employee, value)
+        if leave:
+            raise ValidationError(
+                'Attendance cannot be added for %s because %s is approved on that date.'
+                % (employee.name, leave.holiday_status_id.sudo().name)
+            )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for values in vals_list:
+            employee = self.env['hr.employee'].browse(values.get('employee_id'))
+            self._check_approved_leave(employee, values.get('check_in'))
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if 'check_in' in vals or 'employee_id' in vals:
+            for attendance in self:
+                employee = self.env['hr.employee'].browse(
+                    vals.get('employee_id', attendance.employee_id.id)
+                )
+                check_in = vals.get('check_in', attendance.check_in)
+                self._check_approved_leave(employee, check_in)
+        return super().write(vals)
 
     # ZK Machine Integration
     zk_punch_ids = fields.One2many(

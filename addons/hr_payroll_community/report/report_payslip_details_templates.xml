@@ -46,7 +46,7 @@
                             <tr><td>Department:</td><td t-esc="report_data['department']"/><td>IFSC Code:</td><td t-esc="report_data['ifsc']"/></tr>
                             <tr><td>Location:</td><td t-esc="report_data['location']"/><td>ESI No:</td><td t-esc="report_data['esi_number']"/></tr>
                             <tr><td>EMP Effective Work Days:</td><td t-esc="summary['worked_days']"/><td>PF UAN:</td><td><span t-if="o.employee_id.uan_number" t-field="o.employee_id.uan_number"/><span t-else="">Not provided</span></td></tr>
-                            <tr><td>LOP:</td><td t-esc="summary['lop_days']"/><td></td><td></td></tr>
+                            <tr><td>LOP Days:</td><td t-esc="summary['lop_days']"/><td></td><td></td></tr>
                         </table>
                         <table class="salary-table">
                             <colgroup><col style="width: 25%;"/><col style="width: 12.5%;"/><col style="width: 12.5%;"/><col style="width: 25%;"/><col style="width: 25%;"/></colgroup>
