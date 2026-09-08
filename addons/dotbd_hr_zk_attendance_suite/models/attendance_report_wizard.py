@@ -6,7 +6,7 @@
 #
 ################################################################################
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 import base64
 from io import BytesIO
 import xlsxwriter
@@ -40,6 +40,7 @@ class AttendanceReportWizard(models.TransientModel):
     def action_generate_report(self):
         """Generate Excel report"""
         self.ensure_one()
+        self._check_employee_scope()
 
         if self.report_type == 'summary':
             report_data = self._generate_summary_report()
@@ -57,6 +58,24 @@ class AttendanceReportWizard(models.TransientModel):
             'res_id': self.id,
             'target': 'new',
         }
+
+    def _report_employee_ids(self):
+        """Return employee IDs allowed for this user's export."""
+        if self.env.user.has_group('hr.group_hr_user'):
+            return self.employee_ids.ids or None
+        own_employees = self.env['hr.employee'].search([
+            ('user_id', '=', self.env.uid),
+        ])
+        return self.employee_ids.ids or own_employees.ids
+
+    def _check_employee_scope(self):
+        if self.env.user.has_group('hr.group_hr_user'):
+            return
+        own_ids = set(self.env['hr.employee'].search([
+            ('user_id', '=', self.env.uid),
+        ]).ids)
+        if any(employee.id not in own_ids for employee in self.employee_ids):
+            raise AccessError(_('Employees can export only their own attendance.'))
 
     def _generate_summary_report(self):
         """Generate summary Excel report"""
@@ -99,7 +118,7 @@ class AttendanceReportWizard(models.TransientModel):
 
         # Get data
         AttendanceSummary = self.env['attendance.summary.analysis']
-        employee_ids = self.employee_ids.ids if self.employee_ids else None
+        employee_ids = self._report_employee_ids()
 
         summary_data = AttendanceSummary.get_attendance_summary(
             employee_ids, self.start_date, self.end_date
@@ -232,7 +251,7 @@ class AttendanceReportWizard(models.TransientModel):
 
         # Get data
         AttendanceSummary = self.env['attendance.summary.analysis']
-        employee_ids = self.employee_ids.ids if self.employee_ids else None
+        employee_ids = self._report_employee_ids()
 
         summary_data = AttendanceSummary.get_attendance_summary(
             employee_ids, self.start_date, self.end_date
@@ -425,8 +444,9 @@ class AttendanceReportWizard(models.TransientModel):
             ('attendance_date', '<=', self.end_date),
         ]
 
-        if self.employee_ids:
-            domain.append(('employee_id', 'in', self.employee_ids.ids))
+        employee_ids = self._report_employee_ids()
+        if employee_ids:
+            domain.append(('employee_id', 'in', employee_ids))
 
         anomaly_records = self.env['attendance.anomaly.analysis'].search(
             domain, order='attendance_date desc, employee_id'
@@ -573,8 +593,9 @@ class AttendanceReportWizard(models.TransientModel):
             ('date', '<=', self.end_date)
         ]
 
-        if self.employee_ids:
-            domain.append(('employee_id', 'in', self.employee_ids.ids))
+        employee_ids = self._report_employee_ids()
+        if employee_ids:
+            domain.append(('employee_id', 'in', employee_ids))
 
         late_records = LateCheckIn.search(domain, order='date desc, employee_id')
 

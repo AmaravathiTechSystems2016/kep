@@ -200,7 +200,7 @@ class BiometricDeviceDetails(models.Model):
     ], string='Time Sync Method', default='odoo', required=True,
        help='Method to determine the correct time for this device.')
 
-    custom_timezone = fields.Selection('_tz_get', string='Custom Timezone', default='Asia/Dhaka',
+    custom_timezone = fields.Selection('_tz_get', string='Custom Timezone', default='Asia/Kolkata',
                                        help='Select the timezone to use for this device.')
 
     manual_datetime = fields.Datetime(string='Manual Date & Time',

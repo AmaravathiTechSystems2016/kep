@@ -74,14 +74,14 @@ class ADMSController(http.Controller):
         the device will record timestamps in that timezone, so we must interpret
         them with the same timezone when converting to UTC for Odoo storage.
 
-        Rule: custom_timezone (user-set, default Asia/Dhaka) → company timezone → Asia/Dhaka
+        Rule: custom_timezone (user-set, default Asia/Kolkata) → company timezone → Asia/Kolkata
         NOTE: effective_timezone is intentionally excluded here — it is set by PyZK
         (direct connection mode) and may differ from what ADMS is actually using.
         Using effective_timezone in ADMS would break timezone conversion.
         """
         if device.custom_timezone:
             return device.custom_timezone
-        return (device.company_id.partner_id.tz or 'Asia/Dhaka')
+        return (device.company_id.partner_id.tz or 'Asia/Kolkata')
 
     # ─────────────────────────── /iclock/cdata ───────────────────────────
 
@@ -145,7 +145,7 @@ class ADMSController(http.Controller):
         try:
             local_tz = pytz.timezone(tz_str)
         except pytz.UnknownTimeZoneError:
-            local_tz = pytz.timezone('Asia/Dhaka')
+            local_tz = pytz.timezone('Asia/Kolkata')
         device_local_time = datetime.now(pytz.utc).astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
 
         # Response: tell device what tables to push, heartbeat interval, and correct time

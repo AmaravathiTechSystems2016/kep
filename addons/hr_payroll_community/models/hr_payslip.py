@@ -25,7 +25,7 @@ from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
-from pytz import timezone
+from pytz import UTC, timezone
 import babel
 
 # This will generate 16th of days
@@ -300,22 +300,37 @@ class HrPayslip(models.Model):
         # fill only if the contract as a working schedule linked
         for contract in contracts.filtered(
                 lambda contract: contract.resource_calendar_id):
-            day_from = datetime.combine(fields.Date.from_string(date_from),
-                                        time.min)
-            day_to = datetime.combine(fields.Date.from_string(date_to),
-                                      time.max)
             # compute leave days
             leaves = {}
             calendar = contract.resource_calendar_id
             tz = timezone(calendar.tz)
+            period_start_local = datetime.combine(
+                fields.Date.from_string(date_from), time.min)
+            period_end_local = datetime.combine(
+                fields.Date.from_string(date_to), time.max)
+            day_from = tz.localize(period_start_local).astimezone(UTC).replace(
+                tzinfo=None)
+            day_to = tz.localize(period_end_local).astimezone(UTC).replace(
+                tzinfo=None)
+
+            def _local_datetime(value):
+                value = fields.Datetime.to_datetime(value)
+                if value.tzinfo is None:
+                    value = UTC.localize(value)
+                return value.astimezone(tz).replace(tzinfo=None)
+
             day_leave_intervals = contract.employee_id.list_leaves(
                 day_from, day_to, calendar=contract.resource_calendar_id)
             multi_leaves = []
             for day, hours, leave in day_leave_intervals:
-                leave_date = day.date() if hasattr(day, 'date') else day
+                leave_date = (
+                    day.astimezone(tz).date()
+                    if getattr(day, 'tzinfo', None) else day
+                )
                 if self._is_unpaid_sunday(contract, leave_date):
                     continue
-                work_hours = self._get_scheduled_hours_for_day(contract, day)
+                work_hours = self._get_scheduled_hours_for_day(
+                    contract, leave_date)
                 if len(leave) > 1:
                     for each in leave:
                         if each.holiday_id:
@@ -351,8 +366,10 @@ class HrPayslip(models.Model):
                 ('check_out', '!=', False),
             ])
             for attendance in attendance_records:
-                check_in = max(attendance.check_in, day_from)
-                check_out = min(attendance.check_out, day_to)
+                check_in = max(
+                    _local_datetime(attendance.check_in), period_start_local)
+                check_out = min(
+                    _local_datetime(attendance.check_out), period_end_local)
                 if check_out <= check_in:
                     continue
                 attendance_date = check_in.date()
@@ -383,7 +400,8 @@ class HrPayslip(models.Model):
             current_date = fields.Date.from_string(date_from)
             last_date = fields.Date.from_string(date_to)
             leave_dates = {
-                day.date() if hasattr(day, 'date') else day
+                day.astimezone(tz).date()
+                if getattr(day, 'tzinfo', None) else day
                 for day, hours, leave in day_leave_intervals
                 if leave
             }
@@ -404,10 +422,12 @@ class HrPayslip(models.Model):
                 for day_fraction in attendance_days.values()
             )
             worked_hours = sum(
-                (min(attendance.check_out, day_to) -
-                 max(attendance.check_in, day_from)).total_seconds() / 3600.0
+                (min(_local_datetime(attendance.check_out), period_end_local) -
+                 max(_local_datetime(attendance.check_in), period_start_local)
+                 ).total_seconds() / 3600.0
                 for attendance in attendance_records
-                if attendance.check_out > max(attendance.check_in, day_from)
+                if _local_datetime(attendance.check_out) > max(
+                    _local_datetime(attendance.check_in), period_start_local)
             )
             attendances = {
                 'name': _("Normal Working Days paid at 100%"),

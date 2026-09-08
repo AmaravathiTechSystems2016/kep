@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class HrSubcontractor(models.Model):
@@ -64,23 +64,35 @@ class HrSubcontractor(models.Model):
         return super().create(vals_list)
 
     def action_submit(self):
+        if any(record.state != 'draft' for record in self):
+            raise UserError(_('Only draft subcontractors can be submitted.'))
         self.write({'state': 'submitted'})
 
     def action_approve(self):
+        if any(record.state != 'submitted' for record in self):
+            raise UserError(_('Only submitted subcontractors can be approved.'))
         self.write({'state': 'approved'})
 
     def action_activate(self):
+        if any(record.state != 'approved' for record in self):
+            raise UserError(_('Only approved subcontractors can be activated.'))
         self.write({'state': 'active'})
         self.employee_ids.filtered(lambda employee: employee.subcontractor_status == 'assigned').write({
             'subcontractor_status': 'active',
         })
 
     def action_close(self):
+        if any(record.state != 'active' for record in self):
+            raise UserError(_('Only active subcontractors can be closed.'))
         self.write({'state': 'closed'})
         self.employee_ids.write({'subcontractor_status': 'released'})
 
     def action_cancel(self):
+        if any(record.state not in ('draft', 'submitted') for record in self):
+            raise UserError(_('Only draft or submitted subcontractors can be cancelled.'))
         self.write({'state': 'cancelled'})
 
     def action_reset_to_draft(self):
+        if any(record.state not in ('cancelled', 'closed') for record in self):
+            raise UserError(_('Only cancelled or closed subcontractors can be reset.'))
         self.write({'state': 'draft'})

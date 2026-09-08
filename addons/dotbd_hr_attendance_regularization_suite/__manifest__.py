@@ -26,6 +26,7 @@ Workflow:
     'depends': [
         'mail',
         'hr_attendance',
+        'dotbd_hr_access_control_suite',
     ],
     'data': [
         'security/ir.model.access.csv',

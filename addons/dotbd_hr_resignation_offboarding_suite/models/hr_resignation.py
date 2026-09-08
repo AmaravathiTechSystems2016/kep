@@ -25,7 +25,7 @@ class HrResignation(models.Model):
                 resignation.approved_revealing_date = (
                     resignation.expected_revealing_date
                 )
-                if not resignation.employee_id.active:
+                if resignation.employee_id:
                     resignation.employee_id.departure_date = (
                         resignation.expected_revealing_date
                     )
@@ -49,13 +49,26 @@ class HrResignation(models.Model):
             else:
                 employee.fired = True
                 reason_name = 'Fired'
+            active_versions = employee.version_ids.sudo().filtered(
+                lambda version: (
+                    version.date_version <= resignation.approved_revealing_date
+                    and (
+                        not version.contract_date_end
+                        or version.contract_date_end
+                        >= resignation.approved_revealing_date
+                    )
+                )
+            ).sorted('date_version', reverse=True)
+            if active_versions:
+                active_versions[0].contract_date_end = (
+                    resignation.approved_revealing_date
+                )
             employee.departure_reason_id = self.env[
                 'hr.departure.reason'
             ].search([('name', '=', reason_name)], limit=1)
             employee.departure_date = resignation.approved_revealing_date
             if employee.user_id:
                 employee.user_id.active = False
-                employee.user_id = False
 
     @api.depends('employee_id')
     def _compute_notice_period(self):
@@ -73,7 +86,7 @@ class HrResignation(models.Model):
                 ('employee_id', '=', employee.id),
                 '|', ('date_start', '=', False), ('date_start', '<=', today),
                 '|', ('date_end', '=', False), ('date_end', '>=', today),
-            ], limit=1)
+            ], order='date_start desc, id desc', limit=1)
             if contract:
                 resignation.employee_contract = contract.contract_template_id.name
                 resignation.notice_period = (

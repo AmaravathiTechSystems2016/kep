@@ -8,7 +8,7 @@
 ################################################################################
 from odoo import api, models, fields, _
 from odoo.orm.registry import Registry as odoo_registry
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 from datetime import datetime, timedelta
 import calendar
 import xlsxwriter
@@ -84,6 +84,7 @@ class EmployeeAttendanceSheetWizard(models.TransientModel):
     def action_generate_report(self):
         """Generate attendance sheet based on selected format"""
         self.ensure_one()
+        self._check_employee_scope()
         self._set_export_flag(True)
         try:
             if self.report_format == 'excel':
@@ -93,10 +94,28 @@ class EmployeeAttendanceSheetWizard(models.TransientModel):
         finally:
             self._set_export_flag(False)
 
+    def _report_employees(self):
+        """Return employees allowed for this user's export."""
+        if self.env.user.has_group('hr.group_hr_user'):
+            return self.employee_ids or self.env['hr.employee'].search([])
+        own_employees = self.env['hr.employee'].search([
+            ('user_id', '=', self.env.uid),
+        ])
+        return self.employee_ids or own_employees
+
+    def _check_employee_scope(self):
+        if self.env.user.has_group('hr.group_hr_user'):
+            return
+        own_ids = set(self.env['hr.employee'].search([
+            ('user_id', '=', self.env.uid),
+        ]).ids)
+        if any(employee.id not in own_ids for employee in self.employee_ids):
+            raise AccessError(_('Employees can export only their own attendance.'))
+
     def _generate_excel_report(self):
         """Generate Excel attendance sheet"""
         # Get employees
-        employees = self.employee_ids if self.employee_ids else self.env['hr.employee'].search([])
+        employees = self._report_employees()
 
         if not employees:
             raise ValidationError(_('No employees found to generate report.'))
@@ -1157,7 +1176,7 @@ class EmployeeAttendanceSheetWizard(models.TransientModel):
         end_date = datetime(year_int, month_int, num_days).date()
 
         # Get employees
-        employees = self.employee_ids if self.employee_ids else self.env['hr.employee'].search([])
+        employees = self._report_employees()
 
         # Get attendance data
         attendance_data = self._get_attendance_data(employees, start_date, end_date)

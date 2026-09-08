@@ -84,14 +84,14 @@ class ADMSDeviceCommand(models.Model):
             from datetime import datetime as dt
             # Use the device's configured timezone, not the server's local time
             device = self.env['biometric.device.details'].browse(vals.get('device_id', 0))
-            tz_str = 'Asia/Dhaka'
+            tz_str = 'Asia/Kolkata'
             if device.exists():
                 # Must match _get_device_timezone_for_adms() in the controller.
                 # effective_timezone excluded — it is PyZK-only and must NOT be
                 # used for ADMS (would cause ServerLocalTime to mismatch ATTLOG).
                 tz_str = (device.custom_timezone
                           or device.company_id.partner_id.tz
-                          or 'Asia/Dhaka')
+                          or 'Asia/Kolkata')
             try:
                 local_tz = pytz.timezone(tz_str)
             except pytz.UnknownTimeZoneError:
