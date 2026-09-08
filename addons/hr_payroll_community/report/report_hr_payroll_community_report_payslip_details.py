@@ -43,6 +43,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
 
     def get_summary(self, payslip):
         amounts = self._line_amounts(payslip)
+        contract = payslip.contract_id
         calendar_days = (payslip.date_to - payslip.date_from).days + 1
         if getattr(payslip.employee_id, 'attendance_category', False) == 'worker':
             calendar_days -= sum(
@@ -53,33 +54,92 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
             line.number_of_days for line in payslip.worked_days_line_ids
             if line.code == 'WORK100'
         )
+        lop_days = sum(
+            line.number_of_days for line in payslip.worked_days_line_ids
+            if line.code in ('UNPAID', 'LOP')
+        )
+        wage = float(getattr(contract, 'wage', 0.0) or 0.0)
+        basic_percentage = float(
+            getattr(contract, 'basic_percentage', 0.0) or 0.0)
+        hra_percentage = float(
+            getattr(contract, 'hra_percentage', 0.0) or 0.0)
+        basic_master = wage * basic_percentage / 100.0
+        da_master = float(getattr(contract, 'da', 0.0) or 0.0)
+        medical_other_master = sum(
+            float(getattr(contract, field_name, 0.0) or 0.0)
+            for field_name in (
+                'allowance_amount', 'medical_allowance', 'meal_allowance',
+                'other_allowance'))
+        conveyance_master = (
+            float(getattr(contract, 'conveyance_allowance', 0.0) or 0.0)
+            or float(getattr(contract, 'travel_allowance', 0.0) or 0.0))
+        basic = self._amount(amounts, 'BASIC')
+        da = self._amount(amounts, 'DA')
+        medical_other = self._amount(amounts, 'Medical', 'Meal', 'Other')
+        conveyance = self._amount(amounts, 'Travel')
+        net = self._amount(amounts, 'NET')
         deduction_codes = ('PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS',
                            'UNPAID', 'LOP')
         total_deductions = abs(sum(
             amount for code, amount in amounts.items()
             if code in deduction_codes and amount < 0
         ))
+        other_deductions = abs(sum(
+            amount for code, amount in amounts.items()
+            if code not in ('PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS',
+                            'UNPAID', 'LOP', 'NET') and amount < 0
+        ))
+        total_deductions += other_deductions
+        master_total = (
+            basic_master + da_master
+            + wage * hra_percentage / 100.0
+            + medical_other_master + conveyance_master
+        )
         return {
             'calendar_days': calendar_days,
             'worked_days': round(worked_days, 2),
             'absent_days': round(max(calendar_days - worked_days, 0.0), 2),
-            'basic': self._amount(amounts, 'BASIC'),
-            'da': self._amount(amounts, 'DA'),
+            'lop_days': round(lop_days, 2),
+            'basic': basic,
+            'da': da,
             'hra': self._amount(amounts, 'HRA'),
-            'allowances': sum(
-                amount for code, amount in amounts.items()
-                if code in ('Travel', 'Meal', 'Medical', 'Other')
-            ),
+            'basic_da': basic + da,
+            'medical_other': medical_other,
+            'conveyance': conveyance,
             'gross': self._amount(amounts, 'GROSS'),
             'arrears': self._amount(amounts, 'ARREARS'),
+            'master_basic_da': basic_master + da_master,
+            'master_hra': wage * hra_percentage / 100.0,
+            'master_medical_other': medical_other_master,
+            'master_conveyance': conveyance_master,
+            'master_total': master_total,
             'pf': abs(self._amount(amounts, 'PF')),
             'esi': abs(self._amount(amounts, 'ESI')),
             'pt': abs(self._amount(amounts, 'PT')),
             'salary_advance': abs(self._amount(amounts, 'SALARY_ADVANCE')),
             'tds': abs(self._amount(amounts, 'TDS')),
+            'other_deductions': other_deductions,
             'lop': abs(self._amount(amounts, 'UNPAID', 'LOP')),
             'total_deductions': total_deductions,
-            'net': self._amount(amounts, 'NET'),
+            'net': net,
+            'salary_in_words': payslip.company_id.currency_id.amount_to_text(net),
+        }
+
+    @staticmethod
+    def get_report_data(payslip):
+        """Return employee and bank values used by the formatted payslip."""
+        employee = payslip.employee_id
+        bank = employee.primary_bank_account_id
+        bank_id = bank.bank_id if bank else False
+        return {
+            'employee_number': employee.identification_id or 'Not provided',
+            'department': employee.department_id.name if employee.department_id else 'Not provided',
+            'location': employee.work_location_id.name if employee.work_location_id else 'Not provided',
+            'bank_name': bank_id.name if bank_id else 'Not provided',
+            'bank_account': bank.acc_number if bank else 'Not provided',
+            'ifsc': getattr(bank_id, 'bic', False) or 'Not provided',
+            'esi_number': getattr(employee, 'esi_number', False) or 'Not provided',
+            'month_label': payslip.date_from.strftime('%B - %Y'),
         }
 
     def get_details_by_rule_category(self, payslip_lines):
@@ -175,6 +235,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
             'docs': payslips,
             'data': data,
             'get_summary': self.get_summary,
+            'get_report_data': self.get_report_data,
             'get_details_by_rule_category': self.get_details_by_rule_category(
                 payslips.mapped('details_by_salary_rule_category_ids').filtered(
                     lambda r: r.appears_on_payslip)),

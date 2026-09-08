@@ -4,176 +4,67 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
-                    <style>
-                        .payslip {
-                            color: #243447;
-                            font-family: Arial, sans-serif !important;
-                            font-size: 13px !important;
-                            line-height: 1.25;
-                            width: 100%;
-                        }
-                        .payslip * {
-                            font-family: Arial, sans-serif !important;
-                        }
-                        .payslip .report-header {
-                            border-bottom: 3px solid #1f4e79;
-                            margin-bottom: 12px;
-                            padding-bottom: 6px;
-                        }
-                        .payslip h2 {
-                            color: #1f4e79;
-                            font-size: 23px !important;
-                            font-weight: 700;
-                            letter-spacing: .3px;
-                            margin: 0 0 2px;
-                        }
-                        .payslip .slip-name {
-                            color: #617386;
-                            font-size: 11px !important;
-                            margin: 0;
-                        }
-                        .payslip table {
-                            border-collapse: collapse;
-                            width: 100%;
-                            table-layout: fixed;
-                        }
-                        .payslip th,
-                        .payslip td {
-                            border: 1px solid #b9c6d1;
-                            font-size: 13px !important;
-                            padding: 5px 7px;
-                            vertical-align: middle;
-                        }
-                        .payslip .info-table td:nth-child(1),
-                        .payslip .info-table td:nth-child(3) {
-                            width: 16%;
-                            white-space: nowrap;
-                        }
-                        .payslip .info-table td:nth-child(2),
-                        .payslip .info-table td:nth-child(4) {
-                            width: 34%;
-                        }
-                        .payslip .info-table td:nth-child(1),
-                        .payslip .info-table td:nth-child(3) {
-                            background: #edf3f7;
-                            color: #1f4e79;
-                        }
-                        .payslip th,
-                        .payslip strong,
-                        .payslip .section-title,
-                        .payslip .total-label {
-                            font-weight: 700;
-                        }
-                        .payslip .section-title {
-                            background: #1f4e79;
-                            color: #ffffff;
-                            text-align: left;
-                        }
-                        .payslip .total-label,
-                        .payslip .total-value {
-                            background: #eaf2f8;
-                            color: #1f4e79;
-                        }
-                        .payslip .summary-columns {
-                            width: 100%;
-                            margin-top: 12px;
-                            font-size: 0;
-                        }
-                        .payslip .summary-columns table {
-                            display: inline-table;
-                            font-size: 11px !important;
-                            table-layout: auto;
-                            vertical-align: top;
-                            width: 49.2%;
-                        }
-                        .payslip .summary-columns table + table {
-                            margin-left: 0.8%;
-                        }
-                        .payslip .summary-columns td:first-child {
-                            width: 60%;
-                            color: #34495e;
-                            white-space: normal;
-                        }
-                        .payslip .summary-columns td:last-child {
-                            width: 40%;
-                            text-align: right;
-                            white-space: nowrap;
-                        }
-                        .payslip .summary-columns th,
-                        .payslip .summary-columns td {
-                            font-size: 11px !important;
-                            padding: 4px 6px;
-                        }
-                        .payslip .signature {
-                            border-top: 1px solid #7f8c8d;
-                            color: #34495e;
-                            margin: 18px 0 0 auto;
-                            padding-top: 5px;
-                            text-align: right;
-                            width: 190px;
-                            page-break-inside: avoid;
-                        }
-                        .payslip .money {
-                            text-align: right;
-                            white-space: nowrap;
-                        }
-                    </style>
+                    <t t-set="summary" t-value="get_summary(o)"/>
+                    <t t-set="report_data" t-value="get_report_data(o)"/>
                     <div class="page payslip">
-                        <div class="report-header text-center">
-                            <h2>Salary Slip</h2>
-                            <p class="slip-name" t-field="o.name"/>
-                        </div>
-                        <table class="info-table">
-                            <tr><td><strong>Employee</strong></td><td><span t-field="o.employee_id"/></td><td><strong>Reference</strong></td><td><span t-field="o.number"/></td></tr>
-                            <tr><td><strong>Designation</strong></td><td><span t-field="o.employee_id.job_id"/></td><td><strong>Period</strong></td><td><span t-field="o.date_from"/> - <span t-field="o.date_to"/></td></tr>
-                            <tr><td><strong>Date of Joining</strong></td><td><span t-if="o.employee_id.joining_date" t-field="o.employee_id.joining_date"/><span t-else="">Not provided</span></td><td></td><td></td></tr>
-                            <tr><td><strong>Email</strong></td><td><span t-field="o.employee_id.work_email"/></td><td><strong>UAN Number</strong></td><td><span t-if="o.employee_id.uan_number" t-field="o.employee_id.uan_number"/><span t-else="">Not provided</span></td></tr>
-                            <tr><td><strong>Bank Account</strong></td><td colspan="3"><span t-if="o.employee_id.primary_bank_account_id" t-field="o.employee_id.primary_bank_account_id"/><span t-else="">Not provided</span></td></tr>
+                        <style>
+                            .payslip { color: #000000; font-family: Arial, sans-serif !important; font-size: 12px !important; line-height: 1.15; }
+                            .payslip * { font-family: Arial, sans-serif !important; }
+                            .payslip .company-header, .payslip .info-table, .payslip .salary-table, .payslip .closing-table { border-collapse: collapse; table-layout: fixed; width: 100%; }
+                            .payslip .company-header td, .payslip .info-table td, .payslip .salary-table th, .payslip .salary-table td, .payslip .closing-table td { border: 1px solid #000000; padding: 4px 5px; vertical-align: middle; }
+                            .payslip .company-header .logo-cell { text-align: center; width: 13%; }
+                            .payslip .company-header .logo-cell img { max-height: 32px; max-width: 105px; }
+                            .payslip .company-name { background: #dceaf3; font-family: Georgia, serif !important; font-size: 22px !important; font-weight: 700; text-align: center; }
+                            .payslip .company-address { background: #e2f0d9; font-family: Georgia, serif !important; font-size: 14px !important; text-align: center; }
+                            .payslip .report-title { color: #7030a0; font-size: 17px !important; font-weight: 700; padding: 4px; text-align: center; }
+                            .payslip .info-table td:nth-child(1), .payslip .info-table td:nth-child(3) { background: #edf3e5; font-weight: 700; width: 25%; }
+                            .payslip .info-table td:nth-child(2), .payslip .info-table td:nth-child(4) { width: 25%; }
+                            .payslip .salary-table { margin-top: 0; }
+                            .payslip .salary-table th, .payslip .salary-table td { font-size: 12px !important; }
+                            .payslip .salary-table th { font-weight: 700; }
+                            .payslip .salary-table .earning-head, .payslip .salary-table .earning-label { background: #e2f0d9; }
+                            .payslip .salary-table .deduction-head, .payslip .salary-table .deduction-label { background: #fce4d6; }
+                            .payslip .salary-table .money, .payslip .closing-table .money { text-align: right; }
+                            .payslip .salary-table .total, .payslip .closing-table .total { font-weight: 700; }
+                            .payslip .closing-table { margin-top: 0; }
+                            .payslip .closing-table .label { font-weight: 700; width: 25%; }
+                            .payslip .closing-table .words { width: 75%; }
+                            .payslip .footer-note { border: 1px solid #000000; font-size: 13px !important; padding: 5px; text-align: center; }
+                        </style>
+                        <table class="company-header">
+                            <tr>
+                                <td class="logo-cell"><img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)"/></td>
+                                <td class="company-name" colspan="3" t-esc="o.company_id.name"/>
+                            </tr>
+                            <tr><td class="company-address" colspan="4" t-esc="o.company_id.partner_id.contact_address"/></tr>
+                            <tr><td class="report-title" colspan="4">PAY SLIP FOR THE MONTH OF <span t-esc="report_data['month_label']"/></td></tr>
                         </table>
-                        <t t-set="summary" t-value="get_summary(o)"/>
-                        <div class="summary-columns">
-                            <table>
-                                <thead><tr><th colspan="2" class="section-title">Attendance Summary</th></tr></thead>
-                                <tbody>
-                                    <tr><td>Payable Calendar Days</td><td t-esc="summary['calendar_days']"/></tr>
-                                    <tr><td>Worked Days</td><td t-esc="summary['worked_days']"/></tr>
-                                    <tr><td>Absent / LOP Days</td><td t-esc="summary['absent_days']"/></tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <thead><tr><th colspan="2" class="section-title">Earnings</th></tr></thead>
-                                <tbody>
-                                    <tr><td>Basic</td><td class="money" t-esc="summary['basic']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>DA</td><td class="money" t-esc="summary['da']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>HRA</td><td class="money" t-esc="summary['hra']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>Other Allowances</td><td class="money" t-esc="summary['allowances']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td class="total-label">Total Earnings</td><td class="total-value money" t-esc="summary['gross']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="summary-columns">
-                            <table>
-                                <thead><tr><th colspan="2" class="section-title">Deductions</th></tr></thead>
-                                <tbody>
-                                    <tr><td>PF</td><td t-esc="summary['pf']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>ESI</td><td t-esc="summary['esi']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>Professional Tax</td><td t-esc="summary['pt']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>Salary Advance</td><td t-esc="summary['salary_advance']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>TDS</td><td t-esc="summary['tds']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>LOP</td><td t-esc="summary['lop']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <thead><tr><th colspan="2" class="section-title">Salary Summary</th></tr></thead>
-                                <tbody>
-                                    <tr><td>Gross Salary</td><td t-esc="summary['gross']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>Total Deductions</td><td t-esc="summary['total_deductions']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td>Arrears</td><td t-esc="summary['arrears']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                    <tr><td class="total-label">Net Salary</td><td class="total-value" t-esc="summary['net']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="text-right signature"><strong>Authorized signature</strong></p>
+                        <table class="info-table">
+                            <tr><td>Name:</td><td t-esc="o.employee_id.name"/><td>Employee No:</td><td t-esc="report_data['employee_number']"/></tr>
+                            <tr><td>Joining Date:</td><td><span t-if="o.employee_id.joining_date" t-field="o.employee_id.joining_date"/><span t-else="">Not provided</span></td><td>Bank Name:</td><td t-esc="report_data['bank_name']"/></tr>
+                            <tr><td>Designation:</td><td t-esc="o.employee_id.job_id.name if o.employee_id.job_id else 'Not provided'"/><td>Bank Account No:</td><td t-esc="report_data['bank_account']"/></tr>
+                            <tr><td>Department:</td><td t-esc="report_data['department']"/><td>IFSC Code:</td><td t-esc="report_data['ifsc']"/></tr>
+                            <tr><td>Location:</td><td t-esc="report_data['location']"/><td>ESI No:</td><td t-esc="report_data['esi_number']"/></tr>
+                            <tr><td>EMP Effective Work Days:</td><td t-esc="summary['worked_days']"/><td>PF UAN:</td><td><span t-if="o.employee_id.uan_number" t-field="o.employee_id.uan_number"/><span t-else="">Not provided</span></td></tr>
+                            <tr><td>LOP:</td><td t-esc="summary['lop_days']"/><td></td><td></td></tr>
+                        </table>
+                        <table class="salary-table">
+                            <colgroup><col style="width: 25%;"/><col style="width: 12.5%;"/><col style="width: 12.5%;"/><col style="width: 25%;"/><col style="width: 25%;"/></colgroup>
+                            <tr><th class="earning-head">Earnings</th><th class="earning-head">Master</th><th class="earning-head">Actual</th><th class="deduction-head">Deductions</th><th class="deduction-head">Actual</th></tr>
+                            <tr><td class="earning-label">Basic + DA</td><td class="money" t-esc="summary['master_basic_da']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="money" t-esc="summary['basic_da']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="deduction-label">PF</td><td class="money" t-esc="summary['pf']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr><td class="earning-label">HRA</td><td class="money" t-esc="summary['master_hra']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="money" t-esc="summary['hra']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="deduction-label">ESI</td><td class="money" t-esc="summary['esi']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr><td class="earning-label">Medical &amp; Other</td><td class="money" t-esc="summary['master_medical_other']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="money" t-esc="summary['medical_other']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="deduction-label">Professional Tax</td><td class="money" t-esc="summary['pt']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr><td class="earning-label">Conveyance</td><td class="money" t-esc="summary['master_conveyance']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="money" t-esc="summary['conveyance']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="deduction-label">TDS</td><td class="money" t-esc="summary['tds']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr><td class="earning-label">Arrears</td><td></td><td class="money" t-esc="summary['arrears']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="deduction-label">Other Deductions</td><td class="money" t-esc="summary['other_deductions']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr><td class="earning-label"></td><td></td><td></td><td class="deduction-label">Salary Advance</td><td class="money" t-esc="summary['salary_advance']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr class="total"><td class="earning-label">Total Earnings</td><td class="money" t-esc="summary['master_total']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="money" t-esc="summary['gross']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/><td class="deduction-label">Total Deductions</td><td class="money" t-esc="summary['total_deductions']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                        </table>
+                        <table class="closing-table">
+                            <tr class="total"><td class="label">Net Salary</td><td class="money" colspan="3" t-esc="summary['net']" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></tr>
+                            <tr><td class="label">Salary in Words</td><td class="words" colspan="3" t-esc="summary['salary_in_words']"/></tr>
+                            <tr><td class="label">GRATUITY</td><td colspan="3">Not applicable</td></tr>
+                        </table>
+                        <div class="footer-note">This is a system generated payslip and does not require signature.</div>
                     </div>
                 </t>
             </t>
