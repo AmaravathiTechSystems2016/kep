@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hr_leave_planner_search" model="ir.ui.view">
+        <field name="name">hr.leave.planner.search</field>
+        <field name="model">hr.leave</field>
+        <field name="arch" type="xml">
+            <search string="Leave Planner">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="holiday_status_id"/>
+                <field name="state"/>
+                <separator/>
+                <filter name="filter_approved" string="Approved" domain="[('state', '=', 'validate')]"/>
+                <filter name="filter_pending" string="Pending Approval" domain="[('state', '=', 'confirm')]"/>
+                <filter name="filter_to_approve" string="To Approve" domain="[('state', '=', 'validate1')]"/>
+                <separator/>
+                <filter name="filter_group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                <filter name="filter_group_department" string="Department" context="{'group_by': 'department_id'}"/>
+                <filter name="filter_group_leave_type" string="Leave Type" context="{'group_by': 'holiday_status_id'}"/>
+                <filter name="filter_group_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_leave_planner" model="ir.actions.act_window">
+        <field name="name">Leave Planner</field>
+        <field name="res_model">hr.leave</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_hr_leave_planner_search"/>
+        <field name="domain">[('state', 'not in', ['cancel', 'refuse'])]</field>
+        <field name="context">{'search_default_filter_approved': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Plan employee leave</p>
+            <p>Use this calendar to review approved and pending leave requests by employee, department, or leave type.</p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_hr_leave_planner"
+        name="Leave Planner"
+        parent="hr_holidays.menu_hr_holidays_root"
+        action="action_hr_leave_planner"
+        groups="base.group_system,hr_holidays.group_hr_holidays_user,hr_holidays.group_hr_holidays_manager,dotbd_hr_access_control_suite.group_hr_department_manager,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"
+        sequence="15"/>
+</odoo>

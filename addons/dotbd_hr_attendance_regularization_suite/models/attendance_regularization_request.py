@@ -257,10 +257,9 @@ class AttendanceRegularizationRequest(models.Model):
         if self.env.is_superuser():
             return
         approver_groups = (
-            'dotbd_hr_access_control_suite.group_hr_department_manager',
-            'dotbd_hr_access_control_suite.group_hr_officer',
-            'dotbd_hr_access_control_suite.group_hr_manager',
-            'dotbd_hr_access_control_suite.group_hr_executive',
+            'hr.group_hr_user',
+            'hr.group_hr_manager',
+            'hr_attendance.group_hr_attendance_manager',
         )
         if not any(self.env.user.has_group(group) for group in approver_groups):
             raise AccessError(_('Only a department manager or HR approver can approve or reject attendance regularization requests.'))
