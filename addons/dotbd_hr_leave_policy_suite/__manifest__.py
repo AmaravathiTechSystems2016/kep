@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'DotBD HR Leave Policy Suite',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.2.0',
     'category': 'Human Resources/Time Off',
     'summary': 'Leave policy automation by employee category',
     'description': """

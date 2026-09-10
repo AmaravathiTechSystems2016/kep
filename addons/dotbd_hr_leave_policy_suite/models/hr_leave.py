@@ -13,6 +13,17 @@ from odoo.tools.float_utils import float_round
 class HrLeave(models.Model):
     _inherit = 'hr.leave'
 
+    approval_status_info = fields.Char(
+        string='Approval Status',
+        compute='_compute_approval_status_info',
+        help='Explains the approval stage currently responsible for this request.',
+    )
+    first_approval_at = fields.Datetime(
+        string='Department Manager Approved On', readonly=True, copy=False)
+    final_approval_at = fields.Datetime(
+        string='HR Final Approved On', readonly=True, copy=False)
+    refused_at = fields.Datetime(string='Refused On', readonly=True, copy=False)
+
     request_apply_in = fields.Selection(
         [('day', 'Days'), ('hour', 'Hours')],
         string='Apply In',
@@ -20,6 +31,18 @@ class HrLeave(models.Model):
         tracking=True,
         help='Choose Days for a normal leave request or Hours for a short leave in the same day.',
     )
+
+    @api.depends('state')
+    def _compute_approval_status_info(self):
+        labels = {
+            'confirm': 'Waiting for Department Manager Approval',
+            'validate1': 'Department Manager Approved - Waiting for HR Approval',
+            'validate': 'Approved',
+            'refuse': 'Refused',
+            'cancel': 'Cancelled',
+        }
+        for leave in self:
+            leave.approval_status_info = labels.get(leave.state, '')
 
     def _get_leave_contact_partner(self):
         self.ensure_one()
@@ -45,7 +68,34 @@ class HrLeave(models.Model):
                 partner_ids=partners.ids,
                 subject=_('New Leave Request'),
                 body=_(
-                    '%(employee)s has applied for %(leave_type)s from %(date_from)s to %(date_to)s.',
+                    '%(employee)s has applied for %(leave_type)s from %(date_from)s to %(date_to)s. '
+                    'Approval status: Waiting for Department Manager Approval.',
+                    employee=leave.employee_id.name,
+                    leave_type=leave.holiday_status_id.sudo().name,
+                    date_from=fields.Date.to_string(leave.request_date_from or leave.date_from.date()),
+                    date_to=fields.Date.to_string(leave.request_date_to or leave.date_to.date()),
+                ),
+                email_layout_xmlid='mail.mail_notification_layout',
+                model_description=_('Time Off'),
+                subtitles=[leave.display_name],
+            )
+
+    def _notify_hr_after_manager_approval(self):
+        """Notify HR when a two-step leave request reaches final approval."""
+        for leave in self.filtered(lambda leave: leave.validation_type == 'both'):
+            partners = leave.holiday_status_id.responsible_ids.partner_id.filtered(
+                lambda partner: partner.email)
+            if not partners:
+                continue
+            manager_name = leave.first_approver_id.name or _('Department Manager')
+            leave.message_notify(
+                partner_ids=partners.ids,
+                subject=_('Department Manager Approved - HR Approval Required'),
+                body=_(
+                    '%(manager)s approved %(employee)s\'s %(leave_type)s request '
+                    'from %(date_from)s to %(date_to)s. '
+                    'Approval status: Waiting for HR Final Approval.',
+                    manager=manager_name,
                     employee=leave.employee_id.name,
                     leave_type=leave.holiday_status_id.sudo().name,
                     date_from=fields.Date.to_string(leave.request_date_from or leave.date_from.date()),
@@ -254,7 +304,26 @@ class HrLeave(models.Model):
         return res
 
     def action_approve(self, check_state=True):
+        previous_states = {leave.id: leave.state for leave in self}
         self._check_probation_leave_rule()
         result = super().action_approve(check_state=check_state)
+        now = fields.Datetime.now()
+        for leave in self.exists():
+            previous_state = previous_states.get(leave.id)
+            if previous_state == 'confirm' and leave.state in ('validate1', 'validate'):
+                if not leave.first_approval_at:
+                    leave.first_approval_at = now
+                if leave.state == 'validate1':
+                    leave._notify_hr_after_manager_approval()
+            elif previous_state == 'validate1' and leave.state == 'validate':
+                if not leave.final_approval_at:
+                    leave.final_approval_at = now
         self.filtered(lambda leave: leave.state == 'validate')._notify_leave_decision('approved')
+        return result
+
+    def action_refuse(self):
+        result = super().action_refuse()
+        now = fields.Datetime.now()
+        for leave in self.filtered(lambda leave: leave.state == 'refuse' and not leave.refused_at):
+            leave.refused_at = now
         return result
