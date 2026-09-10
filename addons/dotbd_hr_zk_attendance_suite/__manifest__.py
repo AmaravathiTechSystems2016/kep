@@ -10,7 +10,7 @@
 ################################################################################
 {
     'name': 'ZKteco HR Attendance Suite',
-    'version': '19.0.6.8.0',
+    'version': '19.0.6.8.1',
     'category': 'Human Resources/Attendance',
     'sequence': 10,
     'summary': "Complete HR Attendance Solution with ZKteco Biometric Integration, "

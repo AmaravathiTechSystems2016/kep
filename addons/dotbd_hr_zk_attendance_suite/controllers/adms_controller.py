@@ -13,6 +13,7 @@
 
 import logging
 from datetime import datetime
+from urllib.parse import unquote_plus
 
 import pytz
 from odoo import http, fields, SUPERUSER_ID, api
@@ -90,7 +91,7 @@ class ADMSController(http.Controller):
     def cdata(self, **kwargs):
         """Main ADMS endpoint.
         GET  = device handshake (sends SN, gets config)
-        POST = device pushes data (ATTLOG, OPERLOG, BIODATA)
+        POST = device pushes data (ATTLOG, OPERLOG, USERINFO, BIODATA)
         """
         serial = kwargs.get('SN', '')
 
@@ -98,7 +99,7 @@ class ADMSController(http.Controller):
             return self._handle_handshake(serial, kwargs)
 
         # POST — device is pushing data
-        table = kwargs.get('table', '')
+        table = kwargs.get('table', '').upper()
         body = request.httprequest.data
         if isinstance(body, bytes):
             body = body.decode('utf-8', errors='replace')
@@ -109,6 +110,8 @@ class ADMSController(http.Controller):
             return self._process_attendance(serial, body)
         elif table == 'OPERLOG':
             return self._process_operation_log(serial, body)
+        elif table in ('USERINFO', 'USER', 'USERDATA'):
+            return self._process_user_info(serial, body)
         elif table in ('BIODATA', 'BIOTEMPLATE'):
             return self._process_biometric_template(serial, body)
 
@@ -155,7 +158,7 @@ class ADMSController(http.Controller):
             'Delay=10',
             'TransTimes=00:00;14:05',
             'TransInterval=1',
-            'TransFlag=TransData AttLog\tOpLog\tBioData',
+            'TransFlag=TransData AttLog\tOpLog\tUserInfo\tBioData',
             'Realtime=1',
             'ServerVer=2.4.1',
             'ServerLocalTime={}'.format(device_local_time),
@@ -418,6 +421,60 @@ class ADMSController(http.Controller):
         return request.make_response('OK', headers=[('Content-Type', 'text/plain')])
 
     # ─────────────────────────── Operation Log ───────────────────────────
+
+    def _process_user_info(self, serial, body):
+        """Synchronize employee names delivered through ADMS USERINFO pushes.
+
+        ATTLOG only contains an employee ID. USERINFO pushes contain the name,
+        normally as PIN=779 followed by Name=Ravi Kumar. Existing placeholder
+        names are updated, while HR-maintained names are preserved.
+        """
+        device = self._find_device_by_serial(serial)
+        if not device:
+            _logger.warning("ADMS USERINFO: Unknown device SN=%s", serial)
+            return request.make_response('OK', headers=[('Content-Type', 'text/plain')])
+
+        self._register_heartbeat(device)
+        employee_model = self._senv()['hr.employee'].with_company(device.company_id)
+        created = updated = skipped = 0
+
+        for line in body.splitlines():
+            params = {}
+            for part in line.strip().split('\t'):
+                if '=' not in part:
+                    continue
+                key, _, value = part.partition('=')
+                params[key.strip().upper()] = unquote_plus(value.strip())
+
+            user_id = (params.get('PIN') or params.get('USER_ID') or
+                       params.get('USERID') or params.get('ENROLLNUMBER') or '').strip()
+            name = (params.get('NAME') or params.get('USER_NAME') or '').strip()
+            if not user_id or not name:
+                skipped += 1
+                continue
+
+            employee = employee_model.search([
+                ('device_id_num', '=', user_id),
+                ('company_id', '=', device.company_id.id),
+            ], limit=1)
+            if not employee:
+                employee_model.create({
+                    'name': name,
+                    'device_id_num': user_id,
+                    'company_id': device.company_id.id,
+                    'active': True,
+                })
+                created += 1
+            elif employee.name == f'Device User {user_id}':
+                employee.write({'name': name})
+                updated += 1
+            else:
+                skipped += 1
+
+        _logger.info(
+            "ADMS USERINFO SN=%s: %d created, %d placeholder names updated, %d skipped",
+            serial, created, updated, skipped)
+        return request.make_response('OK', headers=[('Content-Type', 'text/plain')])
 
     def _process_operation_log(self, serial, body):
         """Process OPERLOG data — device operation events (optional logging)."""
