@@ -19,6 +19,7 @@
                     <group>
                         <group string="Device Registration">
                             <field name="device_id_num" string="Device User ID"/>
+                            <field name="biometric_access_active" string="Biometric Access Active"/>
                             <div colspan="2">
                                 <p class="text-muted">
                                     <i class="fa fa-info-circle"/> This is the unique ID used by biometric devices to identify this employee.
@@ -75,6 +76,7 @@
         <field name="arch" type="xml">
             <field name="employee_type" position="after">
                 <field name="attendance_category" optional="show"/>
+                <field name="biometric_access_active" optional="show"/>
             </field>
         </field>
     </record>
