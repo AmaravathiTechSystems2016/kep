@@ -24,9 +24,9 @@
             <form string="Manpower Requisition">
                 <header>
                     <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_open_partial_approval_wizard" type="object" string="Partial Approve" class="btn-secondary" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
-                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
-                    <button name="action_reject" type="object" string="Reject" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
+                    <button name="action_open_partial_approval_wizard" type="object" string="Partial Approve" class="btn-secondary" invisible="state != 'submitted'" groups="dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive,base.group_system,base.group_erp_manager"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'" groups="dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive,base.group_system,base.group_erp_manager"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'submitted'" groups="dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive,base.group_system,base.group_erp_manager"/>
                     <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state == 'draft'"/>
                     <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancelled'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected,cancelled"/>

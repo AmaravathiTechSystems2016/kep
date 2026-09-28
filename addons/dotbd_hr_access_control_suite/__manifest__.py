@@ -24,6 +24,7 @@ attendance, leave, overtime, shifts, payroll, and offboarding.
         'dotbd_hr_shift_roster_suite',
         'dotbd_hr_leave_policy_suite',
         'dotbd_hr_onboarding_suite',
+        'dotbd_hr_manpower_requisition_suite',
     ],
     'data': [
         'security/hr_access_groups.xml',
