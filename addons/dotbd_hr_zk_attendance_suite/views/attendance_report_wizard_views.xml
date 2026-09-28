@@ -50,6 +50,6 @@
               name="Generate Report"
               action="attendance_report_wizard_action"
               parent="biometric_device_details_menu"
-              groups="hr_attendance.group_hr_attendance_officer"
+              groups="base.group_system,base.group_erp_manager,hr_attendance.group_hr_attendance_officer,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"
               sequence="25"/>
 </odoo>

@@ -6,6 +6,11 @@ from odoo import api, fields, models
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    employee_id = fields.Char(string='Employee ID', copy=False, tracking=True)
+    esi_no = fields.Char(string='ESI No.', copy=False, tracking=True)
+    esi_group = fields.Char(string='ESI Group', copy=False, tracking=True)
+    permanent_location = fields.Char(string='Permanent Location', copy=False, tracking=True)
+
     onboarding_ids = fields.One2many('hr.employee.onboarding', 'employee_id', string='Onboarding Records')
     onboarding_count = fields.Integer(compute='_compute_onboarding_count', string='Onboarding Count')
 
@@ -24,6 +29,11 @@ class HrEmployee(models.Model):
     def create(self, vals_list):
         employees = super().create(vals_list)
         if self.env.context.get('skip_auto_onboarding'):
+            return employees
+
+        # Skip automatic onboarding creation for historical/imported employees.
+        # This prevents old employee imports from creating onboarding records.
+        if self.env.context.get('import_file'):
             return employees
 
         onboarding_model = self.env['hr.employee.onboarding'].sudo()

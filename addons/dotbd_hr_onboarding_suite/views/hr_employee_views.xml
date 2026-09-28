@@ -10,6 +10,12 @@
                     <field name="onboarding_count" widget="statinfo" string="Onboarding"/>
                 </button>
             </xpath>
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="employee_id"/>
+                <field name="esi_no"/>
+                <field name="esi_group"/>
+                <field name="permanent_location"/>
+            </xpath>
         </field>
     </record>
 </odoo>

@@ -23,6 +23,18 @@ class HrEmployee(models.Model):
 
     device_id_num = fields.Char(string='ZK Device User ID',
                                 help="Give the biometric device id")
+    biometric_access_active = fields.Boolean(
+        string='Biometric Access Active',
+        default=True,
+        help='Enable/disable biometric access for this employee. Employees with this unchecked are considered without access.'
+    )
+
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        """Auto-sync the ZK device user ID with the employee ID when entered."""
+        if self.employee_id and not self.device_id_num:
+            self.device_id_num = self.employee_id
+
     late_check_in_count = fields.Integer(
         string="Late Check-In", compute="_compute_late_check_in_count",
         help="Count of employee's late checkin")

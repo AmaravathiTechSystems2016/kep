@@ -12,6 +12,6 @@
               name="Attendance Dashboard"
               action="attendance_anomaly_dashboard_action"
               parent="hr_attendance.menu_hr_attendance_root"
-              groups="hr_attendance.group_hr_attendance_officer"
+              groups="base.group_system,base.group_erp_manager,hr_attendance.group_hr_attendance_officer,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"
               sequence="5"/>
 </odoo>

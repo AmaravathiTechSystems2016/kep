@@ -841,7 +841,7 @@
               name="ZKTeco Devices"
               sequence="20"
               parent="hr_attendance.menu_hr_attendance_root"
-              groups="hr_attendance.group_hr_attendance_officer"/>
+              groups="base.group_system,base.group_erp_manager,hr_attendance.group_hr_attendance_officer,dotbd_hr_access_control_suite.group_hr_officer,dotbd_hr_access_control_suite.group_hr_manager,dotbd_hr_access_control_suite.group_hr_executive"/>
     
     <menuitem id="menu_biometric_device_details"
               name="Devices"
