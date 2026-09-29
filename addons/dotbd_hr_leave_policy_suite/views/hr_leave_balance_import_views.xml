@@ -25,11 +25,13 @@
                         </group>
                     </group>
                     <div class="text-muted" style="margin-bottom:8px;">
-                        CSV columns supported: employee_id, employee_name, policy_id, policy_name,
+                        The employee's assigned leave policy is used automatically. policy_id and policy_name are optional.
+                        CSV and Excel (.xls, .xlsx) columns supported: employee_id, employee_name, policy_id, policy_name,
                         leave_type_id, leave_type_code, leave_type_name, balance_year, opening_balance, notes.
                     </div>
                     <div style="margin-bottom:12px;">
-                        <button name="action_load_csv" type="object" string="Load CSV" class="btn-secondary"/>
+                        <button name="action_download_template" type="object" string="Download Template" class="btn-secondary"/>
+                        <button name="action_load_file" type="object" string="Load File" class="btn-secondary"/>
                     </div>
                     <separator string="Old Balances"/>
                     <field name="line_ids">

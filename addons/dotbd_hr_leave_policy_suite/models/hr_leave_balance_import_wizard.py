@@ -30,45 +30,106 @@ class AttendanceLeaveBalanceImportWizard(models.TransientModel):
         help='Employees included in this import batch.',
     )
     csv_file = fields.Binary(
-        string='CSV File',
-        help='Upload a CSV file with columns like employee_name, employee_id, leave_type_name, leave_type_code, balance_year, opening_balance, notes.',
+        string='CSV or Excel File',
+        help='Upload a CSV, XLS, or XLSX file. The employee leave policy is filled from the employee record; policy_id and policy_name columns are optional.',
     )
-    csv_filename = fields.Char(string='CSV Filename')
+    csv_filename = fields.Char(string='Filename')
+    template_file = fields.Binary(compute='_compute_template_file')
+    template_filename = fields.Char(compute='_compute_template_file')
     line_ids = fields.One2many(
         'attendance.leave.balance.import.wizard.line',
         'wizard_id',
         string='Balance Lines',
     )
 
-    def action_load_csv(self):
+    @api.depends()
+    def _compute_template_file(self):
+        template = io.StringIO(newline='')
+        csv.writer(template).writerow([
+            'employee_name',
+            'leave_type_name',
+            'balance_year',
+            'opening_balance',
+            'notes',
+        ])
+        template_content = base64.b64encode(template.getvalue().encode('utf-8'))
+        for wizard in self:
+            wizard.template_file = template_content
+            wizard.template_filename = 'employee_leave_opening_balance_import.csv'
+
+    def action_download_template(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content?model=%s&id=%s&field=template_file&filename_field=template_filename&download=true' % (
+                self._name,
+                self.id,
+            ),
+            'target': 'self',
+        }
+
+    def action_load_file(self):
         self.ensure_one()
         if not self.csv_file:
-            raise ValidationError(_('Please upload a CSV file first.'))
+            raise ValidationError(_('Please upload a CSV or Excel file first.'))
 
         raw = base64.b64decode(self.csv_file)
+        filename = (self.csv_filename or '').lower()
         try:
-            text = raw.decode('utf-8-sig')
-        except UnicodeDecodeError:
-            text = raw.decode('latin-1')
+            if filename.endswith('.csv'):
+                try:
+                    text = raw.decode('utf-8-sig')
+                except UnicodeDecodeError:
+                    text = raw.decode('latin-1')
+                reader = csv.DictReader(io.StringIO(text))
+                headers = reader.fieldnames
+                rows = enumerate(reader, start=2)
+            elif filename.endswith('.xlsx'):
+                from openpyxl import load_workbook
 
-        reader = csv.DictReader(io.StringIO(text))
-        if not reader.fieldnames:
-            raise ValidationError(_('The uploaded CSV file is empty or invalid.'))
+                workbook = load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+                worksheet = workbook.active
+                values = worksheet.iter_rows(values_only=True)
+                headers = next(values, None)
+                rows = ((index, dict(zip(headers or (), row))) for index, row in enumerate(values, start=2))
+            elif filename.endswith('.xls'):
+                import xlrd
+
+                worksheet = xlrd.open_workbook(file_contents=raw).sheet_by_index(0)
+                headers = worksheet.row_values(0) if worksheet.nrows else None
+                rows = (
+                    (index + 1, dict(zip(headers or (), worksheet.row_values(index))))
+                    for index in range(1, worksheet.nrows)
+                )
+            else:
+                raise ValidationError(_('Please upload a .csv, .xls, or .xlsx file.'))
+        except ValidationError:
+            raise
+        except Exception as error:
+            raise ValidationError(_('The uploaded file is empty, invalid, or could not be read.')) from error
+
+        if not headers:
+            raise ValidationError(_('The uploaded file is empty or invalid.'))
 
         required_any = {'opening_balance'}
-        if not required_any.intersection({(name or '').strip().lower() for name in reader.fieldnames}):
+        if not required_any.intersection({str(name or '').strip().lower() for name in headers}):
             raise ValidationError(_(
-                'The CSV file must contain at least an opening_balance column.'
+                'The file must contain at least an opening_balance column.'
             ))
 
         line_commands = [(5, 0, 0)]
-        for index, row in enumerate(reader, start=2):
-            normalized = {str(key or '').strip().lower(): (value or '').strip() for key, value in row.items()}
-            employee = self._resolve_csv_employee(normalized)
-            policy = self._resolve_csv_policy(normalized, employee)
-            leave_type = self._resolve_csv_leave_type(normalized)
-            balance_year = self._resolve_csv_year(normalized)
-            opening_balance = self._resolve_csv_float(normalized, 'opening_balance')
+        for index, row in rows:
+            normalized = {
+                str(key or '').strip().lower(): self._normalize_import_value(value)
+                for key, value in row.items()
+            }
+            if not any(normalized.values()):
+                continue
+            employee = self._resolve_import_employee(normalized)
+            policy = self._resolve_import_policy(normalized, employee)
+            leave_type = self._resolve_import_leave_type(normalized)
+            balance_year = self._resolve_import_year(normalized)
+            opening_balance = self._resolve_import_float(normalized, 'opening_balance')
             if not employee:
                 raise ValidationError(_('Row %s: employee could not be resolved.') % index)
             if not leave_type:
@@ -90,6 +151,13 @@ class AttendanceLeaveBalanceImportWizard(models.TransientModel):
             'view_mode': 'form',
             'target': 'new',
         }
+
+    def _normalize_import_value(self, value):
+        if value is None:
+            return ''
+        if isinstance(value, float) and value.is_integer():
+            return str(int(value))
+        return str(value).strip()
 
     def action_import(self):
         self.ensure_one()
@@ -256,7 +324,7 @@ class AttendanceLeaveBalanceImportWizard(models.TransientModel):
             },
         }
 
-    def _resolve_csv_employee(self, normalized_row):
+    def _resolve_import_employee(self, normalized_row):
         Employee = self.env['hr.employee'].sudo()
         employee_id_raw = normalized_row.get('employee_id')
         employee_name = normalized_row.get('employee_name')
@@ -272,7 +340,7 @@ class AttendanceLeaveBalanceImportWizard(models.TransientModel):
             ], limit=1)
         return False
 
-    def _resolve_csv_policy(self, normalized_row, employee):
+    def _resolve_import_policy(self, normalized_row, employee):
         Policy = self.env['attendance.leave.policy'].sudo()
         policy_id_raw = normalized_row.get('policy_id')
         policy_name = normalized_row.get('policy_name')
@@ -290,7 +358,7 @@ class AttendanceLeaveBalanceImportWizard(models.TransientModel):
             ], limit=1)
         return employee.leave_policy_id if employee else False
 
-    def _resolve_csv_leave_type(self, normalized_row):
+    def _resolve_import_leave_type(self, normalized_row):
         LeaveType = self.env['hr.leave.type'].sudo()
         company_domain = ['|', ('company_id', '=', False), ('company_id', '=', self.company_id.id)]
         leave_type_id_raw = normalized_row.get('leave_type_id')
@@ -308,18 +376,18 @@ class AttendanceLeaveBalanceImportWizard(models.TransientModel):
             return LeaveType.search(company_domain + [('name', '=ilike', leave_type_name)], limit=1)
         return False
 
-    def _resolve_csv_year(self, normalized_row):
+    def _resolve_import_year(self, normalized_row):
         year_raw = normalized_row.get('balance_year') or normalized_row.get('year')
         if year_raw and str(year_raw).strip().isdigit():
             return int(year_raw)
         return self.balance_year
 
-    def _resolve_csv_float(self, normalized_row, key):
+    def _resolve_import_float(self, normalized_row, key):
         value = normalized_row.get(key)
         try:
             return float(value) if value not in (None, '') else 0.0
         except (TypeError, ValueError):
-            raise ValidationError(_('Invalid numeric value for %s in CSV.') % key)
+            raise ValidationError(_('Invalid numeric value for %s.') % key)
 
     def _resolve_policy_line(self, policy, leave_type):
         """Match an imported leave type to the best policy line.
