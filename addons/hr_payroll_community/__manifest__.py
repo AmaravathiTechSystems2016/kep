@@ -46,6 +46,7 @@
         'data/hr_payroll_community_data.xml',
         'data/payroll_profile_data.xml',
         'data/payroll_overtime_update.xml',
+        'data/payroll_allowance_update.xml',
         'wizard/hr_payslips_employees_views.xml',
         'wizard/payslip_lines_contribution_register_views.xml',
         'report/hr_payroll_report.xml',

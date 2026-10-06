@@ -107,6 +107,24 @@ class HrContract(models.Model):
         string="Overtime Multiplier",
         help="Multiplier applied for overtime calculations.")
 
+    def get_conveyance_amount(self):
+        """Monthly conveyance for the contract.
+
+        Conveyance is the balancing component, so basic + DA + HRA + allowances
+        (including washing) + conveyance always equals the wage.
+        """
+        self.ensure_one()
+        wage = self.wage or 0.0
+        fixed = (
+            wage * (self.basic_percentage or 0.0) / 100.0
+            + wage * (self.hra_percentage or 0.0) / 100.0
+            + (self.da or 0.0) + (self.allowance_amount or 0.0)
+            + (self.washing_allowance or 0.0)
+            + (self.medical_allowance or 0.0)
+            + (self.meal_allowance or 0.0) + (self.other_allowance or 0.0)
+        )
+        return max(wage - fixed, 0.0)
+
     def get_all_structures(self):
         """
         @return: the structures linked to the given contracts, ordered by

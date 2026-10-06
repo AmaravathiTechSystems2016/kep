@@ -350,8 +350,11 @@ class HrPayslip(models.Model):
                         })
                     current_leave_struct['number_of_hours'] += hours
                     if work_hours:
+                        # A day can never count for more than one paid day,
+                        # even if the leave interval is longer than the
+                        # scheduled hours of that day.
                         current_leave_struct[
-                            'number_of_days'] += hours / work_hours
+                            'number_of_days'] += min(hours / work_hours, 1.0)
             # Use completed attendance intervals for WORK100. Approved leave
             # remains represented by the leave lines built above.
             attendance_days = defaultdict(float)

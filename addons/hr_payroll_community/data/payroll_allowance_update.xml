@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Medical & Other = generic Allowance + Washing + Medical allowance, prorated by paid days. -->
+        <record id="hr_rule_medical" model="hr.salary.rule">
+            <field name="amount_python_compute">
+calendar_days = (payslip.date_to - payslip.date_from).days + 1
+paid_days = sum(line.number_of_days for code, line in worked_days.dict.items() if code != 'LOP')
+master = (contract.allowance_amount or 0.0) + (contract.washing_allowance or 0.0) + (contract.medical_allowance or 0.0)
+result = master * min(paid_days / calendar_days, 1.0) if calendar_days else 0.0</field>
+        </record>
+        <!-- Conveyance = Conveyance allowance (or Travel allowance), prorated by paid days. -->
+        <record id="hr_rule_travel" model="hr.salary.rule">
+            <field name="amount_python_compute">
+calendar_days = (payslip.date_to - payslip.date_from).days + 1
+paid_days = sum(line.number_of_days for code, line in worked_days.dict.items() if code != 'LOP')
+master = contract.get_conveyance_amount()
+result = master * min(paid_days / calendar_days, 1.0) if calendar_days else 0.0</field>
+        </record>
+    </data>
+</odoo>

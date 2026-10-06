@@ -71,11 +71,10 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         medical_other_master = sum(
             float(getattr(contract, field_name, 0.0) or 0.0)
             for field_name in (
-                'allowance_amount', 'medical_allowance', 'meal_allowance',
+                'allowance_amount', 'washing_allowance',
+                'medical_allowance', 'meal_allowance',
                 'other_allowance'))
-        conveyance_master = (
-            float(getattr(contract, 'conveyance_allowance', 0.0) or 0.0)
-            or float(getattr(contract, 'travel_allowance', 0.0) or 0.0))
+        conveyance_master = contract.get_conveyance_amount()
         basic = self._amount(amounts, 'BASIC')
         da = self._amount(amounts, 'DA')
         medical_other = self._amount(amounts, 'Medical', 'Meal', 'Other')
