@@ -373,15 +373,11 @@ class HrPayslip(models.Model):
                         / 3600.0 / scheduled_hours
                     )
 
-            # Sundays are paid for every employee even when no punch exists;
-            # office staff are also paid for Saturdays (weekly off).
-            is_office = getattr(
-                contract.employee_id, 'attendance_category', False) == 'office'
+            # Sundays are paid for every employee even when no punch exists.
             current_date = fields.Date.from_string(date_from)
             last_date = fields.Date.from_string(date_to)
             while current_date <= last_date:
-                if current_date.weekday() == 6 or (
-                        is_office and current_date.weekday() == 5):
+                if current_date.weekday() == 6:
                     attendance_days[current_date] = 1.0
                 current_date += timedelta(days=1)
 
