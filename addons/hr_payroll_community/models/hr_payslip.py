@@ -387,9 +387,10 @@ class HrPayslip(models.Model):
                         / 3600.0 / scheduled_hours
                     )
 
-            # Office staff are paid for Sundays even when no punch exists.
-            # Manufacturing-worker Sundays remain excluded from payable days.
-            if getattr(contract.employee_id, 'attendance_category', False) == 'office':
+            # Everyone except manufacturing workers is paid for Sundays even
+            # when no punch exists. Worker Sundays remain excluded from
+            # payable days.
+            if getattr(contract.employee_id, 'attendance_category', False) != 'worker':
                 current_date = fields.Date.from_string(date_from)
                 last_date = fields.Date.from_string(date_to)
                 while current_date <= last_date:
