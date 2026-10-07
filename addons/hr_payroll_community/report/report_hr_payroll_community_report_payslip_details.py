@@ -139,7 +139,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
             'location': employee.work_location_id.name if employee.work_location_id else 'Not provided',
             'bank_name': bank_id.name if bank_id else 'Not provided',
             'bank_account': bank.acc_number if bank else 'Not provided',
-            'ifsc': getattr(bank_id, 'bic', False) or 'Not provided',
+            'ifsc': ((bank_id.ifsc_code or bank_id.bic) if bank_id else False) or 'Not provided',
             'esi_number': getattr(employee, 'esi_number', False) or 'Not provided',
             'month_label': payslip.date_from.strftime('%B - %Y'),
         }

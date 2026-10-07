@@ -35,5 +35,6 @@ from . import hr_payslip_run
 from . import hr_payslip_worked_days
 from . import hr_rule_input
 from . import hr_salary_rule_category
+from . import res_bank
 from . import res_config_settings
 from . import resource_mixin
