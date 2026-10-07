@@ -20,6 +20,14 @@ if typing.TYPE_CHECKING:
 
 T = typing.TypeVar("T")
 
+_PG_TZ_ALIASES = {
+    'Asia/Calcutta': 'Asia/Kolkata',
+    'Asia/Katmandu': 'Asia/Kathmandu',
+    'Asia/Rangoon': 'Asia/Yangon',
+    'Asia/Saigon': 'Asia/Ho_Chi_Minh',
+    'Asia/Dacca': 'Asia/Dhaka',
+}
+
 DATE_LENGTH = len(date.today().strftime(DATE_FORMAT))
 DATETIME_LENGTH = len(datetime.now().strftime(DATETIME_FORMAT))
 
@@ -82,6 +90,8 @@ class BaseDate(Field[T | typing.Literal[False]], typing.Generic[T]):
         if self.type == 'datetime' and (timezone := model.env.context.get('tz')):
             # only use the timezone from the context
             if timezone in pytz.all_timezones_set:
+                # Browsers may send legacy aliases that PostgreSQL lacks.
+                timezone = _PG_TZ_ALIASES.get(timezone, timezone)
                 sql_expr = SQL("timezone(%s, timezone('UTC', %s))", timezone, sql_expr)
             else:
                 _logger.warning("Grouping in unknown / legacy timezone %r", timezone)
