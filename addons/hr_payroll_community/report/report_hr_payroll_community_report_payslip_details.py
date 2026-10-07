@@ -20,7 +20,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from datetime import timedelta
 
 from odoo import api, models
 
@@ -50,11 +49,6 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         amounts = self._line_amounts(payslip)
         contract = payslip.contract_id
         calendar_days = (payslip.date_to - payslip.date_from).days + 1
-        if getattr(payslip.employee_id, 'attendance_category', False) == 'worker':
-            calendar_days -= sum(
-                (payslip.date_from + timedelta(days=offset)).weekday() == 6
-                for offset in range(calendar_days)
-            )
         # Paid leave of any type counts as worked; only unpaid leave and
         # loss of pay count as absence.
         worked_days = sum(

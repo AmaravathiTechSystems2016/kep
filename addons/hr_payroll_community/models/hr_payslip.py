@@ -280,16 +280,6 @@ class HrPayslip(models.Model):
         )
 
     @api.model
-    def _is_unpaid_sunday(self, contract, work_date):
-        """Return whether Sunday is an unpaid day for this employee category."""
-        return (
-            work_date.weekday() == 6
-            and getattr(contract.employee_id, 'attendance_category', False)
-            == 'worker'
-        )
-
-
-    @api.model
     def get_worked_day_lines(self, contracts, date_from, date_to):
         """
         @param contracts: Browse record of contracts, date_from, date_to
@@ -327,8 +317,6 @@ class HrPayslip(models.Model):
                     day.astimezone(tz).date()
                     if getattr(day, 'tzinfo', None) else day
                 )
-                if self._is_unpaid_sunday(contract, leave_date):
-                    continue
                 work_hours = self._get_scheduled_hours_for_day(
                     contract, leave_date)
                 if len(leave) > 1:
@@ -376,8 +364,6 @@ class HrPayslip(models.Model):
                 if check_out <= check_in:
                     continue
                 attendance_date = check_in.date()
-                if self._is_unpaid_sunday(contract, attendance_date):
-                    continue
                 scheduled_hours = self._get_scheduled_hours_for_day(
                     contract, attendance_date
                 )
@@ -387,16 +373,13 @@ class HrPayslip(models.Model):
                         / 3600.0 / scheduled_hours
                     )
 
-            # Everyone except manufacturing workers is paid for Sundays even
-            # when no punch exists. Worker Sundays remain excluded from
-            # payable days.
-            if getattr(contract.employee_id, 'attendance_category', False) != 'worker':
-                current_date = fields.Date.from_string(date_from)
-                last_date = fields.Date.from_string(date_to)
-                while current_date <= last_date:
-                    if current_date.weekday() == 6:
-                        attendance_days[current_date] = 1.0
-                    current_date += timedelta(days=1)
+            # Sundays are paid for every employee even when no punch exists.
+            current_date = fields.Date.from_string(date_from)
+            last_date = fields.Date.from_string(date_to)
+            while current_date <= last_date:
+                if current_date.weekday() == 6:
+                    attendance_days[current_date] = 1.0
+                current_date += timedelta(days=1)
 
             # Keep LOP as an informational count only. Salary is already
             # prorated by the payroll rules, so this line must not deduct pay.
@@ -410,15 +393,14 @@ class HrPayslip(models.Model):
                 if leave
             }
             while current_date <= last_date:
-                if not self._is_unpaid_sunday(contract, current_date):
-                    scheduled_hours = self._get_scheduled_hours_for_day(
-                        contract, current_date
+                scheduled_hours = self._get_scheduled_hours_for_day(
+                    contract, current_date
+                )
+                if scheduled_hours and current_date not in leave_dates:
+                    lop_days += max(
+                        1.0 - min(attendance_days.get(current_date, 0.0), 1.0),
+                        0.0,
                     )
-                    if scheduled_hours and current_date not in leave_dates:
-                        lop_days += max(
-                            1.0 - min(attendance_days.get(current_date, 0.0), 1.0),
-                            0.0,
-                        )
                 current_date += timedelta(days=1)
 
             worked_days = sum(
