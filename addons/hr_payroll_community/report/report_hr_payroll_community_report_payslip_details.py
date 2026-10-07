@@ -32,6 +32,8 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
 
     # The payslip builder consolidates unpaid leave and absence into one line.
     _LOP_CODES = frozenset(('LOP',))
+    # Same unpaid codes the salary rules exclude from paid days.
+    _UNPAID_CODES = frozenset(('LOP', 'UNPAID', 'UNP', 'UNP1', 'UL', 'PL1'))
 
     @staticmethod
     def _line_amounts(payslip):
@@ -53,9 +55,11 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
                 (payslip.date_from + timedelta(days=offset)).weekday() == 6
                 for offset in range(calendar_days)
             )
+        # Paid leave of any type counts as worked; only unpaid leave and
+        # loss of pay count as absence.
         worked_days = sum(
             line.number_of_days for line in payslip.worked_days_line_ids
-            if line.code == 'WORK100'
+            if (line.code or '').strip().upper() not in self._UNPAID_CODES
         )
         lop_days = sum(
             line.number_of_days for line in payslip.worked_days_line_ids
