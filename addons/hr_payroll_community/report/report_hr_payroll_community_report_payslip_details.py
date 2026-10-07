@@ -134,7 +134,7 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         bank = employee.primary_bank_account_id
         bank_id = bank.bank_id if bank else False
         return {
-            'employee_number': employee.identification_id or 'Not provided',
+            'employee_number': employee.employee_id or employee.identification_id or 'Not provided',
             'department': employee.department_id.name if employee.department_id else 'Not provided',
             'location': employee.work_location_id.name if employee.work_location_id else 'Not provided',
             'bank_name': bank_id.name if bank_id else 'Not provided',
