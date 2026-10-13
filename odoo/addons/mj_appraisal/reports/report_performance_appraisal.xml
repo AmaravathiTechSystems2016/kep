@@ -1,0 +1,91 @@
+<odoo>
+    <template id="report_performance_appraisal">
+        <t t-call="web.external_layout">
+            <main class="o_main">
+                <t t-foreach="docs" t-as="o">
+
+                    <!-- HEADER -->
+                    <div class="page">
+                        <h3 style="text-align:center;">
+                            <span t-esc="o.name"/>
+                        </h3>
+
+                        <table class="table table-sm" style="margin-top:20px;">
+                            <tr>
+                                <td><strong>Name</strong></td>
+                                <td><span t-esc="o.employee_id.name"/></td>
+                                <td><strong>Department</strong></td>
+                                <td><span t-esc="o.employee_id.department_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Designation</strong></td>
+                                <td><span t-esc="o.employee_id.job_id.name"/></td>
+                                <td><strong>Evaluation Period</strong></td>
+                                <td>
+                                    <span t-esc="o.date_from"/> →
+                                    <span t-esc="o.date_to"/>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td><strong>Appraisal Date</strong></td>
+                                <td><span t-esc="o.appraisal_date"/></td>
+                                <td><strong>Final Score</strong></td>
+                                <td><span t-esc="'%.2f' % o.score"/></td>
+                                
+                            </tr>
+                            <tr>
+                                <td><strong>Comments</strong></td>
+                                <td colspan="3"><span t-esc="o.comments"/></td>
+                            </tr>
+                        </table>
+
+                        <hr/>
+
+                        <!-- APPRAISER SECTIONS -->
+                        <t t-foreach="o.performance_appraiser_ids" t-as="appraiser">
+                            <h6 style="margin-top:25px;">
+                                Appraiser: <span t-esc="appraiser.appraiser_id.name"/>
+                            </h6>
+
+                            <p>
+                                <strong>Score:</strong>
+                                <span t-if="appraiser.score and appraiser.weightage"> <span t-esc="appraiser.score"/> / <span t-esc="appraiser.weightage"/></span>; 
+                                <span t-if="appraiser.comments" t-esc="appraiser.comments"/>
+                            </p>
+                            <p>
+                                
+                            </p>
+
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Evaluation Topic</th>
+                                        <th style="width:20%;" class="text-center">Allocated Points</th>
+                                        <th style="width:20%;" class="text-center">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="appraiser.performance_appraiser_line_ids" t-as="line">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="line.name.name"/>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <span t-esc="line.weightage"/>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <span t-esc="line.score"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                    </div>
+                </t>
+            </main>
+        </t>
+    </template>
+</odoo>

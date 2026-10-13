@@ -1,0 +1,12 @@
+<odoo>
+    <record id="action_report_performance_appraisal" model="ir.actions.report">
+        <field name="name">Performance Appraisal</field>
+        <field name="model">performance.appraisal</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">mj_appraisal.report_performance_appraisal</field>
+        <field name="report_file">mj_appraisal.report_performance_appraisal</field>
+        <field name="print_report_name">
+            'Performance Appraisal - %s' % (object.name)
+        </field>
+    </record>
+</odoo>

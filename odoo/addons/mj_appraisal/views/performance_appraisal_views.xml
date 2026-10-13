@@ -1,0 +1,287 @@
+<odoo>
+    <record id="view_performance_appraisal_list" model="ir.ui.view">
+        <field name="name">performance.appraisal.list</field>
+        <field name="model">performance.appraisal</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id" options="{'no_create': True, 'no_open': True}" widget="many2one_avatar"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="score"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_performance_appraisal_form" model="ir.ui.view">
+        <field name="name">performance.appraisal.form</field>
+        <field name="model">performance.appraisal</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- STATUSBAR -->
+                    <field name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,submitted,confirmed"/>
+
+                    <!-- Technical: True for users who may only enter scores -->
+                    <field name="is_appraiser_only" invisible="1"/>
+
+                    <!-- Technical: True for Settings administrators -->
+                    <field name="can_force_draft" invisible="1"/>
+
+                    <!-- BUTTONS -->
+                    <button name="action_submit"
+                            type="object"
+                            string="Submit"
+                            class="btn-primary"
+                            invisible="state != 'draft' or is_appraiser_only"/>
+
+                    <button name="action_confirm"
+                            type="object"
+                            string="Approve"
+                            class="btn-success"
+                            invisible="state != 'submitted' or is_appraiser_only"/>
+
+                    <button name="action_reset_draft"
+                            type="object"
+                            string="Reset to Draft"
+                            class="btn-secondary"
+                            invisible="state in ('draft', 'confirmed') or is_appraiser_only"/>
+
+                    <!--
+                        Escape hatch for Settings administrators: unlike
+                        "Reset to Draft" it stays available after the appraisal
+                        has been approved. `groups` hides it from everybody
+                        else; action_send_to_draft re-checks the group server
+                        side, so the button cannot be replayed over RPC.
+                    -->
+                    <button name="action_send_to_draft"
+                            type="object"
+                            string="Reset to Draft"
+                            class="btn-secondary"
+                            groups="base.group_system"
+                            confirm="This will reopen the appraisal for editing and clear its approval. Continue?"
+                            invisible="state in ('draft', 'submitted') or not can_force_draft"/>
+                    
+
+                    <button
+                        name="%(mj_appraisal.action_report_performance_appraisal)d"
+                        string="Print Appraisal"
+                        type="action"
+                        class="btn-info"
+                        icon="fa-print"/>
+                </header>
+
+                
+
+                <sheet>
+                    <!-- SMART BUTTON -->
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_open_appraisers"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-users">
+                            <field name="appraiser_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="state == 'confirmed' or is_appraiser_only"/>
+                            <field name="employee_id"  readonly="state == 'confirmed' or is_appraiser_only" options="{'no_create': True, 'no_open': True}" widget="many2one_avatar"/>
+                        </group>
+                        <group>
+                            <field name="date_from" string="Evaluation Period"
+                                widget="daterange"
+                                options="{'end_date_field': 'date_to'}" readonly="state == 'confirmed' or is_appraiser_only"/>
+                            <field name="date_to" invisible="1"/>
+                            <field name="appraisal_date" readonly="state == 'confirmed' or is_appraiser_only"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="score" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Appraisers">
+                            <field name="performance_appraiser_ids" readonly="state == 'confirmed' or is_appraiser_only">
+                                <list editable="bottom">
+                                    <field name="appraiser_id" readonly="state == 'confirmed'" options="{'no_create': True, 'no_open': True}" widget="many2one_avatar"/>
+                                    <field name="weightage" readonly="state == 'confirmed'"/>
+                                    <field name="score" readonly="1"/>
+                                    <field name="state" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Comments">
+                            <field name="comments" readonly="state == 'confirmed' or is_appraiser_only" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <chatter reload_on_follower="True"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_performance_appraiser_list" model="ir.ui.view">
+        <field name="name">performance.appraiser.list</field>
+        <field name="model">performance.appraiser</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="performance_appraisal_id"/>
+                <field name="name"  readonly="state == 'confirmed'" options="{'no_create': True, 'no_open': True}" widget="many2one_avatar"/>
+                <field name="appraiser_id"  readonly="state == 'confirmed'" options="{'no_create': True, 'no_open': True}" widget="many2one_avatar"/>
+                <field name="weightage" readonly="state == 'confirmed'"/>
+                <field name="score" readonly="1"/>
+                <field name="state" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_performance_appraiser_form" model="ir.ui.view">
+        <field name="name">performance.appraiser.form</field>
+        <field name="model">performance.appraiser</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,submitted,confirmed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="performance_appraisal_id" readonly="1" string="Appraisal"/>
+                            <field name="name" widget="many2one_avatar" readonly="1"/>
+                            <field name="score" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="appraiser_id" readonly="1" widget="many2one_avatar"/>
+                            <field name="comments" readonly="state == 'confirmed'"/>
+                            <!-- Technical: True for users who may only enter scores -->
+                            <field name="is_appraiser_only" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Evaluation Lines">
+                            <field name="performance_appraiser_line_ids" readonly="state == 'confirmed'">
+                                <list editable="bottom">
+                                    <field name="name" readonly="parent.state == 'confirmed' or parent.is_appraiser_only" string="Evaluation Line (task / goal)"/>
+                                    <field name="weightage" readonly="parent.state == 'confirmed' or parent.is_appraiser_only"/>
+                                    <field name="score" readonly="parent.state == 'confirmed' or (parent.is_appraiser_only and parent.state != 'draft')"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <chatter reload_on_follower="True"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_emp_employee_view_tree_inherit"
+        model="ir.ui.view">
+        <field name="name">hr.employee.list.inherit.appraisal</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='name']" position="after">
+                <field name="appraisal_score" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_email']" position="after">
+                <field name="appraisal_score" readonly="1"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_appraisals"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-line-chart">
+                    <field name="appraisal_count" widget="statinfo" string="Appraisals"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_performance_appraisal_search" model="ir.ui.view">
+        <field name="name">performance.appraisal.search</field>
+        <field name="model">performance.appraisal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="state"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="submitted" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter name="confirmed" string="Approved" domain="[('state', '=', 'confirmed')]"/>
+                <separator/>
+                <filter name="filter_appraisal_date" string="Appraisal Date" date="appraisal_date"/>
+
+                <separator string="Group By"/>
+                <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                <filter name="group_name" string="Appraisal Name" context="{'group_by': 'name'}"/>
+            </search>
+        </field>
+    </record>
+
+    
+
+    <record id="action_performance_appraisal" model="ir.actions.act_window">
+        <field name="name">Performance Appraisals</field>
+        <field name="res_model">performance.appraisal</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_name':1}</field>
+    </record>
+
+    <!-- Appraisers land here: only the evaluations they have to score -->
+    <record id="action_performance_appraiser_my" model="ir.actions.act_window">
+        <field name="name">My Evaluations</field>
+        <field name="res_model">performance.appraiser</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('appraiser_id.user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to evaluate right now</p>
+            <p>Evaluations assigned to you will show up here.</p>
+        </field>
+    </record>
+
+    <!-- Submenus -->
+    <!-- Top-level "Performance Appraisal" menu under Employees -->
+    <menuitem id="performance_appraisal_root_menu"
+                name="Performance Appraisal"
+                parent="hr.menu_hr_root"
+                sequence="5"
+                groups="mj_appraisal.group_performance_appraisal_manager,mj_appraisal.group_performance_appraisal_viewer,mj_appraisal.group_performance_appraisal_appraiser"/>
+
+    <menuitem id="performance_appraisal_menu"
+                name="Performance Appraisals"
+                parent="performance_appraisal_root_menu"
+                action="action_performance_appraisal"
+                sequence="5"
+                groups="mj_appraisal.group_performance_appraisal_manager,mj_appraisal.group_performance_appraisal_viewer,mj_appraisal.group_performance_appraisal_appraiser"/>
+
+    <menuitem id="performance_appraiser_my_menu"
+                name="My Evaluations"
+                parent="performance_appraisal_root_menu"
+                action="action_performance_appraiser_my"
+                sequence="10"
+                groups="mj_appraisal.group_performance_appraisal_appraiser"/>
+
+
+</odoo>
