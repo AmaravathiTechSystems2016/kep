@@ -39,9 +39,19 @@ class HrContract(models.Model):
         ('computer_no_esi', 'Computer Worker Without ESI'),
     ], string='Payroll Profile', default='manufacturing_worker',
         help="Select the payroll policy profile for this employee.")
+    basic_mode = fields.Selection([
+        ('fixed', 'Fixed'),
+        ('percentage', 'Percentage of Gross'),
+    ], string='Basic Mode', default='percentage', required=True,
+        help="Fixed uses the entered basic, such as 14000 or 16500. "
+             "Percentage calculates basic as that percent of gross wage.")
+    basic_salary = fields.Monetary(
+        string='Fixed Basic',
+        tracking=True,
+        help="Monthly basic used when Basic Mode is Fixed.")
     basic_percentage = fields.Float(
         string='Basic Percentage (%)',
-        help="Percentage of monthly wage used as basic salary.")
+        help="Percent of gross wage used as basic when Basic Mode is Percentage.")
     hra_percentage = fields.Float(
         string='HRA Percentage (%)',
         help="Percentage applied on basic salary for HRA.")
@@ -107,23 +117,30 @@ class HrContract(models.Model):
         string="Overtime Multiplier",
         help="Multiplier applied for overtime calculations.")
 
-    def get_conveyance_amount(self):
-        """Monthly conveyance for the contract.
+    def get_basic_amount(self):
+        """Monthly basic. Fixed amount, or a percentage of gross wage."""
+        self.ensure_one()
+        if self.basic_mode == 'fixed':
+            return self.basic_salary or 0.0
+        return (self.wage or 0.0) * (self.basic_percentage or 0.0) / 100.0
 
-        Conveyance is the balancing component, so basic + DA + HRA + allowances
-        (including washing) + conveyance always equals the wage.
+    def get_hra_amount(self):
+        """HRA is 30 percent of basic for every slab."""
+        self.ensure_one()
+        return self.get_basic_amount() * 0.30
+
+    def get_conveyance_amount(self):
+        """Conveyance balances gross. It can be negative.
+
+        Gross = Basic + HRA + Conveyance. Medical is not part of any slab.
         """
         self.ensure_one()
-        wage = self.wage or 0.0
-        fixed = (
-            wage * (self.basic_percentage or 0.0) / 100.0
-            + wage * (self.hra_percentage or 0.0) / 100.0
-            + (self.da or 0.0) + (self.allowance_amount or 0.0)
-            + (self.washing_allowance or 0.0)
-            + (self.medical_allowance or 0.0)
-            + (self.meal_allowance or 0.0) + (self.other_allowance or 0.0)
-        )
-        return max(wage - fixed, 0.0)
+        return (self.wage or 0.0) - self.get_basic_amount() - self.get_hra_amount()
+
+    @api.model
+    def _init_basic_mode(self):
+        """Keep a filled fixed basic on Fixed mode. Everyone else stays on percentage."""
+        self.search([('basic_salary', '>', 0)]).write({'basic_mode': 'fixed'})
 
     def get_all_structures(self):
         """
@@ -134,6 +151,10 @@ class HrContract(models.Model):
         structures = self.mapped('struct_id')
         if not structures:
             structures = self.mapped('contract_template_id.struct_id')
+        if not structures:
+            structures = self.env['hr.payroll.structure']
+            for contract in self:
+                structures |= contract._structure_for_profile()
 
         if not structures:
             return []
@@ -162,7 +183,41 @@ class HrContract(models.Model):
             'pf_wage_ceiling',
             'professional_tax',
         ]
-        return {field_name: profile[field_name] for field_name in fields_to_copy}
+        values = {field_name: profile[field_name] for field_name in fields_to_copy}
+        structure = self._structure_for_profile()
+        if structure and not self.struct_id:
+            values['struct_id'] = structure.id
+        return values
+
+    def _structure_for_profile(self):
+        """Salary structure that matches this contract's payroll profile."""
+        self.ensure_one()
+        if self.struct_id:
+            return self.struct_id
+        xmlid = {
+            'manufacturing_worker': 'hr_payroll_community.structure_worker',
+            'computer_esi': 'hr_payroll_community.structure_office',
+            'computer_no_esi': 'hr_payroll_community.structure_office',
+        }.get(self.payroll_profile)
+        if not xmlid:
+            return self.env['hr.payroll.structure']
+        return self.env.ref(xmlid, raise_if_not_found=False) or self.env['hr.payroll.structure']
+
+    @api.model
+    def _assign_missing_payroll_structures(self):
+        """Fill salary structures that were left empty on existing contracts."""
+        for contract in self.search([('struct_id', '=', False)]):
+            structure = contract._structure_for_profile()
+            if structure:
+                contract.struct_id = structure.id
+        slips = self.env['hr.payslip'].search([
+            ('struct_id', '=', False),
+            ('state', '=', 'draft'),
+            ('contract_id', '!=', False),
+        ])
+        for slip in slips:
+            if slip.contract_id.struct_id:
+                slip.struct_id = slip.contract_id.struct_id
 
     @api.model_create_multi
     def create(self, vals_list):

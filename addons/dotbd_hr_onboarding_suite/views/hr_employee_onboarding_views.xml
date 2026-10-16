@@ -69,11 +69,12 @@
                         </page>
                         <page string="Checklist">
                             <field name="line_ids">
-                                <list editable="bottom">
+                                <list editable="bottom" open_form_view="True">
                                     <field name="sequence"/>
                                     <field name="name"/>
                                     <field name="step_type"/>
                                     <field name="document_name"/>
+                                    <field name="attachment_ids" widget="many2many_binary" string="Attachments" invisible="step_type != 'document'"/>
                                     <field name="required"/>
                                     <field name="responsible_role"/>
                                     <field name="verification_status"/>

@@ -48,6 +48,10 @@ class AttendanceLeavePolicy(models.Model):
         default=1.0,
         help='Maximum number of leaves allowed in one month for new joiners.',
     )
+    rule_note = fields.Text(
+        string='Leave Structure',
+        help='Company leave structure applied by this policy.',
+    )
     employee_count = fields.Integer(compute='_compute_employee_count', string='Employees')
     line_ids = fields.One2many(
         'attendance.leave.policy.line',
@@ -265,7 +269,9 @@ class AttendanceLeavePolicy(models.Model):
     def _is_maternity_eligible(self, employee, target_date=None):
         """Maternity is full entitlement, but only after the employee worked enough days."""
         self.ensure_one()
-        maternity_lines = self.line_ids.filtered(lambda line: line.active and line.allocation_mode == 'allocation' and 'maternity' in (line.leave_type_id.sudo().name or '').lower())
+        maternity_lines = self.line_ids.filtered(
+            lambda line: line.active and line.leave_type_id and 'maternity' in (line.leave_type_id.sudo().name or '').lower()
+        )
         if not maternity_lines:
             return True
         worked_days = self._get_employee_worked_days_last_12_months(employee, target_date=target_date)
@@ -360,6 +366,8 @@ class AttendanceLeavePolicy(models.Model):
             year_start = date(year, 1, 1)
             year_end = date(year, 12, 31)
             for employee in employees:
+                activation_date = policy._get_employee_policy_activation_date(employee)
+                policy_active = not activation_date or today >= activation_date
                 service_months = policy._get_employee_service_months(employee, today)
                 earned_eligibility_date = policy._get_employee_earned_leave_eligibility_date(employee)
                 employee_earned_lines = earned_lines.filtered(lambda l: l._is_applicable_to_employee(employee))
@@ -441,23 +449,25 @@ class AttendanceLeavePolicy(models.Model):
                     prev_month_end = today.replace(day=1) - timedelta(days=1)
                     prev_month_start = prev_month_end.replace(day=1)
                     comp_days = policy._count_comp_off_days(employee, prev_month_start, prev_month_end)
+                    grant_date = today.replace(day=1)
                     for line in employee_comp_off_lines:
                         comp_off_days = comp_days * line.comp_off_days_per_worked_day
                         if comp_off_days <= 0:
                             continue
+                        comp_from, comp_to = policy._comp_off_allocation_period(line, grant_date)
                         if Allocation.search_count([
                             ('leave_policy_id', '=', policy.id),
                             ('leave_policy_line_id', '=', line.id),
                             ('employee_id', '=', employee.id),
                             ('holiday_status_id', '=', line.leave_type_id.id),
-                            ('date_from', '=', prev_month_start),
+                            ('date_from', '=', comp_from),
                         ]):
                             continue
                         allocation = Allocation.with_context(mail_create_nosubscribe=True).create({
                             'employee_id': employee.id,
                             'holiday_status_id': line.leave_type_id.id,
-                            'date_from': prev_month_start,
-                            'date_to': year_end,
+                            'date_from': comp_from,
+                            'date_to': comp_to,
                             'number_of_days': comp_off_days,
                             'allocation_type': 'regular',
                             'state': 'confirm',
@@ -637,23 +647,25 @@ class AttendanceLeavePolicy(models.Model):
             prev_month_end = today.replace(day=1) - timedelta(days=1)
             prev_month_start = prev_month_end.replace(day=1)
             comp_days = self._count_comp_off_days(employee, prev_month_start, prev_month_end)
+            grant_date = today.replace(day=1)
             for line in employee_comp_off_lines:
                 comp_off_days = comp_days * line.comp_off_days_per_worked_day
                 if comp_off_days <= 0:
                     continue
+                comp_from, comp_to = self._comp_off_allocation_period(line, grant_date)
                 if Allocation.search_count([
                     ('leave_policy_id', '=', self.id),
                     ('leave_policy_line_id', '=', line.id),
                     ('employee_id', '=', employee.id),
                     ('holiday_status_id', '=', line.leave_type_id.id),
-                    ('date_from', '=', prev_month_start),
+                    ('date_from', '=', comp_from),
                 ]):
                     continue
                 allocation = Allocation.with_context(mail_create_nosubscribe=True).create({
                     'employee_id': employee.id,
                     'holiday_status_id': line.leave_type_id.id,
-                    'date_from': prev_month_start,
-                    'date_to': year_end,
+                    'date_from': comp_from,
+                    'date_to': comp_to,
                     'number_of_days': comp_off_days,
                     'allocation_type': 'regular',
                     'state': 'confirm',
@@ -929,36 +941,286 @@ class AttendanceLeavePolicy(models.Model):
                 continue
 
     @api.model
+    def _standard_leave_structure_note(self):
+        return _(
+            "Leave year: 1 January to 31 December.\n"
+            "Sick Leave (SL): 12 days per year. Not carried forward.\n"
+            "Casual Leave (CL): 6 days per year. Not carried forward.\n"
+            "Earned Leave (EL): 15 days after 1 year of service. Carry forward up to 60 days.\n"
+            "New joiner, first 6 months: maximum 1 leave per month.\n"
+            "New joiner, after 6 months: normal leave entitlement.\n"
+            "Maternity Leave: 26 weeks (182 days) after 80 days worked in the last 12 months. Paid. Not auto-credited.\n"
+            "Paternity Leave: not applicable.\n"
+            "Compensatory Off: for work on weekly offs or holidays. Valid for 1 year from the date it is allocated. Paid.\n"
+            "Festival Leave: company holiday list. Not a leave balance.\n"
+            "WFH / Remote: not applicable.\n"
+            "Unpaid Leave cuts salary. Sick, Casual, Earned, Maternity and Compensatory Off do not."
+        )
+
+    @api.model
+    def _leave_type_vals(self, vals):
+        leave_type_model = self.env['hr.leave.type']
+        return {key: value for key, value in vals.items() if key in leave_type_model._fields}
+
+    def _comp_off_allocation_period(self, line, grant_date):
+        """Comp-off is valid for one year from the date it is allocated."""
+        self.ensure_one()
+        months = int(line.comp_off_validity_months or 12)
+        date_from = grant_date
+        date_to = date_from + relativedelta(months=months) - timedelta(days=1)
+        return date_from, date_to
+
+    @api.model
+    def _apply_comp_off_validity(self):
+        """Set existing comp-off allocations to expire one year after they were allocated."""
+        Allocation = self.env['hr.leave.allocation'].sudo()
+        allocations = Allocation.search([
+            ('allocation_origin', '=', 'comp_off'),
+            ('date_from', '!=', False),
+        ])
+        for allocation in allocations:
+            line = allocation.leave_policy_line_id
+            months = int(line.comp_off_validity_months or 12) if line else 12
+            date_to = allocation.date_from + relativedelta(months=months) - timedelta(days=1)
+            if allocation.date_to != date_to:
+                allocation.with_context(
+                    tracking_disable=True,
+                    mail_notrack=True,
+                    mail_create_nolog=True,
+                    leave_skip_state_check=True,
+                ).write({'date_to': date_to})
+
+    @api.model
+    def _replace_leave_type(self, old_type, new_type):
+        """Move balances off a wrong leave type and archive it."""
+        if not old_type or not new_type or old_type == new_type:
+            return
+        old_type = old_type.sudo()
+        new_type = new_type.sudo()
+        quiet = {
+            'tracking_disable': True,
+            'mail_notrack': True,
+            'mail_create_nolog': True,
+            'mail_create_nosubscribe': True,
+        }
+        Allocation = self.env['hr.leave.allocation'].sudo()
+        Leave = self.env['hr.leave'].sudo()
+        movable_ids = []
+        for allocation in Allocation.search([('holiday_status_id', '=', old_type.id)]):
+            conflict = Allocation.search_count([
+                ('id', '!=', allocation.id),
+                ('employee_id', '=', allocation.employee_id.id),
+                ('holiday_status_id', '=', new_type.id),
+                ('date_from', '=', allocation.date_from),
+                ('state', '!=', 'refuse'),
+            ])
+            if not conflict:
+                movable_ids.append(allocation.id)
+        if movable_ids:
+            # Keep the stored duration. An ORM write recomputes it from an
+            # empty display value and turns a real balance into 0 days.
+            self.env.cr.execute(
+                """
+                UPDATE hr_leave_allocation
+                   SET holiday_status_id = %s,
+                       name = %s || ' (' || trim(to_char(number_of_days, 'FM999990.00')) || ' day(s))'
+                 WHERE id IN %s
+                """,
+                (new_type.id, new_type.name, tuple(movable_ids)),
+            )
+            Allocation.browse(movable_ids).invalidate_recordset(
+                ['holiday_status_id', 'name'], flush=False,
+            )
+        leave_ids = Leave.search([('holiday_status_id', '=', old_type.id)]).ids
+        if leave_ids:
+            self.env.cr.execute(
+                """
+                UPDATE hr_leave
+                   SET holiday_status_id = %s
+                 WHERE id IN %s
+                """,
+                (new_type.id, tuple(leave_ids)),
+            )
+            Leave.browse(leave_ids).invalidate_recordset(['holiday_status_id'], flush=False)
+        Line = self.env['attendance.leave.policy.line'].sudo()
+        for line in Line.search([('leave_type_id', '=', old_type.id)]):
+            sibling = line.policy_id.line_ids.filtered(
+                lambda item: item.leave_type_id == new_type and item.id != line.id
+            )
+            if sibling:
+                line.with_context(**quiet).write({'active': False})
+            else:
+                line.with_context(**quiet).write({'leave_type_id': new_type.id})
+        Balance = self.env['attendance.leave.balance'].sudo()
+        for balance in Balance.search([('leave_type_id', '=', old_type.id)]):
+            conflict = Balance.search_count([
+                ('id', '!=', balance.id),
+                ('employee_id', '=', balance.employee_id.id),
+                ('policy_id', '=', balance.policy_id.id),
+                ('policy_line_id', '=', balance.policy_line_id.id),
+                ('leave_type_id', '=', new_type.id),
+                ('balance_year', '=', balance.balance_year),
+            ])
+            if conflict:
+                continue
+            balance.with_context(**quiet).write({'leave_type_id': new_type.id})
+        if not Allocation.search_count([
+            ('holiday_status_id', '=', old_type.id),
+            ('state', '!=', 'refuse'),
+        ]):
+            old_type.with_context(**quiet).write({'active': False})
+
+    @api.model
+    def _ensure_standard_leave_types(self):
+        """Create or correct the leave types used by the company structure.
+
+        Runs on every module upgrade so the server database changes without a dump.
+        """
+        LeaveType = self.env['hr.leave.type'].sudo()
+        company = self.env['res.company'].sudo().search([], limit=1) or self.env.company
+        quiet = {
+            'tracking_disable': True,
+            'mail_notrack': True,
+            'mail_create_nolog': True,
+            'mail_create_nosubscribe': True,
+        }
+        if company.country_id and 'leave_short_code' in LeaveType._fields:
+            foreign_codes = LeaveType.with_context(active_test=False).search([
+                ('leave_short_code', 'in', ['SL', 'CL', 'EL', 'CO', 'ML', 'UL']),
+                ('country_id', '!=', False),
+                ('country_id', '!=', company.country_id.id),
+            ])
+            if foreign_codes:
+                foreign_codes.with_context(**quiet).write({'leave_short_code': False})
+
+        def upsert(codes, names, vals, create_vals=None):
+            leave_type = self._find_demo_leave_type(codes, names, company=company)
+            payload = self._leave_type_vals(vals)
+            if leave_type:
+                leave_type.with_context(**quiet).write(payload)
+                return leave_type
+            create_payload = self._leave_type_vals(dict(create_vals or {}, **vals))
+            if company.country_id and 'country_id' not in create_payload:
+                create_payload['country_id'] = company.country_id.id
+            create_payload.setdefault('company_id', False)
+            return LeaveType.with_context(**quiet).create(create_payload)
+
+        common = {
+            'active': True,
+            'company_id': False,
+            'request_unit': 'day',
+            'time_type': 'leave',
+        }
+        sick = upsert(
+            ['SL', 'SL1'],
+            ['Sick Leave', 'Sick Time Off'],
+            dict(common, name='Sick Leave', code='SL', leave_short_code='SL', unpaid=False,
+                 requires_allocation=True, employee_requests=False, support_document=True,
+                 sequence=10),
+        )
+        if sick and 'support_document_after_days' in sick._fields:
+            sick.with_context(**quiet).write({'support_document_after_days': 3})
+        casual = upsert(
+            ['CL', 'CL1'],
+            ['Casual Leave'],
+            dict(common, name='Casual Leave', code='CL', leave_short_code='CL', unpaid=False,
+                 requires_allocation=True, employee_requests=False, sequence=20),
+        )
+        earned = upsert(
+            ['EL', 'EL1'],
+            ['Earned Leave'],
+            dict(common, name='Earned Leave', code='EL', leave_short_code='EL', unpaid=False,
+                 requires_allocation=True, employee_requests=False, sequence=30),
+        )
+        comp = upsert(
+            ['CO', 'CO1'],
+            ['Compensatory Off', 'Compensatory Days'],
+            dict(common, name='Compensatory Off', code='CO', leave_short_code='CO', unpaid=False,
+                 requires_allocation=True, employee_requests=False, sequence=40),
+        )
+        maternity = upsert(
+            ['ML', 'MAT', 'ML1'],
+            ['Maternity Leave'],
+            dict(common, name='Maternity Leave', code='ML', leave_short_code='ML', unpaid=False,
+                 requires_allocation=False, employee_requests=False, sequence=50),
+            create_vals={'leave_validation_type': 'both', 'allocation_validation_type': 'hr'},
+        )
+        unpaid = upsert(
+            ['UL', 'UNP', 'UNP1'],
+            ['Unpaid Leave', 'Unpaid'],
+            dict(common, name='Unpaid Leave', code='UL', leave_short_code='UL', unpaid=True,
+                 requires_allocation=False, employee_requests=False, sequence=60),
+        )
+        paid_time_off = self._find_demo_leave_type(['PTO'], ['Paid Time Off'], company=company)
+        if paid_time_off and earned and paid_time_off != earned:
+            self._replace_leave_type(paid_time_off, earned)
+        kept = {record.id for record in (sick, casual, earned, comp, maternity, unpaid) if record}
+        for leave_type in LeaveType.search([('active', '=', True)]):
+            if leave_type.id in kept:
+                continue
+            if not self._find_demo_leave_type(
+                [leave_type.code] if leave_type.code else [],
+                [leave_type.name] if leave_type.name else [],
+                company=company,
+            ):
+                continue
+            name = (leave_type.name or '').strip().lower()
+            if 'paternity' in name or 'work from home' in name or name.startswith('wfh'):
+                leave_type.with_context(**quiet).write({'active': False})
+        return {
+            'sick': sick,
+            'casual': casual,
+            'earned': earned,
+            'comp': comp,
+            'maternity': maternity,
+            'unpaid': unpaid,
+        }
+
+    @api.model
     def create_demo_policies(self):
-        """Create or refresh the worker/office demo policies using existing leave types."""
+        """Create or refresh worker and office policies from the company leave structure."""
+        self._ensure_standard_leave_types()
         policies = [
             {'name': 'Worker Leave Policy', 'attendance_category': 'worker'},
             {'name': 'Office Leave Policy', 'attendance_category': 'office'},
         ]
+        companies = self.env['res.company'].sudo().search([])
+        if not companies:
+            companies = self.env.company
         results = self.env['attendance.leave.policy']
-        for policy_vals in policies:
-            policy = self.search([
-                ('name', '=', policy_vals['name']),
-                ('attendance_category', '=', policy_vals['attendance_category']),
-            ], limit=1)
-            vals = dict(policy_vals, company_id=self.env.company.id)
-            if policy:
-                policy.with_context(
-                    tracking_disable=True,
-                    mail_notrack=True,
-                    mail_create_nolog=True,
-                    mail_create_nosubscribe=True,
-                ).write({'company_id': self.env.company.id})
-            else:
-                policy = self.with_context(
-                    tracking_disable=True,
-                    mail_notrack=True,
-                    mail_create_nolog=True,
-                    mail_create_nosubscribe=True,
-                ).create(vals)
-            self._sync_policy_lines_from_standard_specs(policy)
-            results |= policy
+        structure_note = self._standard_leave_structure_note()
+        quiet = {
+            'tracking_disable': True,
+            'mail_notrack': True,
+            'mail_create_nolog': True,
+            'mail_create_nosubscribe': True,
+        }
+        for company in companies:
+            for policy_vals in policies:
+                policy = self.search([
+                    ('name', '=', policy_vals['name']),
+                    ('attendance_category', '=', policy_vals['attendance_category']),
+                    ('company_id', '=', company.id),
+                ], limit=1)
+                vals = dict(
+                    policy_vals,
+                    company_id=company.id,
+                    earned_leave_min_service_months=12,
+                    maternity_min_worked_days_last_12_months=80,
+                    new_joiner_service_months_limit=6,
+                    new_joiner_monthly_leave_limit=1.0,
+                    rule_note=structure_note,
+                )
+                if policy:
+                    policy.with_context(**quiet).write(vals)
+                else:
+                    policy = self.with_context(**quiet).create(vals)
+                self._sync_policy_lines_from_standard_specs(policy)
+                results |= policy
         self._refresh_demo_leave_type_rules()
+        self._apply_comp_off_validity()
+        if results:
+            results.with_context(**quiet).action_refresh_leave_balances()
         return results
 
     def _sync_policy_lines_from_standard_specs(self, policy):
@@ -1005,20 +1267,24 @@ class AttendanceLeavePolicy(models.Model):
 
     @api.model
     def _get_standard_policy_line_specs(self, attendance_category):
+        comp_note = (
+            'For work on weekly offs or holidays. Valid for 1 year from the date it is allocated. Paid.'
+        )
         return [
             {
                 'sequence': 10,
-                'leave_type_codes': ['PL', 'EL', 'EL1'],
-                'leave_type_names': ['Earned Leave', 'Paid Leave', 'Paid Time Off', 'Earned Leaves'],
+                'leave_type_codes': ['EL', 'EL1'],
+                'leave_type_names': ['Earned Leave'],
                 'allocation_mode': 'earned',
                 'gender_applicability': 'all',
-                'working_days_per_leave': 20,
+                'working_days_per_leave': 15,
                 'earned_days_per_unit': 1,
                 'carry_forward_enabled': True,
-                'carry_forward_limit_days': 60,
+                'carry_forward_limit_days': 0,
+                'carry_forward_total_limit_days': 60,
                 'encash_on_exit': True,
                 'annual_days': 15,
-                'notes': '15 days/year after 1 year of service',
+                'notes': '15 days per calendar year after 1 year of service. Carry forward is capped at 60 days. Paid.',
             },
             {
                 'sequence': 20,
@@ -1027,7 +1293,9 @@ class AttendanceLeavePolicy(models.Model):
                 'allocation_mode': 'allocation',
                 'gender_applicability': 'all',
                 'annual_days': 6,
-                'notes': '6 days/year; no carry forward',
+                'carry_forward_enabled': False,
+                'carry_forward_limit_days': 0,
+                'notes': '6 days per calendar year. Not carried forward. Paid.',
             },
             {
                 'sequence': 30,
@@ -1036,16 +1304,19 @@ class AttendanceLeavePolicy(models.Model):
                 'allocation_mode': 'allocation',
                 'gender_applicability': 'all',
                 'annual_days': 12,
-                'notes': '12 days/year; certificate required after 3 days',
+                'carry_forward_enabled': False,
+                'carry_forward_limit_days': 0,
+                'notes': '12 days per calendar year. Not carried forward. Paid. Certificate after 3 days.',
             },
             {
                 'sequence': 40,
-                'leave_type_codes': ['MAT', 'ML1'],
-                'leave_type_names': ['Maternity Leave', 'Maternity / Paternity leave'],
-                'allocation_mode': 'allocation',
+                'leave_type_codes': ['ML', 'MAT', 'ML1'],
+                'leave_type_names': ['Maternity Leave'],
+                'allocation_mode': 'manual',
                 'gender_applicability': 'female',
                 'annual_days': 182,
-                'notes': '26 weeks as per law; eligible after 80 worked days in the last 12 months',
+                'carry_forward_enabled': False,
+                'notes': '26 weeks (182 days) after 80 days worked in the last 12 months. Paid. Not auto-credited.',
             },
             {
                 'sequence': 50,
@@ -1054,17 +1325,20 @@ class AttendanceLeavePolicy(models.Model):
                 'allocation_mode': 'comp_off',
                 'gender_applicability': 'all',
                 'comp_off_days_per_worked_day': 1,
+                'comp_off_validity_months': 12,
                 'annual_days': 0,
-                'notes': 'Granted after approved overtime / weekly off work' if attendance_category == 'worker' else 'Granted for weekend / holiday work',
+                'carry_forward_enabled': False,
+                'notes': comp_note,
             },
             {
                 'sequence': 60,
-                'leave_type_codes': ['UNP', 'PL1'],
+                'leave_type_codes': ['UL', 'UNP', 'UNP1'],
                 'leave_type_names': ['Unpaid Leave', 'Unpaid'],
                 'allocation_mode': 'manual',
                 'gender_applicability': 'all',
                 'annual_days': 0,
-                'notes': 'No paid balance; informational only',
+                'carry_forward_enabled': False,
+                'notes': 'Unpaid leave cuts salary. No allocation balance.',
             },
         ]
 
@@ -1074,14 +1348,25 @@ class AttendanceLeavePolicy(models.Model):
         codes = codes or []
         names = names or []
         company = company or self.env.company
-        company_domain = ['|', ('company_id', '=', False), ('company_id', '=', company.id)]
+        domain = ['|', ('company_id', '=', False), ('company_id', '=', company.id)]
+        country = company.country_id
+        if country:
+            domain = [
+                '&',
+                '|', ('company_id', '=', False), ('company_id', '=', company.id),
+                '|', ('country_id', '=', False), ('country_id', '=', country.id),
+            ]
         if 'code' in LeaveType._fields:
             for code in codes:
-                leave_type = LeaveType.search(company_domain + [('code', '=', code)], limit=1)
+                if not code:
+                    continue
+                leave_type = LeaveType.search(domain + [('code', '=', code)], limit=1)
                 if leave_type:
                     return leave_type
         for name in names:
-            leave_type = LeaveType.search(company_domain + [('name', '=', name)], limit=1)
+            if not name:
+                continue
+            leave_type = LeaveType.search(domain + [('name', '=', name)], limit=1)
             if leave_type:
                 return leave_type
         return False
@@ -1243,6 +1528,11 @@ class AttendanceLeavePolicyLine(models.Model):
         default=1.0,
         help='How many comp-off days to generate for one qualifying weekend or holiday work day.'
     )
+    comp_off_validity_months = fields.Integer(
+        string='Comp-off Validity (Months)',
+        default=12,
+        help='A comp-off allocation stays valid for this many months from the date it is allocated.',
+    )
     annual_days = fields.Float(string='Annual Days', required=True, default=0.0)
     notes = fields.Char()
 
@@ -1323,4 +1613,8 @@ class AttendanceLeavePolicyLine(models.Model):
             if line.allocation_mode == 'comp_off' and line.comp_off_days_per_worked_day <= 0:
                 raise ValidationError(_(
                     'Comp Off lines must have Comp-off Days per Work Day greater than zero.'
+                ))
+            if line.allocation_mode == 'comp_off' and line.comp_off_validity_months <= 0:
+                raise ValidationError(_(
+                    'Comp Off validity must be at least 1 month.'
                 ))

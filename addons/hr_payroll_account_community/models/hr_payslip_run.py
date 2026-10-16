@@ -35,6 +35,4 @@ class HrPayslipRun(models.Model):
                                  required=True, help="Journal associated with "
                                                      "the record",
                                  default=lambda self: self.env[
-                                     'account.journal'].search(
-                                     [('type', '=', 'general')],
-                                     limit=1))
+                                     'account.journal']._default_salary_journal())

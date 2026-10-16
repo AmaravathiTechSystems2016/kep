@@ -22,7 +22,7 @@
 #############################################################################
 {
     'name': 'Odoo19 Payroll Accounting',
-    'version': '19.0.1.0.1',
+    'version': '19.0.1.0.3',
     'category': 'Human Resources',
     'summary': """Helps you to manage payroll and 
      accounting""",
@@ -33,7 +33,8 @@
     'maintainer': 'Cybrosys Techno Solutions',
     'website': "https://www.openhrms.com",
     'depends': ['hr_payroll_community', 'account'],
-    'data': ['views/hr_contract_views.xml',
+    'data': ['data/salary_journal.xml',
+             'views/hr_contract_views.xml',
              'views/hr_payslip_run_views.xml',
              'views/hr_payslip_views.xml',
              'views/hr_salary_rule_views.xml', ],

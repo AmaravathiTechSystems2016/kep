@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="crm_lead_type_non_epc" model="crm.lead.type">
+        <field name="name">Non-EPC</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="crm_lead_type_epc" model="crm.lead.type">
+        <field name="name">EPC</field>
+        <field name="sequence">2</field>
+    </record>
+</odoo>

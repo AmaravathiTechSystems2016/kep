@@ -40,6 +40,18 @@ class HrEmployee(models.Model):
         inherited=True,
         groups="hr.group_hr_manager",
     )
+    basic_mode = fields.Selection(
+        related='version_id.basic_mode',
+        readonly=False,
+        inherited=True,
+        groups="hr.group_hr_manager",
+    )
+    basic_salary = fields.Monetary(
+        related='version_id.basic_salary',
+        readonly=False,
+        inherited=True,
+        groups="hr.group_hr_manager",
+    )
     basic_percentage = fields.Float(
         related='version_id.basic_percentage',
         readonly=False,

@@ -69,7 +69,7 @@
             <field name="category_id" ref="hr_payroll_community.BASIC"/>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = contract.wage * contract.basic_percentage / 100.0</field>
+            <field name="amount_python_compute">result = contract.basic_salary or (contract.wage * (contract.basic_percentage or 0.0) / 100.0)</field>
         </record>
         <record id="hr_rule_taxable" model="hr.salary.rule">
             <field name="name">Gross</field>
@@ -200,7 +200,7 @@ else:
             <field name="register_id" ref="hr_pt_register"/>
             <field name="name">Professional Tax</field>
             <field name="condition_select">none</field>
-            <field name="amount_python_compute">result = -float(getattr(contract, 'professional_tax', 0.0) or 0.0)</field>
+            <field name="amount_python_compute">result = -(contract.professional_tax or 0.0)</field>
         </record>
         <record id="hr_salary_rule_esi1" model="hr.salary.rule">
             <field name="amount_select">code</field>
@@ -211,7 +211,7 @@ else:
             <field name="name">Employee State Insurance</field>
             <field name="condition_select">none</field>
             <field name="condition_python">result = True</field>
-            <field name="amount_python_compute">result = -(float(getattr(contract, 'wage', 0.0) or 0.0) * (float(getattr(contract, 'esi_employee_rate', 0.0) or 0.0) / 100.0))</field>
+            <field name="amount_python_compute">result = -((contract.wage or 0.0) * (contract.esi_employee_rate or 0.0) / 100.0)</field>
         </record>
         <!-- Salary Structure -->
         <record id="structure_base" model="hr.payroll.structure">

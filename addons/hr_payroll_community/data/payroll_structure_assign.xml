@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="hr.version" name="_assign_missing_payroll_structures"/>
+    <function model="hr.version" name="_init_basic_mode"/>
+    <function model="hr.salary.rule" name="_fix_restricted_formulas"/>
+</odoo>

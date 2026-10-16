@@ -65,6 +65,9 @@
                             <field name="employee_count" readonly="1"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="rule_note" placeholder="Leave structure"/>
+                    </group>
                     <notebook>
                         <page string="Leave Rules">
                             <field name="line_ids">
@@ -93,6 +96,7 @@
                                             <field name="earned_days_per_unit" invisible="allocation_mode != 'earned'"/>
                                             <field name="encash_on_exit" invisible="allocation_mode != 'earned'"/>
                                             <field name="comp_off_days_per_worked_day" invisible="allocation_mode != 'comp_off'"/>
+                                            <field name="comp_off_validity_months" invisible="allocation_mode != 'comp_off'"/>
                                             <field name="notes"/>
                                             <field name="active"/>
                                         </group>

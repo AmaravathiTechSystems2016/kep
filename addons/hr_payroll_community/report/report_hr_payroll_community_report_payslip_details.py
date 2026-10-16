@@ -59,23 +59,10 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
             line.number_of_days for line in payslip.worked_days_line_ids
             if (line.code or '').strip().upper() in self._LOP_CODES
         )
-        wage = float(getattr(contract, 'wage', 0.0) or 0.0)
-        basic_percentage = float(
-            getattr(contract, 'basic_percentage', 0.0) or 0.0)
-        hra_percentage = float(
-            getattr(contract, 'hra_percentage', 0.0) or 0.0)
-        basic_master = wage * basic_percentage / 100.0
-        da_master = float(getattr(contract, 'da', 0.0) or 0.0)
-        medical_other_master = sum(
-            float(getattr(contract, field_name, 0.0) or 0.0)
-            for field_name in (
-                'allowance_amount', 'washing_allowance',
-                'medical_allowance', 'meal_allowance',
-                'other_allowance'))
-        conveyance_master = contract.get_conveyance_amount()
+        basic_master = contract.get_basic_amount() if contract else 0.0
+        hra_master = contract.get_hra_amount() if contract else 0.0
+        conveyance_master = contract.get_conveyance_amount() if contract else 0.0
         basic = self._amount(amounts, 'BASIC')
-        da = self._amount(amounts, 'DA')
-        medical_other = self._amount(amounts, 'Medical', 'Meal', 'Other')
         conveyance = self._amount(amounts, 'Travel')
         net = self._amount(amounts, 'NET')
         deduction_codes = ('PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS',
@@ -86,31 +73,30 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         ))
         other_deductions = abs(sum(
             amount for code, amount in amounts.items()
-            if code not in ('PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS',
-                            *self._LOP_CODES, 'NET') and amount < 0
+            if code not in (
+                'PF', 'ESI', 'PT', 'SALARY_ADVANCE', 'TDS', 'NET',
+                'BASIC', 'HRA', 'Travel', 'GROSS', 'DA', 'Meal',
+                'Medical', 'Other', *self._LOP_CODES,
+            ) and amount < 0
         ))
         total_deductions += other_deductions
-        master_total = (
-            basic_master + da_master
-            + wage * hra_percentage / 100.0
-            + medical_other_master + conveyance_master
-        )
+        master_total = basic_master + hra_master + conveyance_master
         return {
             'calendar_days': calendar_days,
             'worked_days': round(worked_days, 2),
             'absent_days': round(max(calendar_days - worked_days, 0.0), 2),
             'lop_days': round(lop_days, 2),
             'basic': basic,
-            'da': da,
+            'da': 0.0,
             'hra': self._amount(amounts, 'HRA'),
-            'basic_da': basic + da,
-            'medical_other': medical_other,
+            'basic_da': basic,
+            'medical_other': 0.0,
             'conveyance': conveyance,
             'gross': self._amount(amounts, 'GROSS'),
             'arrears': self._amount(amounts, 'ARREARS'),
-            'master_basic_da': basic_master + da_master,
-            'master_hra': wage * hra_percentage / 100.0,
-            'master_medical_other': medical_other_master,
+            'master_basic_da': basic_master,
+            'master_hra': hra_master,
+            'master_medical_other': 0.0,
             'master_conveyance': conveyance_master,
             'master_total': master_total,
             'pf': abs(self._amount(amounts, 'PF')),
@@ -126,20 +112,35 @@ class ReportHrPayrollCommunityReportPayslipDetails(models.AbstractModel):
         }
 
     @staticmethod
+    def _format_payslip_period(date_from, date_to):
+        """1-Sept-2026 to 30-Sept-2026 Payslip."""
+        months = (
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec',
+        )
+
+        def _format(value):
+            return f'{value.day}-{months[value.month - 1]}-{value.year}'
+
+        return f'{_format(date_from)} to {_format(date_to)} Payslip'
+
+    @staticmethod
     def get_report_data(payslip):
         """Return employee and bank values used by the formatted payslip."""
         employee = payslip.employee_id
         bank = employee.primary_bank_account_id
         bank_id = bank.bank_id if bank else False
         return {
-            'employee_number': employee.employee_id or employee.identification_id or 'Not provided',
-            'department': employee.department_id.name if employee.department_id else 'Not provided',
-            'location': employee.work_location_id.name if employee.work_location_id else 'Not provided',
-            'bank_name': bank_id.name if bank_id else 'Not provided',
-            'bank_account': bank.acc_number if bank else 'Not provided',
-            'ifsc': ((bank_id.ifsc_code or bank_id.bic) if bank_id else False) or 'Not provided',
-            'esi_number': getattr(employee, 'esi_number', False) or 'Not provided',
-            'month_label': payslip.date_from.strftime('%B - %Y'),
+            'employee_number': employee.employee_id or employee.identification_id or 'Not Applicable',
+            'department': employee.department_id.name if employee.department_id else 'Not Applicable',
+            'location': employee.work_location_id.name if employee.work_location_id else 'Not Applicable',
+            'bank_name': bank_id.name if bank_id else 'Not Applicable',
+            'bank_account': bank.acc_number if bank else 'Not Applicable',
+            'ifsc': ((bank_id.ifsc_code or bank_id.bic) if bank_id else False) or 'Not Applicable',
+            'esi_number': getattr(employee, 'esi_number', False) or 'Not Applicable',
+            'contract_type': employee.sudo().contract_type_id.name or 'Not Applicable',
+            'month_label': ReportHrPayrollCommunityReportPayslipDetails._format_payslip_period(
+                payslip.date_from, payslip.date_to),
         }
 
     def get_details_by_rule_category(self, payslip_lines):

@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- Medical & Other = generic Allowance + Washing + Medical allowance, prorated by paid days. -->
-        <record id="hr_rule_medical" model="hr.salary.rule">
-            <field name="amount_python_compute">
-calendar_days = (payslip.date_to - payslip.date_from).days + 1
-paid_days = sum(line.number_of_days for code, line in worked_days.dict.items() if code != 'LOP')
-master = (contract.allowance_amount or 0.0) + (contract.washing_allowance or 0.0) + (contract.medical_allowance or 0.0)
-result = master * min(paid_days / calendar_days, 1.0) if calendar_days else 0.0</field>
+        <record id="hr_rule_basic" model="hr.salary.rule">
+            <field name="amount_python_compute">result = contract.get_basic_amount()</field>
         </record>
-        <!-- Conveyance = Conveyance allowance (or Travel allowance), prorated by paid days. -->
+        <record id="hr_rule_hra" model="hr.salary.rule">
+            <field name="amount_python_compute">result = contract.get_hra_amount()</field>
+        </record>
+        <record id="hr_rule_medical" model="hr.salary.rule">
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="amount_python_compute">result = 0.0</field>
+        </record>
+        <record id="hr_salary_rule_esi1" model="hr.salary.rule">
+            <field name="amount_python_compute">basic = contract.get_basic_amount()
+result = -(basic * 0.75 / 100.0) if contract.esi_applicable and basic &lt; 21000 else 0.0</field>
+        </record>
+        <record id="hr_salary_rule_provident_fund1" model="hr.salary.rule">
+            <field name="amount_python_compute">basic = contract.get_basic_amount()
+base = 25000.0 if basic &gt;= 25000 else basic
+result = -(base * 12.0 / 100.0)</field>
+        </record>
+        <record id="hr_salary_rule_pt" model="hr.salary.rule">
+            <field name="amount_python_compute">result = -(contract.professional_tax or 0.0)</field>
+        </record>
         <record id="hr_rule_travel" model="hr.salary.rule">
-            <field name="amount_python_compute">
-calendar_days = (payslip.date_to - payslip.date_from).days + 1
-paid_days = sum(line.number_of_days for code, line in worked_days.dict.items() if code != 'LOP')
-master = contract.get_conveyance_amount()
-result = master * min(paid_days / calendar_days, 1.0) if calendar_days else 0.0</field>
+            <field name="amount_python_compute">result = contract.get_conveyance_amount()</field>
         </record>
     </data>
 </odoo>

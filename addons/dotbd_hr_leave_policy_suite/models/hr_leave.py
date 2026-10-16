@@ -240,6 +240,65 @@ class HrLeave(models.Model):
                 ))
             leave._check_new_joiner_monthly_leave_limit()
 
+    def _check_company_leave_structure(self):
+        """Apply the company leave structure that is not an allocation balance."""
+        for leave in self:
+            if leave.state in ('cancel', 'refuse'):
+                continue
+            leave_type = leave.holiday_status_id.sudo()
+            name = (leave_type.name or '').strip().lower()
+            if 'paternity' in name:
+                raise ValidationError(_('Paternity leave is not applicable.'))
+            if 'work from home' in name or name.startswith('wfh'):
+                raise ValidationError(_('WFH / Remote is not applicable.'))
+            if 'maternity' in name:
+                leave._check_maternity_leave_rule()
+
+    def _check_maternity_leave_rule(self):
+        """26 weeks after 80 days worked in the last 12 months. Paid, so this does not touch salary."""
+        self.ensure_one()
+        employee = self.employee_id
+        if not employee:
+            return
+        gender = self.env['attendance.leave.policy.line']._get_employee_gender(employee)
+        if gender in ('male', 'm'):
+            raise ValidationError(_('Maternity leave applies to female employees only.'))
+        start = self.request_date_from or (self.date_from.date() if self.date_from else False)
+        end = self.request_date_to or (self.date_to.date() if self.date_to else start)
+        if start and end and (end - start).days + 1 > 182:
+            raise ValidationError(_('Maternity leave cannot exceed 26 weeks (182 days).'))
+        policy = employee.leave_policy_id
+        min_days = policy.maternity_min_worked_days_last_12_months if policy else 80
+        if policy and start:
+            worked_days = policy._get_employee_worked_days_last_12_months(employee, start)
+            if worked_days < min_days:
+                raise ValidationError(_(
+                    'Maternity leave needs %(days)s days worked in the last 12 months. '
+                    'This employee has %(worked)s.'
+                ) % {'days': min_days, 'worked': worked_days})
+        if not start:
+            return
+        year_start = date(start.year, 1, 1)
+        year_end = date(start.year, 12, 31)
+        others = self.search([
+            ('employee_id', '=', employee.id),
+            ('holiday_status_id', '=', self.holiday_status_id.id),
+            ('state', 'not in', ('cancel', 'refuse')),
+            ('id', '!=', self.id),
+            ('request_date_from', '>=', year_start),
+            ('request_date_from', '<=', year_end),
+        ])
+
+        def _span(record):
+            span_start = record.request_date_from
+            span_end = record.request_date_to or span_start
+            if not span_start or not span_end:
+                return 0
+            return (span_end - span_start).days + 1
+
+        if _span(self) + sum(_span(other) for other in others) > 182:
+            raise ValidationError(_('Maternity leave cannot exceed 26 weeks (182 days) in a year.'))
+
     @api.depends('holiday_status_id.request_unit', 'request_apply_in')
     def _compute_request_unit_half(self):
         for leave in self:
@@ -293,6 +352,7 @@ class HrLeave(models.Model):
     def create(self, vals_list):
         leaves = super().create(vals_list)
         leaves.filtered(lambda leave: leave.state == 'confirm')._check_probation_leave_rule()
+        leaves.filtered(lambda leave: leave.state == 'confirm')._check_company_leave_structure()
         leaves.filtered(lambda leave: leave.state == 'confirm' and not leave.env.context.get('leave_fast_create'))._notify_leave_request()
         return leaves
 
@@ -301,11 +361,13 @@ class HrLeave(models.Model):
         res = super().write(vals)
         submitted = self.filtered(lambda leave: leave.state == 'confirm' and previous_states.get(leave.id) != 'confirm')
         submitted._check_probation_leave_rule()
+        submitted._check_company_leave_structure()
         return res
 
     def action_approve(self, check_state=True):
         previous_states = {leave.id: leave.state for leave in self}
         self._check_probation_leave_rule()
+        self._check_company_leave_structure()
         result = super().action_approve(check_state=check_state)
         now = fields.Datetime.now()
         for leave in self.exists():

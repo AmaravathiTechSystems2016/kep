@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_inquiry" model="ir.ui.view">
+        <field name="name">crm.lead.form.inquiry</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='lead_priority']" position="after">
+                <group name="inquiry_details" string="Inquiry">
+                    <field name="lead_type_id" widget="selection"/>
+                    <field name="system_id" widget="selection"/>
+                    <field name="capacity_id"/>
+                    <field name="submitted_date"/>
+                    <field name="revision_date"/>
+                    <field name="inquiry_date"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_leads_inquiry" model="ir.ui.view">
+        <field name="name">crm.lead.list.lead.inquiry</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="lead_type_id" optional="show"/>
+                <field name="system_id" optional="show"/>
+                <field name="capacity_id" optional="show"/>
+                <field name="submitted_date" optional="show"/>
+                <field name="revision_date" optional="show"/>
+                <field name="inquiry_date" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_inquiry" model="ir.ui.view">
+        <field name="name">crm.lead.list.opportunity.inquiry</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="lead_type_id" optional="show"/>
+                <field name="system_id" optional="show"/>
+                <field name="capacity_id" optional="show"/>
+                <field name="submitted_date" optional="show"/>
+                <field name="revision_date" optional="show"/>
+                <field name="inquiry_date" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_case_leads_filter_inquiry" model="ir.ui.view">
+        <field name="name">crm.lead.search.lead.inquiry</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="lead_type_id"/>
+                <field name="system_id"/>
+                <field name="capacity_id"/>
+                <field name="submitted_date"/>
+                <field name="revision_date"/>
+                <field name="inquiry_date"/>
+            </xpath>
+            <xpath expr="//filter[@name='salesperson']" position="before">
+                <filter string="Type" name="group_lead_type" context="{'group_by': 'lead_type_id'}"/>
+                <filter string="System" name="group_system" context="{'group_by': 'system_id'}"/>
+                <filter string="Capacity" name="group_capacity" context="{'group_by': 'capacity_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_case_opportunities_filter_inquiry" model="ir.ui.view">
+        <field name="name">crm.lead.search.opportunity.inquiry</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="lead_type_id"/>
+                <field name="system_id"/>
+                <field name="capacity_id"/>
+                <field name="submitted_date"/>
+                <field name="revision_date"/>
+                <field name="inquiry_date"/>
+            </xpath>
+            <xpath expr="//filter[@name='salesperson']" position="before">
+                <filter string="Type" name="group_lead_type" context="{'group_by': 'lead_type_id'}"/>
+                <filter string="System" name="group_system" context="{'group_by': 'system_id'}"/>
+                <filter string="Capacity" name="group_capacity" context="{'group_by': 'capacity_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

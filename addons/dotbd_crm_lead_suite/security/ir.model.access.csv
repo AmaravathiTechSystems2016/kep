@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_lead_type_manager,crm.lead.type.manager,model_crm_lead_type,sales_team.group_sale_manager,1,1,1,1
+access_crm_lead_type_salesman,crm.lead.type.salesman,model_crm_lead_type,sales_team.group_sale_salesman,1,0,0,0
+access_crm_lead_type_user,crm.lead.type.user,model_crm_lead_type,base.group_user,1,0,0,0
+access_crm_lead_system_manager,crm.lead.system.manager,model_crm_lead_system,sales_team.group_sale_manager,1,1,1,1
+access_crm_lead_system_salesman,crm.lead.system.salesman,model_crm_lead_system,sales_team.group_sale_salesman,1,0,0,0
+access_crm_lead_system_user,crm.lead.system.user,model_crm_lead_system,base.group_user,1,0,0,0
+access_crm_lead_capacity_manager,crm.lead.capacity.manager,model_crm_lead_capacity,sales_team.group_sale_manager,1,1,1,1
+access_crm_lead_capacity_salesman,crm.lead.capacity.salesman,model_crm_lead_capacity,sales_team.group_sale_salesman,1,0,1,0
+access_crm_lead_capacity_user,crm.lead.capacity.user,model_crm_lead_capacity,base.group_user,1,0,1,0

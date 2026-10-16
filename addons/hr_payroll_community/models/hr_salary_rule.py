@@ -155,6 +155,35 @@ class HrSalaryRule(models.Model):
                                 copy=True, help="Choose Hr Rule Input")
     note = fields.Text(string='Description', help="Description for Salary Rule")
 
+    @api.model
+    def _fix_restricted_formulas(self):
+        """Payslip formulas cannot call getattr. Keep the stored code valid."""
+        formulas = {
+            'BASIC': "result = contract.get_basic_amount()",
+            'HRA': "result = contract.get_hra_amount()",
+            'Travel': "result = contract.get_conveyance_amount()",
+            'DA': "result = 0.0",
+            'Meal': "result = 0.0",
+            'Medical': "result = 0.0",
+            'Other': "result = 0.0",
+            'ESI': (
+                "basic = contract.get_basic_amount()\n"
+                "result = -(basic * 0.75 / 100.0) if contract.esi_applicable and basic < 21000 else 0.0"
+            ),
+            'PF': (
+                "basic = contract.get_basic_amount()\n"
+                "base = 25000.0 if basic >= 25000 else basic\n"
+                "result = -(base * 12.0 / 100.0)"
+            ),
+            'PT': "result = -(contract.professional_tax or 0.0)",
+        }
+        hidden = self.search([('code', 'in', ('DA', 'Meal', 'Medical', 'Other'))])
+        hidden.write({'appears_on_payslip': False})
+        for rule in self.with_context(active_test=False).search([
+            ('code', 'in', list(formulas)),
+        ]):
+            rule.amount_python_compute = formulas[rule.code]
+
     @api.constrains('parent_rule_id')
     def _check_parent_rule_id(self):
         """Function to adding constrains for parent_rule_id field"""

@@ -218,6 +218,12 @@ class HrPayslip(models.Model):
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be
             # for all current contracts of the employee
+            if not payslip.struct_id and payslip.contract_id:
+                structure = payslip.contract_id._structure_for_profile()
+                if structure:
+                    payslip.struct_id = structure
+                    if not payslip.contract_id.struct_id:
+                        payslip.contract_id.struct_id = structure
             contract_ids = payslip.contract_id.ids or \
                            self.get_contract(payslip.employee_id,
                                              payslip.date_from, payslip.date_to)
@@ -311,6 +317,7 @@ class HrPayslip(models.Model):
 
             day_leave_intervals = contract.employee_id.list_leaves(
                 day_from, day_to, calendar=contract.resource_calendar_id)
+            unpaid_leave_days = 0.0
             multi_leaves = []
             for day, hours, leave in day_leave_intervals:
                 leave_date = (
@@ -326,6 +333,11 @@ class HrPayslip(models.Model):
                 else:
                     holiday = leave.holiday_id
                     leave_type = holiday.holiday_status_id
+                    day_fraction = min(hours / work_hours, 1.0) if work_hours else 0.0
+                    if self._is_unpaid_leave_type(leave_type):
+                        # Unpaid leave cuts salary. Paid leave types stay out of LOP.
+                        unpaid_leave_days += day_fraction
+                        continue
                     current_leave_struct = leaves.setdefault(
                         leave_type, {
                             'name': leave_type.name or _(
@@ -341,8 +353,7 @@ class HrPayslip(models.Model):
                         # A day can never count for more than one paid day,
                         # even if the leave interval is longer than the
                         # scheduled hours of that day.
-                        current_leave_struct[
-                            'number_of_days'] += min(hours / work_hours, 1.0)
+                        current_leave_struct['number_of_days'] += day_fraction
             # Use completed attendance intervals for WORK100. Approved leave
             # remains represented by the leave lines built above.
             attendance_days = defaultdict(float)
@@ -381,8 +392,8 @@ class HrPayslip(models.Model):
                     attendance_days[current_date] = 1.0
                 current_date += timedelta(days=1)
 
-            # Keep LOP as an informational count only. Salary is already
-            # prorated by the payroll rules, so this line must not deduct pay.
+            # Absence stays on LOP. Only the UNPAID line cuts salary.
+            # Sick, casual, earned, maternity and comp-off are paid.
             lop_days = 0.0
             current_date = fields.Date.from_string(date_from)
             last_date = fields.Date.from_string(date_to)
@@ -426,7 +437,7 @@ class HrPayslip(models.Model):
             res.append(attendances)
             if lop_days:
                 res.append({
-                    'name': _('Loss of Pay (Informational)'),
+                    'name': _('Loss of Pay'),
                     'sequence': 10,
                     'code': 'LOP',
                     'number_of_days': lop_days,
@@ -435,9 +446,22 @@ class HrPayslip(models.Model):
                     ),
                     'contract_id': contract.id,
                 })
+            if unpaid_leave_days:
+                res.append({
+                    'name': _('Unpaid Leave'),
+                    'sequence': 11,
+                    'code': 'UNPAID',
+                    'number_of_days': unpaid_leave_days,
+                    'number_of_hours': unpaid_leave_days * (
+                        getattr(calendar, 'hours_per_day', 0.0) or 0.0
+                    ),
+                    'contract_id': contract.id,
+                })
             uniq_leaves = [*set(multi_leaves)]
             c_leaves = {}
             for rec in uniq_leaves:
+                if self._is_unpaid_leave_type(rec.holiday_status_id):
+                    continue
                 duration = rec.duration_display.replace("days", "").strip()
                 duration_in_hours = float(duration) * 24
                 c_leaves.setdefault(rec.holiday_status_id,
@@ -462,6 +486,20 @@ class HrPayslip(models.Model):
                             += c_leaves[item]['hours'] / work_hours
             res.extend(leaves.values())
         return res
+
+    @api.model
+    def _is_unpaid_leave_type(self, leave_type):
+        """Only unpaid leave cuts salary. Every other leave type is paid."""
+        if not leave_type:
+            return False
+        leave_type = leave_type.sudo()
+        if leave_type.unpaid:
+            return True
+        code = (leave_type.code or '').strip().upper()
+        if code in {'UNP', 'UNP1', 'UL', 'UNPAID', 'PL1'}:
+            return True
+        name = (leave_type.name or '').strip().lower()
+        return name in {'unpaid', 'unpaid leave'}
 
     @api.model
     def _get_leave_type_code(self, leave_type, fallback='GLOBAL'):
@@ -788,9 +826,13 @@ class HrPayslip(models.Model):
             if not contract_ids:
                 return
             self.contract_id = self.env['hr.version'].browse(contract_ids[0])
-            if not self.contract_id.struct_id and not self.contract_id.contract_template_id.struct_id:
-                return
-            self.struct_id = self.contract_id.struct_id or self.contract_id.contract_template_id.struct_id
+            structure = (
+                self.contract_id.struct_id
+                or self.contract_id.contract_template_id.struct_id
+                or self.contract_id._structure_for_profile()
+            )
+            if structure:
+                self.struct_id = structure
         if self.contract_id:
             contract_ids = self.contract_id.ids
         # computation of the salary input

@@ -22,7 +22,7 @@
 #############################################################################
 {
     'name': 'Odoo 19 HR Payroll',
-    'version': '19.0.1.0.2',
+    'version': '19.0.1.0.6',
     'category': 'Human Resources',
     'summary': """Odoo 19 HR Payroll, Odoo19 Payroll, Payroll, Odoo Payroll,
     Payroll V19, Odoo19, Payroll Management, Odoo19 Payslip""",
@@ -47,6 +47,7 @@
         'data/payroll_profile_data.xml',
         'data/payroll_overtime_update.xml',
         'data/payroll_allowance_update.xml',
+        'data/payroll_structure_assign.xml',
         'wizard/hr_payslips_employees_views.xml',
         'wizard/payslip_lines_contribution_register_views.xml',
         'report/hr_payroll_report.xml',

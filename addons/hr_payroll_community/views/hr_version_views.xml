@@ -28,16 +28,14 @@
             <xpath expr="//group[@name='contract']" position="after">
                 <group string="Payroll Policy" name="payroll_policy">
                     <field name="payroll_profile"/>
-                    <field name="basic_percentage"/>
-                    <field name="hra_percentage"/>
-                    <field name="allowance_amount"/>
-                    <field name="washing_allowance"/>
-                    <field name="conveyance_allowance"/>
+                    <field name="basic_mode" widget="radio"/>
+                    <field name="basic_salary" invisible="basic_mode != 'fixed'"/>
+                    <field name="basic_percentage" invisible="basic_mode != 'percentage'"/>
                     <field name="overtime_multiplier"/>
                 </group>
             </xpath>
             <xpath expr="//group[@name='contract']" position="after">
-                <group string="Monthly Advantages in Cash" name='allowances'>
+                <group string="Monthly Advantages in Cash" name='allowances' invisible="1">
                     <label for="hra"/>
                     <div class="o_row">
                         <field name="hra" nolabel="1"/>
@@ -75,12 +73,7 @@
                 </group>
                 <group string="Statutory Contributions" name="statutory_contributions">
                     <field name="esi_applicable"/>
-                    <field name="esi_employee_rate"/>
-                    <field name="esi_employer_rate"/>
-                    <field name="esi_wage_ceiling"/>
                     <field name="professional_tax"/>
-                    <field name="pf_rate"/>
-                    <field name="pf_wage_ceiling"/>
                     <field name="uan_number"/>
                 </group>
             </xpath>

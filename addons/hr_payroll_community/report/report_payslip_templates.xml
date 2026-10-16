@@ -43,7 +43,7 @@
                                 </td>
                                 <td>
                                     <span t-if="o.employee_id.joining_date" t-field="o.employee_id.joining_date"/>
-                                    <span t-else="">Not provided</span>
+                                    <span t-else="">Not Applicable</span>
                                 </td>
                                 <td>
                                     <strong>Reference</strong>

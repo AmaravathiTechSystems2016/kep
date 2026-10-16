@@ -119,14 +119,14 @@ export class IndexedDB {
                 if (!currentVersion) {
                     this._execute((db) => {
                         if (db) {
-                            this._write(db, VERSION_TABLE, VERSION_KEY, version);
+                            return this._write(db, VERSION_TABLE, VERSION_KEY, version);
                         }
                     }).then(resolve);
                 } else if (currentVersion !== version) {
                     this._deleteDatabase(() => {
-                        this._execute((db) => {
+                        return this._execute((db) => {
                             if (db) {
-                                this._write(db, VERSION_TABLE, VERSION_KEY, version);
+                                return this._write(db, VERSION_TABLE, VERSION_KEY, version);
                             }
                         });
                     }).then(resolve);
@@ -179,13 +179,28 @@ export class IndexedDB {
         });
     }
 
+    _transaction(db, table, mode, options) {
+        try {
+            return db.transaction(table, mode, options);
+        } catch (error) {
+            if (error.name === "InvalidStateError") {
+                return null;
+            }
+            throw error;
+        }
+    }
+
     async _write(db, table, key, record) {
         return new Promise((resolve, reject) => {
             // AAB: do we care about write performance?
             // Relaxed durability improves the write performances
             // https://nolanlawson.com/2021/08/22/speeding-up-indexeddb-reads-and-writes/
             // https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/durability
-            const transaction = db.transaction(table, "readwrite", { durability: "relaxed" });
+            const transaction = this._transaction(db, table, "readwrite", { durability: "relaxed" });
+            if (!transaction) {
+                resolve();
+                return;
+            }
             transaction.objectStore(table).put(record, key); // put to allow updates
             transaction.onerror = (ev) => reject(ev.target.error); // firefox (DOMException)
             transaction.onabort = (ev) => reject(ev.target.error); // chrome (QuotaExceededError)
@@ -210,7 +225,11 @@ export class IndexedDB {
             // Relaxed durability improves the write performances
             // https://nolanlawson.com/2021/08/22/speeding-up-indexeddb-reads-and-writes/
             // https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/durability
-            const transaction = db.transaction(tables, "readwrite", { durability: "relaxed" });
+            const transaction = this._transaction(db, tables, "readwrite", { durability: "relaxed" });
+            if (!transaction) {
+                resolve();
+                return;
+            }
             const proms = tables.map(
                 (table) =>
                     new Promise((resolve) => {
@@ -230,7 +249,11 @@ export class IndexedDB {
 
     async _read(db, table, key) {
         return new Promise((resolve, reject) => {
-            const transaction = db.transaction(table, "readonly");
+            const transaction = this._transaction(db, table, "readonly");
+            if (!transaction) {
+                resolve(undefined);
+                return;
+            }
             const objectStore = transaction.objectStore(table);
             const r = objectStore.get(key);
             r.onsuccess = () => resolve(r.result);

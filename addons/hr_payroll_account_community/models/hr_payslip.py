@@ -37,9 +37,7 @@ class HrPayslip(models.Model):
                                  required=True,
                                  help="Select Salary Journal",
                                  default=lambda self: self.env[
-                                     'account.journal'].search(
-                                     [('type', '=', 'general')],
-                                     limit=1))
+                                     'account.journal']._default_salary_journal())
     move_id = fields.Many2one('account.move',
                               string='Accounting Entry',
                               readonly=True, copy=False,

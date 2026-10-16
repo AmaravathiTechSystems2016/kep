@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_type_view_list" model="ir.ui.view">
+        <field name="name">crm.lead.type.list</field>
+        <field name="model">crm.lead.type</field>
+        <field name="arch" type="xml">
+            <list string="Types" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="crm_lead_type_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.type.form</field>
+        <field name="model">crm.lead.type</field>
+        <field name="arch" type="xml">
+            <form string="Type">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="crm_lead_type_view_search" model="ir.ui.view">
+        <field name="name">crm.lead.type.search</field>
+        <field name="model">crm.lead.type</field>
+        <field name="arch" type="xml">
+            <search string="Types">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="crm_lead_type_action" model="ir.actions.act_window">
+        <field name="name">Types</field>
+        <field name="res_model">crm.lead.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a lead type
+            </p>
+            <p>
+                Types such as EPC and Non-EPC are selected on the lead form.
+            </p>
+        </field>
+    </record>
+
+    <record id="crm_lead_system_view_list" model="ir.ui.view">
+        <field name="name">crm.lead.system.list</field>
+        <field name="model">crm.lead.system</field>
+        <field name="arch" type="xml">
+            <list string="Systems" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="crm_lead_system_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.system.form</field>
+        <field name="model">crm.lead.system</field>
+        <field name="arch" type="xml">
+            <form string="System">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="crm_lead_system_view_search" model="ir.ui.view">
+        <field name="name">crm.lead.system.search</field>
+        <field name="model">crm.lead.system</field>
+        <field name="arch" type="xml">
+            <search string="Systems">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="crm_lead_system_action" model="ir.actions.act_window">
+        <field name="name">Systems</field>
+        <field name="res_model">crm.lead.system</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a system
+            </p>
+            <p>
+                Systems created here are available in the lead form dropdown.
+            </p>
+        </field>
+    </record>
+
+    <record id="crm_lead_capacity_view_list" model="ir.ui.view">
+        <field name="name">crm.lead.capacity.list</field>
+        <field name="model">crm.lead.capacity</field>
+        <field name="arch" type="xml">
+            <list string="Capacities" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="crm_lead_capacity_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.capacity.form</field>
+        <field name="model">crm.lead.capacity</field>
+        <field name="arch" type="xml">
+            <form string="Capacity">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="crm_lead_capacity_view_search" model="ir.ui.view">
+        <field name="name">crm.lead.capacity.search</field>
+        <field name="model">crm.lead.capacity</field>
+        <field name="arch" type="xml">
+            <search string="Capacities">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="crm_lead_capacity_action" model="ir.actions.act_window">
+        <field name="name">Capacities</field>
+        <field name="res_model">crm.lead.capacity</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a capacity
+            </p>
+            <p>
+                Capacities created here are available in the lead form dropdown.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_crm_lead_type"
+        name="Types"
+        parent="crm.menu_crm_config_lead"
+        action="crm_lead_type_action"
+        sequence="7"/>
+    <menuitem
+        id="menu_crm_lead_system"
+        name="Systems"
+        parent="crm.menu_crm_config_lead"
+        action="crm_lead_system_action"
+        sequence="8"/>
+    <menuitem
+        id="menu_crm_lead_capacity"
+        name="Capacities"
+        parent="crm.menu_crm_config_lead"
+        action="crm_lead_capacity_action"
+        sequence="9"/>
+</odoo>

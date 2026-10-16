@@ -20,6 +20,8 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
+from . import account_chart_template
+from . import account_journal
 from . import hr_version
 from . import hr_payslip
 from . import hr_payslip_line
