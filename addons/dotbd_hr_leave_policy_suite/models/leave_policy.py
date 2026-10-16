@@ -1097,6 +1097,11 @@ class AttendanceLeavePolicy(models.Model):
             leave_type = self._find_demo_leave_type(codes, names, company=company)
             payload = self._leave_type_vals(vals)
             if leave_type:
+                # Odoo refuses any write of requires_allocation once leaves exist, even if unchanged.
+                payload = {
+                    key: value for key, value in payload.items()
+                    if key != 'requires_allocation' or leave_type.requires_allocation != value
+                }
                 leave_type.with_context(**quiet).write(payload)
                 return leave_type
             create_payload = self._leave_type_vals(dict(create_vals or {}, **vals))
