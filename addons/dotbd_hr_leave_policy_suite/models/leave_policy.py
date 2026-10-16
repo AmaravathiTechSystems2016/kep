@@ -1002,6 +1002,8 @@ class AttendanceLeavePolicy(models.Model):
             'mail_notrack': True,
             'mail_create_nolog': True,
             'mail_create_nosubscribe': True,
+            'leave_skip_state_check': True,
+            'leave_skip_date_check': True,
         }
         Allocation = self.env['hr.leave.allocation'].sudo()
         Leave = self.env['hr.leave'].sudo()
@@ -1083,6 +1085,8 @@ class AttendanceLeavePolicy(models.Model):
             'mail_notrack': True,
             'mail_create_nolog': True,
             'mail_create_nosubscribe': True,
+            'leave_skip_state_check': True,
+            'leave_skip_date_check': True,
         }
         if company.country_id and 'leave_short_code' in LeaveType._fields:
             foreign_codes = LeaveType.with_context(active_test=False).search([
@@ -1199,6 +1203,8 @@ class AttendanceLeavePolicy(models.Model):
             'mail_notrack': True,
             'mail_create_nolog': True,
             'mail_create_nosubscribe': True,
+            'leave_skip_state_check': True,
+            'leave_skip_date_check': True,
         }
         for company in companies:
             for policy_vals in policies:
