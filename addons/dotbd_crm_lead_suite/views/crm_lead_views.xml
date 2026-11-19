@@ -13,7 +13,28 @@
                     <field name="submitted_date"/>
                     <field name="revision_date"/>
                     <field name="inquiry_date"/>
+                    <field name="proposal_no"/>
+                    <field name="worked_by_id" options="{'no_create': True}"/>
+                    <field name="lead_owner_id" options="{'no_create': True}"/>
                 </group>
+            </xpath>
+            <xpath expr="//notebook/page[@name='internal_notes']" position="before">
+                <page string="Effluent Characteristics" name="effluent_characteristics">
+                    <group>
+                        <group string="General">
+                            <field name="ph_value"/>
+                            <field name="tds"/>
+                            <field name="cod"/>
+                            <field name="bod"/>
+                        </group>
+                        <group string="Solids &amp; Scaling">
+                            <field name="tss"/>
+                            <field name="hardness"/>
+                            <field name="oil_grease"/>
+                            <field name="silica"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
@@ -30,6 +51,17 @@
                 <field name="submitted_date" optional="show"/>
                 <field name="revision_date" optional="show"/>
                 <field name="inquiry_date" optional="show"/>
+                <field name="proposal_no" optional="show"/>
+                <field name="worked_by_id" optional="show"/>
+                <field name="lead_owner_id" optional="show"/>
+                <field name="ph_value" optional="hide"/>
+                <field name="tds" optional="hide"/>
+                <field name="cod" optional="hide"/>
+                <field name="bod" optional="hide"/>
+                <field name="tss" optional="hide"/>
+                <field name="hardness" optional="hide"/>
+                <field name="oil_grease" optional="hide"/>
+                <field name="silica" optional="hide"/>
             </xpath>
         </field>
     </record>
@@ -46,6 +78,17 @@
                 <field name="submitted_date" optional="show"/>
                 <field name="revision_date" optional="show"/>
                 <field name="inquiry_date" optional="show"/>
+                <field name="proposal_no" optional="show"/>
+                <field name="worked_by_id" optional="show"/>
+                <field name="lead_owner_id" optional="show"/>
+                <field name="ph_value" optional="hide"/>
+                <field name="tds" optional="hide"/>
+                <field name="cod" optional="hide"/>
+                <field name="bod" optional="hide"/>
+                <field name="tss" optional="hide"/>
+                <field name="hardness" optional="hide"/>
+                <field name="oil_grease" optional="hide"/>
+                <field name="silica" optional="hide"/>
             </xpath>
         </field>
     </record>
@@ -62,11 +105,16 @@
                 <field name="submitted_date"/>
                 <field name="revision_date"/>
                 <field name="inquiry_date"/>
+                <field name="proposal_no"/>
+                <field name="worked_by_id"/>
+                <field name="lead_owner_id"/>
             </xpath>
             <xpath expr="//filter[@name='salesperson']" position="before">
-                <filter string="Type" name="group_lead_type" context="{'group_by': 'lead_type_id'}"/>
-                <filter string="System" name="group_system" context="{'group_by': 'system_id'}"/>
+                <filter string="Project / Delivery Model" name="group_lead_type" context="{'group_by': 'lead_type_id'}"/>
+                <filter string="System Type" name="group_system" context="{'group_by': 'system_id'}"/>
                 <filter string="Capacity" name="group_capacity" context="{'group_by': 'capacity_id'}"/>
+                <filter string="Worked By" name="group_worked_by" context="{'group_by': 'worked_by_id'}"/>
+                <filter string="Lead Owner" name="group_lead_owner" context="{'group_by': 'lead_owner_id'}"/>
             </xpath>
         </field>
     </record>
@@ -83,11 +131,16 @@
                 <field name="submitted_date"/>
                 <field name="revision_date"/>
                 <field name="inquiry_date"/>
+                <field name="proposal_no"/>
+                <field name="worked_by_id"/>
+                <field name="lead_owner_id"/>
             </xpath>
             <xpath expr="//filter[@name='salesperson']" position="before">
-                <filter string="Type" name="group_lead_type" context="{'group_by': 'lead_type_id'}"/>
-                <filter string="System" name="group_system" context="{'group_by': 'system_id'}"/>
+                <filter string="Project / Delivery Model" name="group_lead_type" context="{'group_by': 'lead_type_id'}"/>
+                <filter string="System Type" name="group_system" context="{'group_by': 'system_id'}"/>
                 <filter string="Capacity" name="group_capacity" context="{'group_by': 'capacity_id'}"/>
+                <filter string="Worked By" name="group_worked_by" context="{'group_by': 'worked_by_id'}"/>
+                <filter string="Lead Owner" name="group_lead_owner" context="{'group_by': 'lead_owner_id'}"/>
             </xpath>
         </field>
     </record>

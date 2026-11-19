@@ -7,6 +7,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/crm_lead_type_data.xml',
+        'data/crm_lead_master_seed.xml',
         'views/crm_lead_master_views.xml',
         'views/crm_lead_views.xml',
     ],

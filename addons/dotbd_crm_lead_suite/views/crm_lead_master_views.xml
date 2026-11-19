@@ -4,7 +4,7 @@
         <field name="name">crm.lead.type.list</field>
         <field name="model">crm.lead.type</field>
         <field name="arch" type="xml">
-            <list string="Types" editable="bottom">
+            <list string="Project / Delivery Models" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
             </list>
@@ -15,7 +15,7 @@
         <field name="name">crm.lead.type.form</field>
         <field name="model">crm.lead.type</field>
         <field name="arch" type="xml">
-            <form string="Type">
+            <form string="Project / Delivery Model">
                 <sheet>
                     <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
                     <group>
@@ -32,7 +32,7 @@
         <field name="name">crm.lead.type.search</field>
         <field name="model">crm.lead.type</field>
         <field name="arch" type="xml">
-            <search string="Types">
+            <search string="Project / Delivery Models">
                 <field name="name"/>
                 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
             </search>
@@ -40,15 +40,15 @@
     </record>
 
     <record id="crm_lead_type_action" model="ir.actions.act_window">
-        <field name="name">Types</field>
+        <field name="name">Project / Delivery Models</field>
         <field name="res_model">crm.lead.type</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create a lead type
+                Create a project / delivery model
             </p>
             <p>
-                Types such as EPC and Non-EPC are selected on the lead form.
+                Delivery models such as EPC, Non-EPC and End User are selected on the lead form.
             </p>
         </field>
     </record>
@@ -93,7 +93,7 @@
     </record>
 
     <record id="crm_lead_system_action" model="ir.actions.act_window">
-        <field name="name">Systems</field>
+        <field name="name">System Types</field>
         <field name="res_model">crm.lead.system</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
@@ -161,13 +161,13 @@
 
     <menuitem
         id="menu_crm_lead_type"
-        name="Types"
+        name="Project / Delivery Models"
         parent="crm.menu_crm_config_lead"
         action="crm_lead_type_action"
         sequence="7"/>
     <menuitem
         id="menu_crm_lead_system"
-        name="Systems"
+        name="System Types"
         parent="crm.menu_crm_config_lead"
         action="crm_lead_system_action"
         sequence="8"/>

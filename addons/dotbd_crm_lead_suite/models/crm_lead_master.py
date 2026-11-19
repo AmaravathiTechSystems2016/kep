@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class CrmLeadType(models.Model):
@@ -15,6 +15,12 @@ class CrmLeadType(models.Model):
         'Type name must be unique.',
     )
 
+    @api.model
+    def _seed_defaults(self, names, start=1):
+        """Create the given values when missing (archived ones count as present)."""
+        existing = set(self.with_context(active_test=False).search([]).mapped('name'))
+        self.create([{'name': name, 'sequence': seq} for seq, name in enumerate(names, start) if name not in existing])
+
 
 class CrmLeadSystem(models.Model):
     _name = 'crm.lead.system'
@@ -29,6 +35,12 @@ class CrmLeadSystem(models.Model):
         'unique(name)',
         'System name must be unique.',
     )
+
+    @api.model
+    def _seed_defaults(self, names, start=1):
+        """Create the given values when missing (archived ones count as present)."""
+        existing = set(self.with_context(active_test=False).search([]).mapped('name'))
+        self.create([{'name': name, 'sequence': seq} for seq, name in enumerate(names, start) if name not in existing])
 
 
 class CrmLeadCapacity(models.Model):

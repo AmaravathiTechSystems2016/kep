@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Functions are skipped inside noupdate blocks on upgrade, so they live here.
+         They only create values that are missing (archived ones count as present). -->
+    <function model="crm.lead.type" name="_seed_defaults">
+        <value eval="['End User']"/>
+        <value eval="3"/>
+    </function>
+    <function model="crm.lead.system" name="_seed_defaults">
+        <value eval="['MEE', 'MVRE', 'ATFD', 'ECE-MVR', 'ZLD', 'Desalination']"/>
+    </function>
+</odoo>
