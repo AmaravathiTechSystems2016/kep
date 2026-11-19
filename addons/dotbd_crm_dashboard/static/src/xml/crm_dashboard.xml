@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Horizontal bar list. Expects `items` = [{name, pct, label, color, domain}] and `title`. -->
+    <t t-name="dotbd_crm_dashboard.BarList">
+        <div class="dcd_bars">
+            <div t-if="!items.length" class="dcd_empty">No data for the selected filters.</div>
+            <div t-foreach="items" t-as="item" t-key="item_index" class="dcd_bar_row"
+                 t-att-class="{'dcd_click': item.domain}"
+                 t-on-click="() => this.openLeads(item.name, item.domain)">
+                <div class="dcd_bar_name" t-att-title="item.name" t-esc="item.name"/>
+                <div class="dcd_bar_track">
+                    <div class="dcd_bar_fill" t-attf-style="width: #{item.pct}%; background: #{item.color};"/>
+                </div>
+                <div class="dcd_bar_val" t-esc="item.label"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="dotbd_crm_dashboard.Donut">
+        <div class="dcd_donut_wrap">
+            <div t-if="!donut.total" class="dcd_empty">No data for the selected filters.</div>
+            <t t-else="">
+                <svg viewBox="0 0 42 42" class="dcd_donut" role="img">
+                    <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#edf0f5" stroke-width="6"/>
+                    <circle t-foreach="donut.segments" t-as="seg" t-key="seg_index"
+                            cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"
+                            t-att-stroke="seg.color" t-att-stroke-dasharray="seg.dash"
+                            t-att-stroke-dashoffset="seg.offset">
+                        <title t-esc="seg.name + ': ' + seg.count"/>
+                    </circle>
+                    <text x="21" y="22.5" text-anchor="middle" class="dcd_donut_total" t-esc="donut.total"/>
+                </svg>
+                <ul class="dcd_legend">
+                    <li t-foreach="donut.segments" t-as="seg" t-key="seg_index" class="dcd_click"
+                        t-on-click="() => this.openLeads(seg.name, seg.domain)">
+                        <span class="dcd_dot" t-attf-style="background: #{seg.color};"/>
+                        <span class="dcd_legend_name" t-esc="seg.name"/>
+                        <span class="dcd_legend_val"><t t-esc="seg.count"/> · <t t-esc="seg.pct"/>%</span>
+                    </li>
+                </ul>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="dotbd_crm_dashboard.CrmDashboard">
+        <div class="dcd_root">
+            <!-- Header and filters -->
+            <div class="dcd_header">
+                <div>
+                    <h3 class="dcd_title">CRM Dashboard</h3>
+                    <div class="dcd_subtitle" t-if="state.data">Pipeline, people and plant analytics · <t t-esc="periodLabel"/></div>
+                </div>
+                <div class="dcd_filters" t-if="state.data">
+                    <select class="form-select form-select-sm" t-att-value="state.filters.period" t-on-change="(ev) => this.onFilter('period', ev)">
+                        <option t-foreach="state.data.options.periods" t-as="o" t-key="o.id" t-att-value="o.id"
+                                t-att-selected="o.id === state.filters.period" t-esc="o.name"/>
+                    </select>
+                    <select class="form-select form-select-sm" t-on-change="(ev) => this.onFilter('owner', ev)">
+                        <option value="">All lead owners</option>
+                        <option t-foreach="state.data.options.users" t-as="o" t-key="o.id" t-att-value="o.id"
+                                t-att-selected="'' + o.id === state.filters.owner" t-esc="o.name"/>
+                    </select>
+                    <select class="form-select form-select-sm" t-on-change="(ev) => this.onFilter('worker', ev)">
+                        <option value="">All engineers (Worked By)</option>
+                        <option t-foreach="state.data.options.users" t-as="o" t-key="o.id" t-att-value="o.id"
+                                t-att-selected="'' + o.id === state.filters.worker" t-esc="o.name"/>
+                    </select>
+                    <select class="form-select form-select-sm" t-on-change="(ev) => this.onFilter('system', ev)">
+                        <option value="">All system types</option>
+                        <option t-foreach="state.data.options.systems" t-as="o" t-key="o.id" t-att-value="o.id"
+                                t-att-selected="'' + o.id === state.filters.system" t-esc="o.name"/>
+                    </select>
+                    <select class="form-select form-select-sm" t-on-change="(ev) => this.onFilter('model', ev)">
+                        <option value="">All delivery models</option>
+                        <option t-foreach="state.data.options.models" t-as="o" t-key="o.id" t-att-value="o.id"
+                                t-att-selected="'' + o.id === state.filters.model" t-esc="o.name"/>
+                    </select>
+                    <button class="btn btn-sm btn-light border" t-on-click="resetFilters" title="Reset filters"><i class="fa fa-undo"/></button>
+                    <button class="btn btn-sm btn-primary" t-on-click="load" title="Refresh"><i class="fa fa-refresh"/></button>
+                </div>
+            </div>
+
+            <div t-if="state.loading and !state.data" class="dcd_empty dcd_big">Loading CRM analytics…</div>
+            <div t-elif="state.error and !state.data" class="dcd_empty dcd_big">Could not load the CRM dashboard.</div>
+
+            <t t-if="state.data">
+                <div t-att-class="{'dcd_loading': state.loading}">
+                    <div t-if="!state.data.has_data" class="dcd_notice">
+                        <i class="fa fa-info-circle me-1"/> No leads match the selected filters. Create leads or widen the period to see analytics.
+                    </div>
+
+                    <!-- KPI cards -->
+                    <div class="dcd_kpis">
+                        <div t-foreach="state.data.kpis" t-as="kpi" t-key="kpi.key" class="dcd_kpi"
+                             t-att-class="{'dcd_click': kpi.domain}" t-att-title="kpi.hint or ''"
+                             t-on-click="() => this.openLeads(kpi.label, kpi.domain)">
+                            <div class="dcd_kpi_label" t-esc="kpi.label"/>
+                            <div class="dcd_kpi_value" t-esc="fmtKpi(kpi)"/>
+                            <div class="dcd_kpi_sub" t-if="kpi.sub !== undefined" t-esc="fmtMoney(kpi.sub)"/>
+                            <div class="dcd_kpi_sub" t-elif="kpi.hint" t-esc="kpi.hint"/>
+                        </div>
+                    </div>
+
+                    <!-- Insights -->
+                    <div class="dcd_card" t-if="state.data.has_data and insights.length">
+                        <div class="dcd_card_title"><i class="fa fa-lightbulb-o me-1"/> Key insights</div>
+                        <ul class="dcd_insights">
+                            <li t-foreach="insights" t-as="ins" t-key="ins_index" t-att-class="'dcd_tone_' + ins.tone">
+                                <i t-att-class="'fa ' + ins.icon"/> <span t-esc="ins.text"/>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="dcd_grid">
+                        <!-- Pipeline by stage -->
+                        <div class="dcd_card dcd_span2">
+                            <div class="dcd_card_title">Pipeline by stage <span class="dcd_hint">Inquiry → Won, with Lost</span></div>
+                            <div class="dcd_stage_head">
+                                <span>Stage</span><span></span><span>Leads</span><span>Value</span><span>Reach</span><span>Avg wait</span>
+                            </div>
+                            <div t-foreach="stageBars" t-as="s" t-key="s.id" class="dcd_stage_row dcd_click"
+                                 t-on-click="() => this.openLeads(s.name, s.domain)">
+                                <div class="dcd_bar_name" t-esc="s.name"/>
+                                <div class="dcd_bar_track">
+                                    <div class="dcd_bar_fill" t-attf-style="width: #{s.pct}%; background: #{s.color};"/>
+                                </div>
+                                <div class="dcd_num" t-esc="s.count"/>
+                                <div class="dcd_num" t-esc="fmtMoney(s.value)"/>
+                                <div class="dcd_num" t-esc="s.reachPct === null ? '' : s.reachPct + '%'"/>
+                                <div class="dcd_num" t-esc="s.is_lost or s.is_won ? '' : fmtDays(s.avg_age)"/>
+                            </div>
+                            <div class="dcd_foot">Reach = share of all leads that are at or beyond this stage. Avg wait = days since the last stage move.</div>
+                        </div>
+
+                        <!-- Delivery model -->
+                        <div class="dcd_card">
+                            <div class="dcd_card_title">By delivery model</div>
+                            <t t-set="donut" t-value="donutModel"/>
+                            <t t-call="dotbd_crm_dashboard.Donut"/>
+                        </div>
+
+                        <!-- Trend -->
+                        <div class="dcd_card dcd_span2">
+                            <div class="dcd_card_title">12-month trend
+                                <span class="dcd_legend_inline">
+                                    <span t-foreach="trendChart.legend" t-as="l" t-key="l_index">
+                                        <span class="dcd_dot" t-attf-style="background: #{l.c};"/><t t-esc="l.n"/>
+                                    </span>
+                                </span>
+                            </div>
+                            <svg t-att-viewBox="'0 0 ' + trendChart.W + ' ' + trendChart.H" class="dcd_svg" role="img">
+                                <g t-foreach="trendChart.grid" t-as="g" t-key="g_index">
+                                    <line t-att-x1="trendChart.left" t-att-x2="trendChart.W" t-att-y1="g.y" t-att-y2="g.y" class="dcd_gridline"/>
+                                    <text t-att-x="trendChart.left - 6" t-att-y="g.y + 3" text-anchor="end" class="dcd_axis" t-esc="g.text"/>
+                                </g>
+                                <rect t-foreach="trendChart.bars" t-as="b" t-key="b_index"
+                                      t-att-x="b.x" t-att-y="b.y" t-att-width="b.w" t-att-height="b.h"
+                                      t-att-fill="b.color" rx="2"><title t-esc="b.title"/></rect>
+                                <text t-foreach="trendChart.labels" t-as="l" t-key="l_index"
+                                      t-att-x="l.x" t-att-y="trendChart.H - 8" text-anchor="middle" class="dcd_axis" t-esc="l.text"/>
+                            </svg>
+                        </div>
+
+                        <!-- Source -->
+                        <div class="dcd_card">
+                            <div class="dcd_card_title">Lead source</div>
+                            <t t-set="donut" t-value="donutSource"/>
+                            <t t-call="dotbd_crm_dashboard.Donut"/>
+                        </div>
+
+                        <!-- Offer turnaround -->
+                        <div class="dcd_card dcd_span2">
+                            <div class="dcd_card_title">Offer turnaround <span class="dcd_hint">avg days from inquiry to submitted, by month submitted</span></div>
+                            <svg t-att-viewBox="'0 0 ' + turnaroundChart.W + ' ' + turnaroundChart.H" class="dcd_svg" role="img">
+                                <line t-att-x1="turnaroundChart.left" t-att-x2="turnaroundChart.W" t-att-y1="turnaroundChart.topY" t-att-y2="turnaroundChart.topY" class="dcd_gridline"/>
+                                <line t-att-x1="turnaroundChart.left" t-att-x2="turnaroundChart.W" t-att-y1="turnaroundChart.bottomY" t-att-y2="turnaroundChart.bottomY" class="dcd_gridline"/>
+                                <text t-att-x="turnaroundChart.left - 6" t-att-y="turnaroundChart.topY + 3" text-anchor="end" class="dcd_axis" t-esc="turnaroundChart.top"/>
+                                <text t-att-x="turnaroundChart.left - 6" t-att-y="turnaroundChart.bottomY + 3" text-anchor="end" class="dcd_axis">0</text>
+                                <polyline t-foreach="turnaroundChart.paths" t-as="p" t-key="p_index" t-att-points="p" fill="none" stroke="#7048e8" stroke-width="2"/>
+                                <circle t-foreach="turnaroundChart.points" t-as="pt" t-key="pt_index" t-att-cx="pt.x" t-att-cy="pt.y" r="3.5" fill="#7048e8">
+                                    <title t-esc="pt.label + ': ' + pt.v + ' days'"/>
+                                </circle>
+                                <text t-foreach="turnaroundChart.labels" t-as="l" t-key="l_index"
+                                      t-att-x="l.x" t-att-y="turnaroundChart.H - 6" text-anchor="middle" class="dcd_axis" t-esc="l.text"/>
+                            </svg>
+                        </div>
+
+                        <!-- Revisions -->
+                        <div class="dcd_card">
+                            <div class="dcd_card_title">Offer revisions <span class="dcd_hint">from Proposal No. (…-R6)</span></div>
+                            <t t-set="items" t-value="barItems(state.data.revisions, 'count', {color: '#f59f00'})"/>
+                            <t t-call="dotbd_crm_dashboard.BarList"/>
+                        </div>
+
+                        <!-- System type -->
+                        <div class="dcd_card dcd_span2">
+                            <div class="dcd_card_title">By system type <span class="dcd_hint">open pipeline value</span></div>
+                            <t t-set="items" t-value="barItems(state.data.by_system, 'open_value', {moneyKey: true, color: '#2f6fed'})"/>
+                            <t t-call="dotbd_crm_dashboard.BarList"/>
+                            <div class="dcd_mini_table">
+                                <div class="dcd_mt_head"><span>System</span><span>Leads</span><span>Open</span><span>Won</span><span>Lost</span><span>Win rate</span></div>
+                                <div t-foreach="state.data.by_system" t-as="r" t-key="r_index" class="dcd_mt_row dcd_click"
+                                     t-on-click="() => this.openLeads(r.name, r.domain)">
+                                    <span t-esc="r.name"/><span t-esc="r.count"/><span t-esc="r.open"/><span t-esc="r.won"/><span t-esc="r.lost"/><span t-esc="fmtPct(r.win_rate)"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Capacity -->
+                        <div class="dcd_card">
+                            <div class="dcd_card_title">Top capacities <span class="dcd_hint">leads</span></div>
+                            <t t-set="items" t-value="barItems(state.data.by_capacity, 'count', {color: '#1098ad'})"/>
+                            <t t-call="dotbd_crm_dashboard.BarList"/>
+                        </div>
+
+                        <!-- Lead owner -->
+                        <div class="dcd_card dcd_span3">
+                            <div class="dcd_card_title">Lead owner performance</div>
+                            <div class="dcd_table_wrap">
+                                <table class="dcd_table">
+                                    <thead><tr><th>Lead owner</th><th>Leads</th><th>Open</th><th>Open value</th><th>Won</th><th>Won value</th><th>Lost</th><th>Win rate</th></tr></thead>
+                                    <tbody>
+                                        <tr t-if="!state.data.by_owner.length"><td colspan="8" class="dcd_empty">No data for the selected filters.</td></tr>
+                                        <tr t-foreach="state.data.by_owner" t-as="r" t-key="r_index" class="dcd_click"
+                                            t-on-click="() => this.openLeads(r.name, r.domain)">
+                                            <td t-esc="r.name"/><td t-esc="r.count"/><td t-esc="r.open"/><td t-esc="fmtMoney(r.open_value)"/>
+                                            <td t-esc="r.won"/><td t-esc="fmtMoney(r.won_value)"/><td t-esc="r.lost"/><td t-esc="fmtPct(r.win_rate)"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Engineers -->
+                        <div class="dcd_card dcd_span3">
+                            <div class="dcd_card_title">Engineer workload (Worked By)</div>
+                            <div class="dcd_table_wrap">
+                                <table class="dcd_table">
+                                    <thead><tr><th>Engineer</th><th>Leads</th><th>Open</th><th>Offers submitted</th><th>Avg turnaround</th><th>Avg revision</th><th>Max revision</th><th>Won</th><th>Lost</th></tr></thead>
+                                    <tbody>
+                                        <tr t-if="!state.data.by_worker.length"><td colspan="9" class="dcd_empty">No data for the selected filters.</td></tr>
+                                        <tr t-foreach="state.data.by_worker" t-as="r" t-key="r_index" class="dcd_click"
+                                            t-on-click="() => this.openLeads(r.name, r.domain)">
+                                            <td t-esc="r.name"/><td t-esc="r.count"/><td t-esc="r.open"/><td t-esc="r.submitted"/>
+                                            <td t-esc="fmtDays(r.avg_turnaround)"/><td t-esc="r.avg_revision === null ? '–' : 'R' + r.avg_revision"/>
+                                            <td t-esc="r.max_revision === null ? '–' : 'R' + r.max_revision"/><td t-esc="r.won"/><td t-esc="r.lost"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Lost reasons -->
+                        <div class="dcd_card">
+                            <div class="dcd_card_title">Why we lose <span class="dcd_hint">lost reasons</span></div>
+                            <t t-set="items" t-value="barItems(state.data.lost_reasons, 'count', {color: '#e03131'})"/>
+                            <t t-call="dotbd_crm_dashboard.BarList"/>
+                        </div>
+
+                        <!-- Effluent -->
+                        <div class="dcd_card dcd_span2">
+                            <div class="dcd_card_title">Effluent characteristics by system <span class="dcd_hint">average of filled values; darker = higher</span></div>
+                            <div class="dcd_table_wrap">
+                                <table class="dcd_table dcd_heat">
+                                    <thead>
+                                        <tr><th>System</th><th>Leads</th>
+                                            <th t-foreach="effluentColumns" t-as="c" t-key="c.key" t-esc="c.label"/>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-if="!state.data.effluent.length"><td colspan="10" class="dcd_empty">No data for the selected filters.</td></tr>
+                                        <tr t-foreach="state.data.effluent" t-as="r" t-key="r_index">
+                                            <td t-esc="r.name"/><td t-esc="r.count"/>
+                                            <td t-foreach="effluentColumns" t-as="c" t-key="c.key" t-att-style="heat(r[c.key], c.key)"
+                                                t-att-title="r[c.key + '_n'] + ' leads with a value'">
+                                                <t t-esc="r[c.key] === null ? '–' : r[c.key]"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="dcd_foot">Units: TDS, COD, BOD, TSS, Hardness, Oil &amp; Grease in mg/L; Silica in ppm. Empty or zero values are ignored.</div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

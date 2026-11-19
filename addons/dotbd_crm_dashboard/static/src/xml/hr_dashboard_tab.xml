@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="HrDashboardMain" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_hr_dashboard')]" position="attributes">
+            <attribute name="t-att-class">dash.view === 'crm' ? 'd-none' : ''</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_hr_dashboard')]" position="before">
+            <div class="container-fluid dotbd_dash_tabs" t-if="dash.canCrm">
+                <button type="button" class="dotbd_dash_tab"
+                        t-att-class="{'active': dash.view === 'hr'}"
+                        t-on-click="() => this.showDashboardView('hr')">
+                    <i class="fa fa-users me-1"/>HR
+                </button>
+                <button type="button" class="dotbd_dash_tab"
+                        t-att-class="{'active': dash.view === 'crm'}"
+                        t-on-click="() => this.showDashboardView('crm')">
+                    <i class="fa fa-handshake-o me-1"/>CRM
+                </button>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('o_hr_dashboard')]" position="after">
+            <div class="container-fluid" t-if="dash.view === 'crm'">
+                <CrmDashboard embedded="true"/>
+            </div>
+        </xpath>
+    </t>
+</templates>
